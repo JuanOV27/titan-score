@@ -30,6 +30,8 @@ import java.io.InputStream;
 public class RoutineListActivity extends AppCompatActivity implements RutinaAdapter.Listener {
 
     public static final String EXTRA_RUTINA_ID = "extra_rutina_id";
+    private static final String FEEDBACK_URL =
+            "https://docs.google.com/forms/d/e/1FAIpQLSfO6Hd6-_l30bv5td8t-mhByoRCZwt4cvNqig72Vf1QI5yZEg/viewform?usp=header";
 
     private DataManager dataManager;
     private RutinaAdapter adapter;
@@ -93,7 +95,19 @@ public class RoutineListActivity extends AppCompatActivity implements RutinaAdap
             importLauncher.launch(new String[]{"application/json", "text/plain", "application/octet-stream", "*/*"});
             return true;
         }
+        if (id == R.id.action_feedback) {
+            abrirFormularioFeedback();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void abrirFormularioFeedback() {
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(FEEDBACK_URL)));
+        } catch (Exception e) {
+            Toast.makeText(this, "No se pudo abrir el formulario", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void exportarDatos() {
