@@ -1,0 +1,49 @@
+package com.ironquest.mvp.ui;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.appbar.MaterialToolbar;
+import com.ironquest.mvp.R;
+import com.ironquest.mvp.data.DataManager;
+import com.ironquest.mvp.model.Sesion;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+public class HistoryActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_history);
+
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        setTitle("Historial");
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        toolbar.setNavigationOnClickListener(v -> finish());
+
+        DataManager dataManager = DataManager.getInstance(this);
+        List<Sesion> sesiones = new ArrayList<>(dataManager.getDataStore().sesiones);
+        Collections.sort(sesiones, (a, b) -> b.fechaHoraInicio.compareTo(a.fechaHoraInicio));
+
+        RecyclerView recyclerView = findViewById(R.id.recycler_historial);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new HistorialAdapter(sesiones));
+
+        TextView textEmpty = findViewById(R.id.text_empty_historial);
+        boolean vacio = sesiones.isEmpty();
+        textEmpty.setVisibility(vacio ? View.VISIBLE : View.GONE);
+        recyclerView.setVisibility(vacio ? View.GONE : View.VISIBLE);
+    }
+}

@@ -1,0 +1,14 @@
+<resources>
+    <color name="ic_launcher_background">#FF6B35</color>
+
+    <color name="ironquest_orange">#FF6B35</color>
+    <color name="ironquest_orange_dark">#E8571F</color>
+    <color name="ironquest_orange_light">#FFB199</color>
+    <color name="ironquest_orange_container">#FFDBCE</color>
+    <color name="ironquest_on_orange">#FFFFFF</color>
+    <color name="ironquest_on_orange_container">#3A0D00</color>
+
+    <color name="cumplimiento_alto">#22C55E</color>
+    <color name="cumplimiento_medio">#6B6B6B</color>
+    <color name="cumplimiento_bajo">#E53935</color>
+</resources>

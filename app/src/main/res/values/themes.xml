@@ -1,0 +1,13 @@
+<resources>
+    <style name="Theme.IronQuest" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/ironquest_orange</item>
+        <item name="colorOnPrimary">@color/ironquest_on_orange</item>
+        <item name="colorPrimaryContainer">@color/ironquest_orange_container</item>
+        <item name="colorOnPrimaryContainer">@color/ironquest_on_orange_container</item>
+        <item name="colorSecondary">@color/ironquest_orange_dark</item>
+        <item name="colorOnSecondary">@color/ironquest_on_orange</item>
+        <item name="colorSecondaryContainer">@color/ironquest_orange_light</item>
+        <item name="colorOnSecondaryContainer">@color/ironquest_on_orange_container</item>
+        <item name="colorTertiary">@color/ironquest_orange_dark</item>
+    </style>
+</resources>
