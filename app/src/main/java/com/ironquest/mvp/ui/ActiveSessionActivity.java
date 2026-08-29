@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
@@ -161,6 +163,42 @@ public class ActiveSessionActivity extends AppCompatActivity {
         if (dialogDescansoActivo != null && dialogDescansoActivo.isShowing()) {
             dialogDescansoActivo.actualizarOrientacion();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_active_session, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_descartar_sesion) {
+            confirmarDescartarSesion();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void confirmarDescartarSesion() {
+        new AlertDialog.Builder(this)
+                .setTitle("Descartar sesión")
+                .setMessage("¿Estás seguro de que quieres descartar esta sesión de entrenamiento? Al descartarla, no quedará registrada en tu historial.")
+                .setPositiveButton("Descartar", (dialog, which) -> descartarSesion())
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void descartarSesion() {
+        sesionFinalizada = true;
+        if (dialogDescansoActivo != null && dialogDescansoActivo.isShowing()) {
+            dialogDescansoActivo.dismiss();
+        }
+        dataStore.sesionEnProgreso = null;
+        dataManager.save();
+        SesionTrackingService.detener(this);
+        Toast.makeText(this, "Sesión descartada", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     private void guardarProgreso() {
