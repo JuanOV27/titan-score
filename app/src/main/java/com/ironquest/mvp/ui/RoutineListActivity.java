@@ -23,9 +23,13 @@ import com.ironquest.mvp.R;
 import com.ironquest.mvp.data.DataManager;
 import com.ironquest.mvp.model.DataStore;
 import com.ironquest.mvp.model.Rutina;
+import com.ironquest.mvp.model.Sesion;
+import com.ironquest.mvp.service.SesionTrackingService;
 
 import java.io.File;
 import java.io.InputStream;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class RoutineListActivity extends AppCompatActivity implements RutinaAdapter.Listener {
 
@@ -68,6 +72,39 @@ public class RoutineListActivity extends AppCompatActivity implements RutinaAdap
         boolean vacio = dataManager.getDataStore().rutinas.isEmpty();
         textEmpty.setVisibility(vacio ? View.VISIBLE : View.GONE);
         recyclerView.setVisibility(vacio ? View.GONE : View.VISIBLE);
+        actualizarTarjetaSesionEnCurso();
+    }
+
+    private void actualizarTarjetaSesionEnCurso() {
+        View card = findViewById(R.id.card_sesion_en_curso);
+        Sesion enProgreso = dataManager.getDataStore().sesionEnProgreso;
+        if (enProgreso == null) {
+            card.setVisibility(View.GONE);
+            return;
+        }
+        card.setVisibility(View.VISIBLE);
+        long minutos = Duration.between(LocalDateTime.parse(enProgreso.fechaHoraInicio), LocalDateTime.now()).toMinutes();
+        TextView textDetalle = findViewById(R.id.text_sesion_en_curso_detalle);
+        textDetalle.setText(enProgreso.rutinaNombre + " · " + minutos + " min");
+        findViewById(R.id.button_continuar_sesion).setOnClickListener(v -> continuarSesionEnCurso());
+    }
+
+    private void continuarSesionEnCurso() {
+        Sesion enProgreso = dataManager.getDataStore().sesionEnProgreso;
+        if (enProgreso == null) {
+            return;
+        }
+        Intent intent = new Intent(this, ActiveSessionActivity.class);
+        intent.putExtra(EXTRA_RUTINA_ID, enProgreso.rutinaId);
+        intent.putExtra(ActiveSessionActivity.EXTRA_RESUMIR, true);
+        startActivity(intent);
+    }
+
+    private void descartarSesionEnCurso() {
+        dataManager.getDataStore().sesionEnProgreso = null;
+        dataManager.save();
+        SesionTrackingService.detener(this);
+        actualizarTarjetaSesionEnCurso();
     }
 
     @Override
@@ -159,6 +196,24 @@ public class RoutineListActivity extends AppCompatActivity implements RutinaAdap
 
     @Override
     public void onRutinaClick(Rutina rutina) {
+        Sesion enProgreso = dataManager.getDataStore().sesionEnProgreso;
+        if (enProgreso != null) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Ya tienes un entrenamiento en curso")
+                    .setMessage("Tienes una sesión de \"" + enProgreso.rutinaNombre + "\" sin finalizar. ¿Qué quieres hacer?")
+                    .setPositiveButton("Continuar la actual", (dialog, which) -> continuarSesionEnCurso())
+                    .setNegativeButton("Descartar y empezar nueva", (dialog, which) -> {
+                        descartarSesionEnCurso();
+                        iniciarSesionNueva(rutina);
+                    })
+                    .setNeutralButton("Cancelar", null)
+                    .show();
+            return;
+        }
+        iniciarSesionNueva(rutina);
+    }
+
+    private void iniciarSesionNueva(Rutina rutina) {
         Intent intent = new Intent(this, ActiveSessionActivity.class);
         intent.putExtra(EXTRA_RUTINA_ID, rutina.id);
         startActivity(intent);

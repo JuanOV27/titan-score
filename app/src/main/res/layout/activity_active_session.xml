@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -65,11 +66,38 @@
 
     </ScrollView>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_finalizar_sesion"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="Finalizar sesión" />
+        android:orientation="vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp">
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progress_finalizar_sesion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:max="100"
+            android:visibility="invisible"
+            app:trackCornerRadius="4dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_finalizar_sesion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mantén presionado para finalizar" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:text="Evita cierres accidentales: mantén presionado 3 segundos"
+            android:textSize="11sp"
+            android:alpha="0.7" />
+
+    </LinearLayout>
 
 </LinearLayout>

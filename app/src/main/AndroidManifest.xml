@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
     <application
         android:allowBackup="true"
@@ -20,9 +23,22 @@
         </activity>
 
         <activity android:name=".ui.EditRoutineActivity" android:exported="false" />
-        <activity android:name=".ui.ActiveSessionActivity" android:exported="false" />
+        <activity
+            android:name=".ui.ActiveSessionActivity"
+            android:exported="false"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <activity android:name=".ui.SessionSummaryActivity" android:exported="false" />
         <activity android:name=".ui.HistoryActivity" android:exported="false" />
         <activity android:name=".ui.StatsActivity" android:exported="false" />
+
+        <service
+            android:name=".service.SesionTrackingService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="workout_session_tracking" />
+        </service>
 
         <provider
             android:name="androidx.core.content.FileProvider"

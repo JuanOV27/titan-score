@@ -1,18 +1,34 @@
 package com.ironquest.mvp.ui;
 
+import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.ironquest.mvp.R;
 import com.ironquest.mvp.data.DataManager;
 import com.ironquest.mvp.model.DataStore;
@@ -22,7 +38,10 @@ import com.ironquest.mvp.model.Rutina;
 import com.ironquest.mvp.model.RutinaEjercicio;
 import com.ironquest.mvp.model.Sesion;
 import com.ironquest.mvp.model.SerieSesion;
+import com.ironquest.mvp.service.SesionTrackingService;
+import com.ironquest.mvp.util.EstadisticasUtil;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -31,22 +50,32 @@ import java.util.Map;
 
 public class ActiveSessionActivity extends AppCompatActivity {
 
+    public static final String EXTRA_RESUMIR = "extra_resumir";
+
     private static final double PASO_PESO = 2.5;
+    private static final long HOLD_FINALIZAR_MS = 3000L;
     private static final DateTimeFormatter FORMATO_HORA = DateTimeFormatter.ofPattern("HH:mm");
 
     private DataManager dataManager;
     private DataStore dataStore;
     private Sesion sesionActual;
+    private LocalDateTime inicioSesion;
     private long duracionDescansoMillis = 60_000L;
+    private RestTimerDialog dialogDescansoActivo;
+    private boolean sesionFinalizada;
 
     private Map<String, Ejercicio> catalogoPorId;
     private LinearLayout containerEjercicios;
     private LayoutInflater inflater;
 
+    private ActivityResultLauncher<String> permissionLauncher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_active_session);
+
+        permissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> { });
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -54,50 +83,153 @@ public class ActiveSessionActivity extends AppCompatActivity {
         dataManager = DataManager.getInstance(this);
         dataStore = dataManager.getDataStore();
 
-        String rutinaId = getIntent().getStringExtra(RoutineListActivity.EXTRA_RUTINA_ID);
-        Rutina rutina = buscarRutina(rutinaId);
-        if (rutina == null) {
-            Toast.makeText(this, "No se encontró la rutina", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-
         catalogoPorId = new HashMap<>();
         for (Ejercicio ejercicio : dataStore.ejercicios) {
             catalogoPorId.put(ejercicio.id, ejercicio);
         }
 
-        LocalDateTime ahora = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-        sesionActual = new Sesion(dataManager.newId("s"), rutina.id, rutina.nombre, ahora.toString());
-
-        setTitle(rutina.nombre);
-        TextView textHoraInicio = findViewById(R.id.text_hora_inicio);
-        textHoraInicio.setText("Inicio: " + ahora.format(FORMATO_HORA));
-
         containerEjercicios = findViewById(R.id.container_ejercicios);
         inflater = LayoutInflater.from(this);
+        TextView textHoraInicio = findViewById(R.id.text_hora_inicio);
 
-        double volumenPlaneado = 0;
-        for (RutinaEjercicio re : rutina.ejercicios) {
-            EjercicioSesion ejercicioSesion = new EjercicioSesion(re.ejercicioId);
-            sesionActual.ejercicios.add(ejercicioSesion);
-            agregarBloqueEjercicio(ejercicioSesion, re.series, re.repeticiones, re.peso);
-            volumenPlaneado += unidadEsfuerzo(re.peso, re.repeticiones) * re.series;
+        boolean resumir = getIntent().getBooleanExtra(EXTRA_RESUMIR, false);
+        if (resumir && dataStore.sesionEnProgreso != null) {
+            sesionActual = dataStore.sesionEnProgreso;
+            inicioSesion = LocalDateTime.parse(sesionActual.fechaHoraInicio);
+            setTitle(sesionActual.rutinaNombre);
+            textHoraInicio.setText("Inicio: " + inicioSesion.format(FORMATO_HORA));
+            for (EjercicioSesion ejercicioSesion : sesionActual.ejercicios) {
+                agregarBloqueEjercicio(ejercicioSesion);
+            }
+        } else {
+            String rutinaId = getIntent().getStringExtra(RoutineListActivity.EXTRA_RUTINA_ID);
+            Rutina rutina = buscarRutina(rutinaId);
+            if (rutina == null) {
+                Toast.makeText(this, "No se encontró la rutina", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
+
+            inicioSesion = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+            sesionActual = new Sesion(dataManager.newId("s"), rutina.id, rutina.nombre, inicioSesion.toString());
+
+            setTitle(rutina.nombre);
+            textHoraInicio.setText("Inicio: " + inicioSesion.format(FORMATO_HORA));
+
+            double volumenPlaneado = 0;
+            for (RutinaEjercicio re : rutina.ejercicios) {
+                EjercicioSesion ejercicioSesion = new EjercicioSesion(re.ejercicioId);
+                for (int i = 1; i <= re.series; i++) {
+                    ejercicioSesion.series.add(new SerieSesion(i, re.peso, re.repeticiones, false));
+                }
+                sesionActual.ejercicios.add(ejercicioSesion);
+                agregarBloqueEjercicio(ejercicioSesion);
+                volumenPlaneado += unidadEsfuerzo(re.peso, re.repeticiones) * re.series;
+            }
+            sesionActual.volumenPlaneado = volumenPlaneado;
         }
-        sesionActual.volumenPlaneado = volumenPlaneado;
 
-        findViewById(R.id.button_finalizar_sesion).setOnClickListener(v -> finalizarSesion());
+        guardarProgreso();
+        iniciarServicioSeguimiento();
+
+        configurarBotonFinalizar();
         findViewById(R.id.button_iniciar_descanso).setOnClickListener(v -> mostrarTemporizadorDescanso());
         findViewById(R.id.button_agregar_ejercicio_sesion).setOnClickListener(v ->
                 EjercicioPicker.mostrar(this, dataManager, dataStore, ejercicio -> {
                     catalogoPorId.putIfAbsent(ejercicio.id, ejercicio);
                     EjercicioSesion nuevo = new EjercicioSesion(ejercicio.id);
+                    for (int i = 1; i <= 3; i++) {
+                        nuevo.series.add(new SerieSesion(i, 0.0, 10, false));
+                    }
                     sesionActual.ejercicios.add(nuevo);
-                    agregarBloqueEjercicio(nuevo, 3, 10, 0.0);
+                    agregarBloqueEjercicio(nuevo);
+                    guardarProgreso();
                 }));
     }
 
-    private void agregarBloqueEjercicio(EjercicioSesion ejercicioSesion, int seriesIniciales, int repsIniciales, double pesoInicial) {
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!sesionFinalizada) {
+            guardarProgreso();
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (dialogDescansoActivo != null && dialogDescansoActivo.isShowing()) {
+            dialogDescansoActivo.actualizarOrientacion();
+        }
+    }
+
+    private void guardarProgreso() {
+        dataStore.sesionEnProgreso = sesionActual;
+        dataManager.save();
+    }
+
+    private void iniciarServicioSeguimiento() {
+        if (Build.VERSION.SDK_INT >= 33
+                && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                        != PackageManager.PERMISSION_GRANTED) {
+            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+        }
+        SesionTrackingService.iniciar(this, sesionActual.rutinaNombre, sesionActual.fechaHoraInicio);
+    }
+
+    private void configurarBotonFinalizar() {
+        MaterialButton botonFinalizar = findViewById(R.id.button_finalizar_sesion);
+        LinearProgressIndicator progreso = findViewById(R.id.progress_finalizar_sesion);
+
+        ValueAnimator animator = ValueAnimator.ofInt(0, 100);
+        animator.setDuration(HOLD_FINALIZAR_MS);
+        animator.addUpdateListener(a -> progreso.setProgress((int) a.getAnimatedValue()));
+        animator.addListener(new AnimatorListenerAdapter() {
+            private boolean cancelado;
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                cancelado = true;
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                boolean seCompleto = !cancelado;
+                cancelado = false;
+                if (seCompleto) {
+                    vibrarConfirmacion();
+                    finalizarSesion();
+                }
+            }
+        });
+
+        botonFinalizar.setOnTouchListener((v, event) -> {
+            switch (event.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                    progreso.setProgress(0);
+                    progreso.setVisibility(View.VISIBLE);
+                    animator.start();
+                    return true;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    animator.cancel();
+                    progreso.setProgress(0);
+                    progreso.setVisibility(View.INVISIBLE);
+                    return true;
+                default:
+                    return false;
+            }
+        });
+    }
+
+    private void vibrarConfirmacion() {
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        if (vibrator != null && vibrator.hasVibrator()) {
+            vibrator.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
+        }
+    }
+
+    private void agregarBloqueEjercicio(EjercicioSesion ejercicioSesion) {
         View block = inflater.inflate(R.layout.view_ejercicio_sesion_block, containerEjercicios, false);
         TextView nombre = block.findViewById(R.id.text_nombre_ejercicio_sesion);
         ImageButton botonCambiar = block.findViewById(R.id.button_cambiar_ejercicio);
@@ -106,26 +238,26 @@ public class ActiveSessionActivity extends AppCompatActivity {
 
         actualizarNombreBloque(nombre, ejercicioSesion.ejercicioId);
 
-        for (int i = 1; i <= seriesIniciales; i++) {
-            SerieSesion serie = new SerieSesion(i, pesoInicial, repsIniciales, false);
-            ejercicioSesion.series.add(serie);
+        for (SerieSesion serie : ejercicioSesion.series) {
             containerSeries.addView(crearFilaSerie(inflater, containerSeries, serie));
         }
 
         MaterialButton botonAgregarSerie = block.findViewById(R.id.button_agregar_serie);
         botonAgregarSerie.setOnClickListener(v -> {
             SerieSesion ultima = ejercicioSesion.series.isEmpty()
-                    ? new SerieSesion(0, pesoInicial, repsIniciales, false)
+                    ? new SerieSesion(0, 0.0, 10, false)
                     : ejercicioSesion.series.get(ejercicioSesion.series.size() - 1);
             SerieSesion nueva = new SerieSesion(ejercicioSesion.series.size() + 1, ultima.peso, ultima.repeticiones, false);
             ejercicioSesion.series.add(nueva);
             containerSeries.addView(crearFilaSerie(inflater, containerSeries, nueva));
+            guardarProgreso();
         });
 
         botonCambiar.setOnClickListener(v -> EjercicioPicker.mostrar(this, dataManager, dataStore, nuevoEjercicio -> {
             catalogoPorId.putIfAbsent(nuevoEjercicio.id, nuevoEjercicio);
             ejercicioSesion.ejercicioId = nuevoEjercicio.id;
             actualizarNombreBloque(nombre, nuevoEjercicio.id);
+            guardarProgreso();
         }));
 
         botonEliminar.setOnClickListener(v -> new AlertDialog.Builder(this)
@@ -134,6 +266,7 @@ public class ActiveSessionActivity extends AppCompatActivity {
                 .setPositiveButton("Eliminar", (dialog, which) -> {
                     sesionActual.ejercicios.remove(ejercicioSesion);
                     containerEjercicios.removeView(block);
+                    guardarProgreso();
                 })
                 .setNegativeButton("Cancelar", null)
                 .show());
@@ -147,7 +280,9 @@ public class ActiveSessionActivity extends AppCompatActivity {
     }
 
     private void mostrarTemporizadorDescanso() {
-        new RestTimerDialog(this, duracionDescansoMillis, millis -> duracionDescansoMillis = millis).show();
+        dialogDescansoActivo = new RestTimerDialog(this, duracionDescansoMillis, millis -> duracionDescansoMillis = millis);
+        dialogDescansoActivo.setOnDismissListener(d -> dialogDescansoActivo = null);
+        dialogDescansoActivo.show();
     }
 
     private View crearFilaSerie(LayoutInflater inflater, LinearLayout parent, SerieSesion serie) {
@@ -170,22 +305,27 @@ public class ActiveSessionActivity extends AppCompatActivity {
         botonPesoMenos.setOnClickListener(v -> {
             serie.peso = Math.max(0, serie.peso - PASO_PESO);
             textPeso.setText(formatearPeso(serie.peso));
+            guardarProgreso();
         });
         botonPesoMas.setOnClickListener(v -> {
             serie.peso += PASO_PESO;
             textPeso.setText(formatearPeso(serie.peso));
+            guardarProgreso();
         });
         botonRepsMenos.setOnClickListener(v -> {
             serie.repeticiones = Math.max(0, serie.repeticiones - 1);
             textReps.setText(String.valueOf(serie.repeticiones));
+            guardarProgreso();
         });
         botonRepsMas.setOnClickListener(v -> {
             serie.repeticiones += 1;
             textReps.setText(String.valueOf(serie.repeticiones));
+            guardarProgreso();
         });
         botonCompletada.setOnClickListener(v -> {
             serie.completada = !serie.completada;
             actualizarIconoCompletada(botonCompletada, serie.completada);
+            guardarProgreso();
             if (serie.completada) {
                 mostrarTemporizadorDescanso();
             }
@@ -224,6 +364,7 @@ public class ActiveSessionActivity extends AppCompatActivity {
     }
 
     private void finalizarSesion() {
+        sesionFinalizada = true;
         LocalDateTime ahora = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         sesionActual.fechaHoraFin = ahora.toString();
 
@@ -245,9 +386,22 @@ public class ActiveSessionActivity extends AppCompatActivity {
         }
         sesionActual.porcentajeCumplimiento = Math.max(0, porcentaje);
 
+        long duracionMinutos = Duration.between(inicioSesion, ahora).toMinutes();
+
         dataStore.sesiones.add(sesionActual);
+        dataStore.sesionEnProgreso = null;
         dataManager.save();
-        Toast.makeText(this, "Sesión guardada — Cumplimiento: " + sesionActual.porcentajeCumplimiento + "%", Toast.LENGTH_LONG).show();
+
+        int racha = EstadisticasUtil.calcularRachaDias(dataStore.sesiones);
+
+        SesionTrackingService.detener(this);
+
+        Intent intent = new Intent(this, SessionSummaryActivity.class);
+        intent.putExtra(SessionSummaryActivity.EXTRA_RUTINA_NOMBRE, sesionActual.rutinaNombre);
+        intent.putExtra(SessionSummaryActivity.EXTRA_DURACION_MINUTOS, duracionMinutos);
+        intent.putExtra(SessionSummaryActivity.EXTRA_RACHA_DIAS, racha);
+        intent.putExtra(SessionSummaryActivity.EXTRA_PORCENTAJE, sesionActual.porcentajeCumplimiento);
+        startActivity(intent);
         finish();
     }
 }

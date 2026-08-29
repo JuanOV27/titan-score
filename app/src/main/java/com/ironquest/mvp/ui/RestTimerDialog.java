@@ -63,6 +63,26 @@ public class RestTimerDialog extends Dialog {
         totalDurationMillis = initialDurationMillis;
         remainingMillis = initialDurationMillis;
 
+        bindViews();
+        refrescarUI();
+        iniciar();
+    }
+
+    /**
+     * Reaplica el layout (permitiendo que Android elija la variante land/port) y
+     * vuelve a enlazar las vistas sin tocar el estado del conteo, que vive en este
+     * objeto y no en la ventana.
+     */
+    public void actualizarOrientacion() {
+        if (!isShowing()) {
+            return;
+        }
+        setContentView(R.layout.dialog_rest_timer);
+        bindViews();
+        refrescarUI();
+    }
+
+    private void bindViews() {
         textCountdown = findViewById(R.id.text_countdown);
         textEstado = findViewById(R.id.text_estado_descanso);
         textPuntos = findViewById(R.id.text_puntos);
@@ -84,9 +104,18 @@ public class RestTimerDialog extends Dialog {
             textPuntos.setText("Puntos: " + puntos);
             reposicionarObjetivo();
         });
+    }
 
+    private void refrescarUI() {
         actualizarTextoCountdown();
-        iniciar();
+        textPuntos.setText("Puntos: " + puntos);
+        if (finished) {
+            textEstado.setText("¡Descanso terminado! 💪");
+            buttonIniciarPausar.setText("Cerrar");
+        } else {
+            textEstado.setText("");
+            buttonIniciarPausar.setText(running ? "Pausar" : "Iniciar");
+        }
     }
 
     private void setDuration(long millis) {
