@@ -120,7 +120,7 @@ public class ActiveSessionActivity extends AppCompatActivity {
             for (RutinaEjercicio re : rutina.ejercicios) {
                 EjercicioSesion ejercicioSesion = new EjercicioSesion(re.ejercicioId);
                 for (int i = 1; i <= re.series; i++) {
-                    ejercicioSesion.series.add(new SerieSesion(i, re.peso, re.repeticiones, false));
+                    ejercicioSesion.series.add(new SerieSesion(i, re.peso, re.repeticiones, true));
                 }
                 sesionActual.ejercicios.add(ejercicioSesion);
                 agregarBloqueEjercicio(ejercicioSesion);
@@ -139,7 +139,7 @@ public class ActiveSessionActivity extends AppCompatActivity {
                     catalogoPorId.putIfAbsent(ejercicio.id, ejercicio);
                     EjercicioSesion nuevo = new EjercicioSesion(ejercicio.id);
                     for (int i = 1; i <= 3; i++) {
-                        nuevo.series.add(new SerieSesion(i, 0.0, 10, false));
+                        nuevo.series.add(new SerieSesion(i, 0.0, 10, true));
                     }
                     sesionActual.ejercicios.add(nuevo);
                     agregarBloqueEjercicio(nuevo);
@@ -245,9 +245,9 @@ public class ActiveSessionActivity extends AppCompatActivity {
         MaterialButton botonAgregarSerie = block.findViewById(R.id.button_agregar_serie);
         botonAgregarSerie.setOnClickListener(v -> {
             SerieSesion ultima = ejercicioSesion.series.isEmpty()
-                    ? new SerieSesion(0, 0.0, 10, false)
+                    ? new SerieSesion(0, 0.0, 10, true)
                     : ejercicioSesion.series.get(ejercicioSesion.series.size() - 1);
-            SerieSesion nueva = new SerieSesion(ejercicioSesion.series.size() + 1, ultima.peso, ultima.repeticiones, false);
+            SerieSesion nueva = new SerieSesion(ejercicioSesion.series.size() + 1, ultima.peso, ultima.repeticiones, true);
             ejercicioSesion.series.add(nueva);
             containerSeries.addView(crearFilaSerie(inflater, containerSeries, nueva));
             guardarProgreso();
@@ -326,9 +326,6 @@ public class ActiveSessionActivity extends AppCompatActivity {
             serie.completada = !serie.completada;
             actualizarIconoCompletada(botonCompletada, serie.completada);
             guardarProgreso();
-            if (serie.completada) {
-                mostrarTemporizadorDescanso();
-            }
         });
 
         return row;
@@ -338,6 +335,9 @@ public class ActiveSessionActivity extends AppCompatActivity {
         boton.setImageResource(completada
                 ? android.R.drawable.checkbox_on_background
                 : android.R.drawable.checkbox_off_background);
+        boton.setContentDescription(completada
+                ? "Marcar que no hiciste esta serie"
+                : "Marcar que sí hiciste esta serie");
     }
 
     private String formatearPeso(double peso) {

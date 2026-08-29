@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
 import com.ironquest.mvp.R;
+import com.ironquest.mvp.service.SesionTrackingService;
 
 import java.util.Locale;
 import java.util.Random;
@@ -168,6 +169,7 @@ public class RestTimerDialog extends Dialog {
     private void iniciar() {
         running = true;
         buttonIniciarPausar.setText("Pausar");
+        SesionTrackingService.actualizarDescanso(getContext(), System.currentTimeMillis() + remainingMillis);
         countDownTimer = new CountDownTimer(remainingMillis, 1000) {
             @Override
             public void onTick(long millisRestantes) {
@@ -184,6 +186,7 @@ public class RestTimerDialog extends Dialog {
                 textEstado.setText("¡Descanso terminado! 💪");
                 buttonIniciarPausar.setText("Cerrar");
                 avisarFinDescanso();
+                SesionTrackingService.finalizarDescanso(getContext());
             }
         }.start();
     }
@@ -196,6 +199,7 @@ public class RestTimerDialog extends Dialog {
         }
         if (!finished) {
             buttonIniciarPausar.setText("Iniciar");
+            SesionTrackingService.cancelarDescanso(getContext());
         }
     }
 
@@ -236,6 +240,7 @@ public class RestTimerDialog extends Dialog {
     @Override
     public void dismiss() {
         pausar();
+        SesionTrackingService.cancelarDescanso(getContext());
         if (toneGenerator != null) {
             toneGenerator.release();
             toneGenerator = null;

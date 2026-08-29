@@ -7,6 +7,8 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioAttributes;
+import android.media.RingtoneManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -25,11 +27,18 @@ public class SesionTrackingService extends Service {
 
     private static final String EXTRA_RUTINA_NOMBRE = "extra_rutina_nombre";
     private static final String EXTRA_INICIO_ISO = "extra_inicio_iso";
+    private static final String EXTRA_DESCANSO_FIN_EN = "extra_descanso_fin_en";
+
+    private static final String ACTION_DESCANSO_ACTUALIZAR = "com.ironquest.mvp.action.DESCANSO_ACTUALIZAR";
+    private static final String ACTION_DESCANSO_CANCELAR = "com.ironquest.mvp.action.DESCANSO_CANCELAR";
+    private static final String ACTION_DESCANSO_FINALIZADO = "com.ironquest.mvp.action.DESCANSO_FINALIZADO";
 
     private static final String CANAL_PROGRESO = "sesion_progreso";
     private static final String CANAL_RECORDATORIO = "sesion_recordatorio";
+    private static final String CANAL_DESCANSO_FIN = "descanso_fin";
     private static final int NOTIF_ID_PROGRESO = 1001;
     private static final int NOTIF_ID_RECORDATORIO = 1002;
+    private static final int NOTIF_ID_DESCANSO = 1003;
     private static final long INTERVALO_ACTUALIZACION_MS = 60_000L;
     private static final long UMBRAL_RECORDATORIO_MS = 60L * 60_000L;
 
@@ -57,6 +66,25 @@ public class SesionTrackingService extends Service {
         context.stopService(new Intent(context, SesionTrackingService.class));
     }
 
+    public static void actualizarDescanso(Context context, long finEnMillis) {
+        Intent intent = new Intent(context, SesionTrackingService.class);
+        intent.setAction(ACTION_DESCANSO_ACTUALIZAR);
+        intent.putExtra(EXTRA_DESCANSO_FIN_EN, finEnMillis);
+        context.startForegroundService(intent);
+    }
+
+    public static void cancelarDescanso(Context context) {
+        Intent intent = new Intent(context, SesionTrackingService.class);
+        intent.setAction(ACTION_DESCANSO_CANCELAR);
+        context.startForegroundService(intent);
+    }
+
+    public static void finalizarDescanso(Context context) {
+        Intent intent = new Intent(context, SesionTrackingService.class);
+        intent.setAction(ACTION_DESCANSO_FINALIZADO);
+        context.startForegroundService(intent);
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -65,23 +93,37 @@ public class SesionTrackingService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null) {
-            rutinaNombre = intent.getStringExtra(EXTRA_RUTINA_NOMBRE);
-            if (rutinaNombre == null) {
-                rutinaNombre = "tu rutina";
+        String action = intent != null ? intent.getAction() : null;
+
+        if (action == null) {
+            if (intent != null) {
+                String nombre = intent.getStringExtra(EXTRA_RUTINA_NOMBRE);
+                if (nombre != null) {
+                    rutinaNombre = nombre;
+                }
+                String inicioIso = intent.getStringExtra(EXTRA_INICIO_ISO);
+                if (inicioIso != null) {
+                    inicio = LocalDateTime.parse(inicioIso);
+                }
             }
-            String inicioIso = intent.getStringExtra(EXTRA_INICIO_ISO);
-            if (inicioIso != null) {
-                inicio = LocalDateTime.parse(inicioIso);
+            if (inicio == null) {
+                inicio = LocalDateTime.now();
             }
-        }
-        if (inicio == null) {
-            inicio = LocalDateTime.now();
         }
 
         startForeground(NOTIF_ID_PROGRESO, construirNotificacionProgreso());
         handler.removeCallbacks(actualizarRunnable);
         handler.postDelayed(actualizarRunnable, INTERVALO_ACTUALIZACION_MS);
+
+        if (ACTION_DESCANSO_ACTUALIZAR.equals(action) && intent != null) {
+            long finEn = intent.getLongExtra(EXTRA_DESCANSO_FIN_EN, System.currentTimeMillis());
+            mostrarNotificacionDescanso(finEn);
+        } else if (ACTION_DESCANSO_CANCELAR.equals(action)) {
+            cancelarNotificacionDescanso();
+        } else if (ACTION_DESCANSO_FINALIZADO.equals(action)) {
+            notificarDescansoFinalizado();
+        }
+
         return START_NOT_STICKY;
     }
 
@@ -125,6 +167,50 @@ public class SesionTrackingService extends Service {
                 .build();
     }
 
+    private void mostrarNotificacionDescanso(long finEnMillis) {
+        Notification notificacion = new NotificationCompat.Builder(this, CANAL_PROGRESO)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("Descanso en curso")
+                .setContentText("Toca para volver a tu sesión")
+                .setOngoing(true)
+                .setOnlyAlertOnce(true)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setUsesChronometer(true)
+                .setChronometerCountDown(true)
+                .setWhen(finEnMillis)
+                .setContentIntent(pendingIntentAbrirSesion())
+                .build();
+
+        NotificationManager manager = getSystemService(NotificationManager.class);
+        if (manager != null) {
+            manager.notify(NOTIF_ID_DESCANSO, notificacion);
+        }
+    }
+
+    private void cancelarNotificacionDescanso() {
+        NotificationManager manager = getSystemService(NotificationManager.class);
+        if (manager != null) {
+            manager.cancel(NOTIF_ID_DESCANSO);
+        }
+    }
+
+    private void notificarDescansoFinalizado() {
+        Notification notificacion = new NotificationCompat.Builder(this, CANAL_DESCANSO_FIN)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("¡Descanso terminado! 💪")
+                .setContentText("Toca para volver a tu sesión")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_ALARM)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntentAbrirSesion())
+                .build();
+
+        NotificationManager manager = getSystemService(NotificationManager.class);
+        if (manager != null) {
+            manager.notify(NOTIF_ID_DESCANSO, notificacion);
+        }
+    }
+
     private void enviarRecordatorioUnaHora() {
         Notification notificacion = new NotificationCompat.Builder(this, CANAL_RECORDATORIO)
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -158,15 +244,30 @@ public class SesionTrackingService extends Service {
             return;
         }
 
+        AudioAttributes atributosAlerta = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_ALARM)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+
         NotificationChannel progreso = new NotificationChannel(
                 CANAL_PROGRESO, "Progreso de entrenamiento", NotificationManager.IMPORTANCE_LOW);
-        progreso.setDescription("Muestra cuánto tiempo llevas entrenando");
+        progreso.setDescription("Muestra cuánto tiempo llevas entrenando y el descanso en curso");
         progreso.setShowBadge(false);
         manager.createNotificationChannel(progreso);
 
         NotificationChannel recordatorio = new NotificationChannel(
                 CANAL_RECORDATORIO, "Recordatorio de sesión", NotificationManager.IMPORTANCE_HIGH);
         recordatorio.setDescription("Avisa cuando llevas mucho tiempo sin cerrar tu sesión");
+        recordatorio.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), atributosAlerta);
+        recordatorio.enableVibration(true);
         manager.createNotificationChannel(recordatorio);
+
+        NotificationChannel descansoFin = new NotificationChannel(
+                CANAL_DESCANSO_FIN, "Descanso terminado", NotificationManager.IMPORTANCE_HIGH);
+        descansoFin.setDescription("Suena cuando termina el temporizador de descanso");
+        descansoFin.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM), atributosAlerta);
+        descansoFin.enableVibration(true);
+        descansoFin.setVibrationPattern(new long[]{0, 200, 100, 200, 100, 300});
+        manager.createNotificationChannel(descansoFin);
     }
 }

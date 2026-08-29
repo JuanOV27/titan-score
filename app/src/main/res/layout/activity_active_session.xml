@@ -37,6 +37,16 @@
 
     </LinearLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="4dp"
+        android:text="Las series se registran como hechas automáticamente. Toca el ✓ de una serie si NO la hiciste."
+        android:textSize="11sp"
+        android:alpha="0.7" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
