@@ -14,7 +14,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".ui.RoutineListActivity"
+            android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,7 +30,6 @@
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
         <activity android:name=".ui.SessionSummaryActivity" android:exported="false" />
         <activity android:name=".ui.HistoryActivity" android:exported="false" />
-        <activity android:name=".ui.StatsActivity" android:exported="false" />
         <activity
             android:name=".ui.PhysicalProfileActivity"
             android:exported="false"

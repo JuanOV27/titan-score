@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/tab_inicio"
+        android:icon="@drawable/ic_tab_inicio"
+        android:title="Inicio" />
+    <item
+        android:id="@+id/tab_entrenar"
+        android:icon="@drawable/ic_tab_entrenar"
+        android:title="Entrenar" />
+    <item
+        android:id="@+id/tab_estadisticas"
+        android:icon="@drawable/ic_tab_estadisticas"
+        android:title="Estadísticas" />
+    <item
+        android:id="@+id/tab_metas"
+        android:icon="@drawable/ic_tab_metas"
+        android:title="Metas" />
+</menu>

@@ -1,12 +1,15 @@
 package com.ironquest.mvp.ui;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
-import com.google.android.material.appbar.MaterialToolbar;
 import com.ironquest.mvp.R;
 import com.ironquest.mvp.data.DataManager;
 import com.ironquest.mvp.model.Sesion;
@@ -21,49 +24,56 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-public class StatsActivity extends AppCompatActivity {
+/** Pestaña "Estadísticas": resumen acumulado y gráficas de volumen, cumplimiento y frecuencia. */
+public class StatsFragment extends Fragment {
 
     private static final DateTimeFormatter FORMATO_ETIQUETA = DateTimeFormatter.ofPattern("dd/MM");
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stats);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_stats, container, false);
+    }
 
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        setTitle("Estadísticas");
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-        toolbar.setNavigationOnClickListener(v -> finish());
+    @Override
+    public void onResume() {
+        super.onResume();
+        renderizar(requireView());
+    }
 
-        DataManager dataManager = DataManager.getInstance(this);
+    private void renderizar(View raiz) {
+        DataManager dataManager = DataManager.getInstance(requireContext());
         List<Sesion> sesiones = new ArrayList<>(dataManager.getDataStore().sesiones);
         sesiones.sort(Comparator.comparing(s -> s.fechaHoraInicio));
 
-        View containerResumen = findViewById(R.id.container_resumen);
-        View labelVolumen = findViewById(R.id.label_volumen);
-        BarChartView chartVolumen = findViewById(R.id.chart_volumen);
-        View labelCumplimiento = findViewById(R.id.label_cumplimiento);
-        BarChartView chartCumplimiento = findViewById(R.id.chart_cumplimiento);
-        View labelFrecuencia = findViewById(R.id.label_frecuencia);
-        BarChartView chartFrecuencia = findViewById(R.id.chart_frecuencia);
-        TextView textSinDatos = findViewById(R.id.text_sin_datos);
+        View containerResumen = raiz.findViewById(R.id.container_resumen);
+        View labelVolumen = raiz.findViewById(R.id.label_volumen);
+        BarChartView chartVolumen = raiz.findViewById(R.id.chart_volumen);
+        View labelCumplimiento = raiz.findViewById(R.id.label_cumplimiento);
+        BarChartView chartCumplimiento = raiz.findViewById(R.id.chart_cumplimiento);
+        View labelFrecuencia = raiz.findViewById(R.id.label_frecuencia);
+        BarChartView chartFrecuencia = raiz.findViewById(R.id.chart_frecuencia);
+        TextView textSinDatos = raiz.findViewById(R.id.text_sin_datos);
 
-        if (sesiones.isEmpty()) {
-            textSinDatos.setVisibility(View.VISIBLE);
-            containerResumen.setVisibility(View.GONE);
-            labelVolumen.setVisibility(View.GONE);
-            chartVolumen.setVisibility(View.GONE);
-            labelCumplimiento.setVisibility(View.GONE);
-            chartCumplimiento.setVisibility(View.GONE);
-            labelFrecuencia.setVisibility(View.GONE);
-            chartFrecuencia.setVisibility(View.GONE);
+        // Fijar visibilidad en AMBAS ramas: como fragment reutilizable, quedarse solo con la
+        // rama GONE dejaría la pantalla en blanco para siempre tras registrar la primera sesión.
+        boolean vacio = sesiones.isEmpty();
+        int visibilidadDatos = vacio ? View.GONE : View.VISIBLE;
+        textSinDatos.setVisibility(vacio ? View.VISIBLE : View.GONE);
+        containerResumen.setVisibility(visibilidadDatos);
+        labelVolumen.setVisibility(visibilidadDatos);
+        chartVolumen.setVisibility(visibilidadDatos);
+        labelCumplimiento.setVisibility(visibilidadDatos);
+        chartCumplimiento.setVisibility(visibilidadDatos);
+        labelFrecuencia.setVisibility(visibilidadDatos);
+        chartFrecuencia.setVisibility(visibilidadDatos);
+
+        if (vacio) {
             return;
         }
 
-        mostrarResumen(sesiones);
+        mostrarResumen(raiz, sesiones);
 
         List<Sesion> ultimas = sesiones.subList(Math.max(0, sesiones.size() - 10), sesiones.size());
 
@@ -83,10 +93,10 @@ public class StatsActivity extends AppCompatActivity {
         chartFrecuencia.setDatos(calcularFrecuenciaSemanal(sesiones));
     }
 
-    private void mostrarResumen(List<Sesion> sesiones) {
-        TextView textTotalSesiones = findViewById(R.id.text_total_sesiones);
-        TextView textVolumenTotal = findViewById(R.id.text_volumen_total);
-        TextView textCumplimientoPromedio = findViewById(R.id.text_cumplimiento_promedio);
+    private void mostrarResumen(View raiz, List<Sesion> sesiones) {
+        TextView textTotalSesiones = raiz.findViewById(R.id.text_total_sesiones);
+        TextView textVolumenTotal = raiz.findViewById(R.id.text_volumen_total);
+        TextView textCumplimientoPromedio = raiz.findViewById(R.id.text_cumplimiento_promedio);
 
         double volumenTotal = 0;
         long sumaCumplimiento = 0;
@@ -101,7 +111,8 @@ public class StatsActivity extends AppCompatActivity {
 
         textTotalSesiones.setText(String.valueOf(sesiones.size()));
         textVolumenTotal.setText(String.format(Locale.getDefault(), "%.0f", volumenTotal));
-        int promedio = sesionesFinalizadas > 0 ? Math.round((float) sumaCumplimiento / sesionesFinalizadas) : 0;
+        int promedio = sesionesFinalizadas > 0
+                ? Math.round((float) sumaCumplimiento / sesionesFinalizadas) : 0;
         textCumplimientoPromedio.setText(promedio + "%");
     }
 

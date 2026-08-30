@@ -4,10 +4,6 @@
         android:title="Historial"
         android:showAsAction="always" />
     <item
-        android:id="@+id/action_estadisticas"
-        android:title="Estadísticas"
-        android:showAsAction="never" />
-    <item
         android:id="@+id/action_mi_fisico"
         android:title="Mi físico"
         android:showAsAction="never" />

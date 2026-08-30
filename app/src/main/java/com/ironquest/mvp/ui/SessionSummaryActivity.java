@@ -60,7 +60,7 @@ public class SessionSummaryActivity extends AppCompatActivity {
     }
 
     private void volverInicio() {
-        Intent intent = new Intent(this, RoutineListActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();

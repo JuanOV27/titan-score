@@ -18,7 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.ironquest.mvp.R;
-import com.ironquest.mvp.ui.RoutineListActivity;
+import com.ironquest.mvp.ui.MainActivity;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -229,10 +229,14 @@ public class SesionTrackingService extends Service {
     }
 
     private PendingIntent pendingIntentAbrirSesion() {
-        Intent intent = new Intent(this, RoutineListActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(MainActivity.EXTRA_TAB_INICIAL, R.id.tab_entrenar);
         int flags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
-        return PendingIntent.getActivity(this, 0, intent, flags);
+        // El request code sube de 0 a 1 a propósito: FLAG_UPDATE_CURRENT actualiza los extras
+        // pero NO el componente destino, así que un PendingIntent ya creado seguiría abriendo
+        // RoutineListActivity, que a partir de aquí no existe.
+        return PendingIntent.getActivity(this, 1, intent, flags);
     }
 
     private void crearCanales() {
