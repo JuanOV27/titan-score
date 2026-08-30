@@ -37,7 +37,6 @@ import java.util.List;
 
 public class RoutineListActivity extends AppCompatActivity implements RutinaAdapter.Listener {
 
-    public static final String EXTRA_RUTINA_ID = "extra_rutina_id";
     public static final String EXTRA_SUGERIR_FISICO = "extra_sugerir_fisico";
     private static final String FEEDBACK_URL =
             "https://docs.google.com/forms/d/e/1FAIpQLSfO6Hd6-_l30bv5td8t-mhByoRCZwt4cvNqig72Vf1QI5yZEg/viewform?usp=header";
@@ -137,7 +136,7 @@ public class RoutineListActivity extends AppCompatActivity implements RutinaAdap
             return;
         }
         Intent intent = new Intent(this, ActiveSessionActivity.class);
-        intent.putExtra(EXTRA_RUTINA_ID, enProgreso.rutinaId);
+        intent.putExtra(ActiveSessionActivity.EXTRA_RUTINA_ID, enProgreso.rutinaId);
         intent.putExtra(ActiveSessionActivity.EXTRA_RESUMIR, true);
         startActivity(intent);
     }
@@ -261,14 +260,14 @@ public class RoutineListActivity extends AppCompatActivity implements RutinaAdap
 
     private void iniciarSesionNueva(Rutina rutina) {
         Intent intent = new Intent(this, ActiveSessionActivity.class);
-        intent.putExtra(EXTRA_RUTINA_ID, rutina.id);
+        intent.putExtra(ActiveSessionActivity.EXTRA_RUTINA_ID, rutina.id);
         startActivity(intent);
     }
 
     @Override
     public void onEditarClick(Rutina rutina) {
         Intent intent = new Intent(this, EditRoutineActivity.class);
-        intent.putExtra(EXTRA_RUTINA_ID, rutina.id);
+        intent.putExtra(EditRoutineActivity.EXTRA_RUTINA_ID, rutina.id);
         startActivity(intent);
     }
 }

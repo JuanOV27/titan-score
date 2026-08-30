@@ -22,6 +22,8 @@ import java.util.Map;
 
 public class EditRoutineActivity extends AppCompatActivity {
 
+    public static final String EXTRA_RUTINA_ID = "extra_rutina_id";
+
     private DataManager dataManager;
     private DataStore dataStore;
     private Rutina rutina;
@@ -47,7 +49,7 @@ public class EditRoutineActivity extends AppCompatActivity {
             catalogoPorId.put(ejercicio.id, ejercicio);
         }
 
-        String rutinaId = getIntent().getStringExtra(RoutineListActivity.EXTRA_RUTINA_ID);
+        String rutinaId = getIntent().getStringExtra(EXTRA_RUTINA_ID);
         if (rutinaId != null) {
             rutina = buscarRutina(rutinaId);
             esNueva = false;

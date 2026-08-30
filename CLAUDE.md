@@ -151,10 +151,18 @@ adb shell run-as com.ironquest.mvp cat files/datos.json
 
 ## Compilar, verificar, publicar
 
+**No hay JDK en el `PATH`.** Hay que apuntar `JAVA_HOME` al JBR que trae Android Studio, o
+Gradle falla con `JAVA_HOME is not set and no 'java' command could be found`:
+
 ```bash
+export JAVA_HOME=/home/jdov/Documentos/android-studio-quail3-patch1-linux/android-studio/jbr
 ./gradlew assembleDebug          # APK en app/build/outputs/apk/debug/app-debug.apk
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
+
+Cuidado al encadenar con `&&`: `./gradlew ... | tail` devuelve el código de salida de `tail`,
+no el de Gradle, y un build fallido puede parecer exitoso. Comprobar `${PIPESTATUS[0]}` o no
+usar pipe.
 
 Verificación en dispositivo físico vía ADB:
 

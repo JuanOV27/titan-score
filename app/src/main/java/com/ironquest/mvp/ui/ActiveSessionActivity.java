@@ -52,6 +52,7 @@ import java.util.Map;
 
 public class ActiveSessionActivity extends AppCompatActivity {
 
+    public static final String EXTRA_RUTINA_ID = "extra_rutina_id";
     public static final String EXTRA_RESUMIR = "extra_resumir";
 
     private static final double PASO_PESO = 2.5;
@@ -104,7 +105,7 @@ public class ActiveSessionActivity extends AppCompatActivity {
                 agregarBloqueEjercicio(ejercicioSesion);
             }
         } else {
-            String rutinaId = getIntent().getStringExtra(RoutineListActivity.EXTRA_RUTINA_ID);
+            String rutinaId = getIntent().getStringExtra(EXTRA_RUTINA_ID);
             Rutina rutina = buscarRutina(rutinaId);
             if (rutina == null) {
                 Toast.makeText(this, "No se encontró la rutina", Toast.LENGTH_SHORT).show();
