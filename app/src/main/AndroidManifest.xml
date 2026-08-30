@@ -22,6 +22,7 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.AuthActivity" android:exported="false" />
         <activity android:name=".ui.EditRoutineActivity" android:exported="false" />
         <activity
             android:name=".ui.ActiveSessionActivity"
@@ -30,6 +31,11 @@
         <activity android:name=".ui.SessionSummaryActivity" android:exported="false" />
         <activity android:name=".ui.HistoryActivity" android:exported="false" />
         <activity android:name=".ui.StatsActivity" android:exported="false" />
+        <activity
+            android:name=".ui.PhysicalProfileActivity"
+            android:exported="false"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <activity android:name=".ui.PhysicalHistoryActivity" android:exported="false" />
 
         <service
             android:name=".service.SesionTrackingService"

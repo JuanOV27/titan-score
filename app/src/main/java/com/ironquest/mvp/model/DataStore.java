@@ -8,4 +8,6 @@ public class DataStore {
     public List<Rutina> rutinas = new ArrayList<>();
     public List<Sesion> sesiones = new ArrayList<>();
     public Sesion sesionEnProgreso;
+    public Usuario usuario;
+    public List<RegistroFisico> historialFisico = new ArrayList<>();
 }

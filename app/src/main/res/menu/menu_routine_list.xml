@@ -8,6 +8,10 @@
         android:title="Estadísticas"
         android:showAsAction="never" />
     <item
+        android:id="@+id/action_mi_fisico"
+        android:title="Mi físico"
+        android:showAsAction="never" />
+    <item
         android:id="@+id/action_exportar"
         android:title="Exportar datos"
         android:showAsAction="never" />

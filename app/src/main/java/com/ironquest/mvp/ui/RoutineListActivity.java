@@ -22,18 +22,23 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ironquest.mvp.R;
 import com.ironquest.mvp.data.DataManager;
 import com.ironquest.mvp.model.DataStore;
+import com.ironquest.mvp.model.RegistroFisico;
 import com.ironquest.mvp.model.Rutina;
 import com.ironquest.mvp.model.Sesion;
+import com.ironquest.mvp.model.Usuario;
 import com.ironquest.mvp.service.SesionTrackingService;
+import com.ironquest.mvp.util.PerfilFisicoUtil;
 
 import java.io.File;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class RoutineListActivity extends AppCompatActivity implements RutinaAdapter.Listener {
 
     public static final String EXTRA_RUTINA_ID = "extra_rutina_id";
+    public static final String EXTRA_SUGERIR_FISICO = "extra_sugerir_fisico";
     private static final String FEEDBACK_URL =
             "https://docs.google.com/forms/d/e/1FAIpQLSfO6Hd6-_l30bv5td8t-mhByoRCZwt4cvNqig72Vf1QI5yZEg/viewform?usp=header";
 
@@ -46,12 +51,23 @@ public class RoutineListActivity extends AppCompatActivity implements RutinaAdap
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        dataManager = DataManager.getInstance(this);
+        Usuario usuario = dataManager.getDataStore().usuario;
+        if (usuario == null || !usuario.sesionActiva) {
+            startActivity(new Intent(this, AuthActivity.class));
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_routine_list);
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        dataManager = DataManager.getInstance(this);
+        if (getIntent().getBooleanExtra(EXTRA_SUGERIR_FISICO, false)) {
+            mostrarSugerenciaRegistroFisico();
+        }
 
         recyclerView = findViewById(R.id.recycler_rutinas);
         textEmpty = findViewById(R.id.text_empty);
@@ -73,6 +89,32 @@ public class RoutineListActivity extends AppCompatActivity implements RutinaAdap
         textEmpty.setVisibility(vacio ? View.VISIBLE : View.GONE);
         recyclerView.setVisibility(vacio ? View.GONE : View.VISIBLE);
         actualizarTarjetaSesionEnCurso();
+        actualizarTarjetaRecordatorioFisico();
+    }
+
+    private void mostrarSugerenciaRegistroFisico() {
+        new AlertDialog.Builder(this)
+                .setTitle("Registra tu físico")
+                .setMessage("Registra tu peso, altura y medidas corporales para calcular tu IMC y llevar seguimiento de tu progreso. Podrás actualizarlas cada mes.")
+                .setPositiveButton("Registrar ahora", (dialog, which) ->
+                        startActivity(new Intent(this, PhysicalProfileActivity.class)))
+                .setNegativeButton("Más tarde", null)
+                .show();
+    }
+
+    private void actualizarTarjetaRecordatorioFisico() {
+        View card = findViewById(R.id.card_recordatorio_fisico);
+        List<RegistroFisico> historial = dataManager.getDataStore().historialFisico;
+        boolean necesitaActualizar = PerfilFisicoUtil.necesitaActualizacion(historial);
+        card.setVisibility(necesitaActualizar ? View.VISIBLE : View.GONE);
+        if (necesitaActualizar) {
+            TextView textDetalle = findViewById(R.id.text_recordatorio_fisico_detalle);
+            textDetalle.setText(historial.isEmpty()
+                    ? "Aún no has registrado tus medidas corporales."
+                    : "Ya pasó un mes desde tu último registro físico.");
+            findViewById(R.id.button_registrar_fisico).setOnClickListener(v ->
+                    startActivity(new Intent(this, PhysicalProfileActivity.class)));
+        }
     }
 
     private void actualizarTarjetaSesionEnCurso() {
@@ -122,6 +164,10 @@ public class RoutineListActivity extends AppCompatActivity implements RutinaAdap
         }
         if (id == R.id.action_estadisticas) {
             startActivity(new Intent(this, StatsActivity.class));
+            return true;
+        }
+        if (id == R.id.action_mi_fisico) {
+            startActivity(new Intent(this, PhysicalHistoryActivity.class));
             return true;
         }
         if (id == R.id.action_exportar) {
