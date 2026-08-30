@@ -38,10 +38,17 @@ public class MainActivity extends AppCompatActivity {
     private static final String FEEDBACK_URL =
             "https://docs.google.com/forms/d/e/1FAIpQLSfO6Hd6-_l30bv5td8t-mhByoRCZwt4cvNqig72Vf1QI5yZEg/viewform?usp=header";
 
+    /**
+     * Pestaña de arranque. Apunta a Entrenar mientras Inicio siga siendo un marcador de
+     * posición: abrir la app en un "próximamente" sería peor que abrirla en algo funcional.
+     * Volver a {@code R.id.tab_inicio} cuando HomeFragment tenga contenido real.
+     */
+    private static final int TAB_POR_DEFECTO = R.id.tab_entrenar;
+
     private DataManager dataManager;
     private BottomNavigationView bottomNav;
     private ActivityResultLauncher<String[]> importLauncher;
-    private int tabActual = R.id.tab_inicio;
+    private int tabActual = TAB_POR_DEFECTO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +77,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         if (savedInstanceState != null) {
-            tabActual = savedInstanceState.getInt(ESTADO_TAB, R.id.tab_inicio);
+            tabActual = savedInstanceState.getInt(ESTADO_TAB, TAB_POR_DEFECTO);
         } else {
-            tabActual = getIntent().getIntExtra(EXTRA_TAB_INICIAL, R.id.tab_inicio);
+            tabActual = getIntent().getIntExtra(EXTRA_TAB_INICIAL, TAB_POR_DEFECTO);
         }
 
         // setSelectedItemId no dispara el listener si el id no cambió, así que la primera
