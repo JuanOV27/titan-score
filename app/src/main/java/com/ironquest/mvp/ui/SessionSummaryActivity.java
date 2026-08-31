@@ -40,7 +40,7 @@ public class SessionSummaryActivity extends AppCompatActivity {
         textDuracion.setText(horas > 0 ? (horas + "h " + minutos + "min") : (minutos + " min"));
 
         TextView textRacha = findViewById(R.id.text_racha);
-        textRacha.setText(racha == 1 ? "1 día" : racha + " días seguidos");
+        textRacha.setText(racha == 1 ? "1 día" : racha + " días");
 
         TextView textCumplimiento = findViewById(R.id.text_cumplimiento);
         textCumplimiento.setText(porcentaje + "%");
