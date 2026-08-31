@@ -19,10 +19,10 @@ public final class EstadisticasUtil {
     }
 
     /**
-     * Días transcurridos desde el inicio de la racha activa hasta hoy. No exige entrenar
-     * todos los días: se mantiene mientras el hueco entre sesiones consecutivas (y entre la
-     * última sesión y hoy) no supere {@value #TOLERANCIA_DIAS} días. Un hueco mayor corta la
-     * racha.
+     * Cantidad de días con sesión registrada dentro de la racha activa (no días de calendario
+     * transcurridos: un hueco sin entrenar no suma). No exige entrenar todos los días: la racha
+     * se mantiene mientras el hueco entre sesiones consecutivas (y entre la última sesión y
+     * hoy) no supere {@value #TOLERANCIA_DIAS} días. Un hueco mayor la corta.
      */
     public static int calcularRachaDias(List<Sesion> sesiones) {
         List<LocalDate> dias = diasConSesion(sesiones);
@@ -36,16 +36,18 @@ public final class EstadisticasUtil {
             return 0;
         }
 
-        LocalDate inicio = ultima;
+        int racha = 1;
+        LocalDate cursor = ultima;
         for (int i = dias.size() - 2; i >= 0; i--) {
             LocalDate anterior = dias.get(i);
-            if (ChronoUnit.DAYS.between(anterior, inicio) > TOLERANCIA_DIAS) {
+            if (ChronoUnit.DAYS.between(anterior, cursor) > TOLERANCIA_DIAS) {
                 break;
             }
-            inicio = anterior;
+            racha++;
+            cursor = anterior;
         }
 
-        return (int) ChronoUnit.DAYS.between(inicio, hoy) + 1;
+        return racha;
     }
 
     private static List<LocalDate> diasConSesion(List<Sesion> sesiones) {
