@@ -3,8 +3,11 @@ package com.ironquest.mvp.ui;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,6 +25,9 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
     public interface Listener {
         void onQuitar(int position);
     }
+
+    private static final String[] OPCIONES_ESQUEMA =
+            {"Manual", "Lineal", "Greyskull (AMRAP)", "Doble progresión"};
 
     private final List<RutinaEjercicio> items;
     private final Map<String, Ejercicio> catalogoPorId;
@@ -62,6 +68,8 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
         final EditText series;
         final EditText repeticiones;
         final EditText peso;
+        final Spinner esquemaProgresion;
+        final EditText repeticionesMax;
         final ImageButton botonQuitar;
         private RutinaEjercicio current;
 
@@ -71,7 +79,12 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
             series = itemView.findViewById(R.id.edit_series);
             repeticiones = itemView.findViewById(R.id.edit_repeticiones);
             peso = itemView.findViewById(R.id.edit_peso);
+            esquemaProgresion = itemView.findViewById(R.id.spinner_esquema_progresion);
+            repeticionesMax = itemView.findViewById(R.id.edit_repeticiones_max);
             botonQuitar = itemView.findViewById(R.id.button_quitar_ejercicio);
+
+            esquemaProgresion.setAdapter(new ArrayAdapter<>(itemView.getContext(),
+                    android.R.layout.simple_spinner_dropdown_item, OPCIONES_ESQUEMA));
 
             series.addTextChangedListener(new SimpleTextWatcher() {
                 @Override
@@ -97,6 +110,26 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
                     }
                 }
             });
+            repeticionesMax.addTextChangedListener(new SimpleTextWatcher() {
+                @Override
+                public void onChanged(String text) {
+                    if (current != null) {
+                        current.repeticionesMax = parseIntOrZero(text);
+                    }
+                }
+            });
+            esquemaProgresion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (current != null) {
+                        current.esquemaProgresion = position;
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
         }
 
         void bind(RutinaEjercicio item) {
@@ -106,6 +139,8 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
             series.setText(String.valueOf(item.series));
             repeticiones.setText(String.valueOf(item.repeticiones));
             peso.setText(String.valueOf(item.peso));
+            repeticionesMax.setText(String.valueOf(item.repeticionesMax));
+            esquemaProgresion.setSelection(item.esquemaProgresion);
             current = item;
         }
     }

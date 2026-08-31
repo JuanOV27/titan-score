@@ -42,6 +42,7 @@ import com.ironquest.mvp.model.Sesion;
 import com.ironquest.mvp.model.SerieSesion;
 import com.ironquest.mvp.service.SesionTrackingService;
 import com.ironquest.mvp.util.EstadisticasUtil;
+import com.ironquest.mvp.util.ProgresionUtil;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -121,13 +122,14 @@ public class ActiveSessionActivity extends AppCompatActivity {
 
             double volumenPlaneado = 0;
             for (RutinaEjercicio re : rutina.ejercicios) {
+                ProgresionUtil.Sugerencia sugerencia = ProgresionUtil.sugerir(re, dataStore.sesiones);
                 EjercicioSesion ejercicioSesion = new EjercicioSesion(re.ejercicioId);
                 for (int i = 1; i <= re.series; i++) {
-                    ejercicioSesion.series.add(new SerieSesion(i, re.peso, re.repeticiones, true));
+                    ejercicioSesion.series.add(new SerieSesion(i, sugerencia.peso, sugerencia.repeticiones, true));
                 }
                 sesionActual.ejercicios.add(ejercicioSesion);
-                agregarBloqueEjercicio(ejercicioSesion);
-                volumenPlaneado += unidadEsfuerzo(re.peso, re.repeticiones) * re.series;
+                agregarBloqueEjercicio(ejercicioSesion, sugerencia);
+                volumenPlaneado += unidadEsfuerzo(sugerencia.peso, sugerencia.repeticiones) * re.series;
             }
             sesionActual.volumenPlaneado = volumenPlaneado;
         }
@@ -269,13 +271,24 @@ public class ActiveSessionActivity extends AppCompatActivity {
     }
 
     private void agregarBloqueEjercicio(EjercicioSesion ejercicioSesion) {
+        agregarBloqueEjercicio(ejercicioSesion, null);
+    }
+
+    private void agregarBloqueEjercicio(EjercicioSesion ejercicioSesion, ProgresionUtil.Sugerencia sugerencia) {
         View block = inflater.inflate(R.layout.view_ejercicio_sesion_block, containerEjercicios, false);
         TextView nombre = block.findViewById(R.id.text_nombre_ejercicio_sesion);
+        TextView explicacion = block.findViewById(R.id.text_explicacion_progresion);
         ImageButton botonCambiar = block.findViewById(R.id.button_cambiar_ejercicio);
         ImageButton botonEliminar = block.findViewById(R.id.button_eliminar_ejercicio_sesion);
         LinearLayout containerSeries = block.findViewById(R.id.container_series);
 
         actualizarNombreBloque(nombre, ejercicioSesion.ejercicioId);
+        if (sugerencia != null && sugerencia.explicacion != null) {
+            explicacion.setText(sugerencia.explicacion);
+            explicacion.setTextColor(ContextCompat.getColor(this,
+                    sugerencia.estancado ? R.color.cumplimiento_bajo : R.color.cumplimiento_medio));
+            explicacion.setVisibility(View.VISIBLE);
+        }
 
         for (SerieSesion serie : ejercicioSesion.series) {
             containerSeries.addView(crearFilaSerie(inflater, containerSeries, serie));

@@ -44,6 +44,15 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/text_explicacion_progresion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            android:visibility="gone" />
+
         <LinearLayout
             android:id="@+id/container_series"
             android:layout_width="match_parent"
