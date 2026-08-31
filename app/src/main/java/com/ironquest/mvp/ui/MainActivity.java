@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             fragment = MetasFragment.crear("Metas — próximamente");
             titulo = "Metas";
         } else {
-            fragment = MetasFragment.crear("Inicio — próximamente");
+            fragment = new HomeFragment();
             titulo = "Titan Score";
         }
 
