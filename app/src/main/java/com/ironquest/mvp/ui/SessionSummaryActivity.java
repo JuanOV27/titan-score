@@ -3,14 +3,12 @@ package com.ironquest.mvp.ui;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.material.appbar.MaterialToolbar;
 import com.ironquest.mvp.R;
 import android.widget.TextView;
 
-public class SessionSummaryActivity extends AppCompatActivity {
+public class SessionSummaryActivity extends BaseActivity {
 
     public static final String EXTRA_RUTINA_NOMBRE = "extra_rutina_nombre";
     public static final String EXTRA_DURACION_MINUTOS = "extra_duracion_minutos";
@@ -22,9 +20,7 @@ public class SessionSummaryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_session_summary);
 
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        setTitle("Resumen del entrenamiento");
+        configurarToolbar(R.id.toolbar, "Resumen del entrenamiento", false);
 
         String rutinaNombre = getIntent().getStringExtra(EXTRA_RUTINA_NOMBRE);
         long duracionMinutos = getIntent().getLongExtra(EXTRA_DURACION_MINUTOS, 0);

@@ -21,12 +21,16 @@ La regla que ordena todo el alcance está en su §5.1: *toda funcionalidad debe 
 ### Capas
 
 ```
-model/    POJOs con campos públicos, sin getters/setters, sin constructores (salvo Ejercicio)
+model/    Entidades encapsuladas: campos privados, getters/setters, constructores
 data/     DataManager — singleton, ÚNICO punto que toca Gson y el sistema de archivos
 util/     Lógica pura y estática: cálculos, clasificaciones, hashing
 ui/       Activities, Fragments, adapters, Views personalizadas, diálogos
 service/  SesionTrackingService — servicio en primer plano de la sesión activa
 ```
+
+Mapa completo de los cuatro pilares de POO (qué clase, qué línea) en
+`docs/diseno_orientado_a_objetos.md`. Diseño del refactor en
+`docs/specs/2026-09-02-refactor-poo-design.md`.
 
 **Invariante crítica:** nada fuera de `data/` importa `Gson`, `File`, `FileReader`,
 `FileWriter` ni llama a `getFilesDir()`. Esto es lo que hará viable la migración a Firebase
@@ -42,7 +46,13 @@ Debe devolver vacío.
 
 - **Dominio en español** (`Rutina`, `Sesion`, `calcularRacha`, `volumenReal`), **API de Android
   en inglés** (`onCreate`, `findViewById`, `LayoutInflater`).
-- Modelos con **campos públicos**, sin encapsulación. Es una decisión consciente del proyecto.
+- Modelos con **campos privados** + getters/setters + constructores. Requisito académico
+  (Móviles 2): el código debe presentar estructura de POO explícita. Las cinco entidades con
+  identidad propia (`Ejercicio`, `Rutina`, `Sesion`, `RegistroFisico`, `Usuario`) heredan de
+  `EntidadIdentificable` (campo `id` común). El motor de progresión usa polimorfismo real:
+  `util/progresion/EstrategiaProgresion` (abstracta) + 4 subclases, en vez de un `switch` sobre
+  constantes. Las Activities con toolbar heredan de `ui/BaseActivity`. Detalle completo con
+  ejemplos de código en `docs/diseno_orientado_a_objetos.md`.
 - IDs generados con `DataManager.newId(prefijo)` → `"pref_a1b2c3d4"`.
 - Fechas como `String` ISO (`LocalDate.now().toString()` / `LocalDateTime`), nunca `Date`.
 - Texto de UI **hardcodeado** en layouts y Java. `strings.xml` solo tiene `app_name`. No
@@ -57,12 +67,16 @@ Debe devolver vacío.
 ### 1. `setSupportActionBar()` pisa el título del XML
 
 Sobrescribe el `android:title` del `MaterialToolbar` con el `android:label` del manifiesto.
-Hay que llamar a `setTitle("...")` **después**:
+Hay que llamar a `setTitle("...")` **después**. Ya no hay que recordarlo a mano: las Activities
+con toolbar heredan de `BaseActivity` y llaman a `configurarToolbar(...)`, que hace los dos
+pasos en el orden correcto:
 
 ```java
-setSupportActionBar(toolbar);
-setTitle("Mi físico");   // sin esto muestra "IronQuest"
+configurarToolbar(R.id.toolbar, "Mi físico", true);   // true = flecha atrás que cierra la Activity
 ```
+
+Si el título depende de datos que aún no cargaron, pasar `null` y llamar a `setTitle(...)` más
+tarde en el mismo `onCreate` — sigue siendo seguro porque `setSupportActionBar()` ya corrió.
 
 ### 2. Rotación destruye el estado en memoria
 
@@ -78,36 +92,27 @@ Ya aplicado en `ActiveSessionActivity` y `PhysicalProfileActivity`.
 
 ### 3. Gson y los campos nuevos en `datos.json` viejo
 
-**El comportamiento depende de si la clase declara un constructor explícito**, y en este
-proyecto está repartido:
+Desde el refactor a POO, **las 9 clases de `model/` declaran constructor sin argumentos**
+(privado en las que antes no lo tenían, para que solo Gson lo use). Gson lo detecta y **los
+inicializadores de campo SÍ corren** al deserializar, en las 9 — ya no hay dos grupos con
+comportamiento distinto como antes.
 
-| Comportamiento de Gson | Clases |
-|---|---|
-| Usa el constructor implícito sin argumentos → **los inicializadores de campo SÍ corren** | `DataStore`, `Usuario`, `RegistroFisico` |
-| No hay constructor sin argumentos → usa `UnsafeAllocator` → **los inicializadores se SALTAN** | `Sesion`, `Rutina`, `Ejercicio`, `EjercicioSesion`, `RutinaEjercicio`, `SerieSesion` |
+Sigue aplicando la regla de fondo, ahora sin excepciones:
 
-Al agregar un campo a una clase **de la segunda fila** (la mayoría), un `datos.json` viejo que
-no lo trae lo deja en el valor por defecto de la JVM, **no en el inicializador**:
+- Campos **primitivos** (`int`, `double`, `boolean`) → siempre seguros, con o sin
+  inicializador, porque el valor por defecto de la JVM y el inicializador explícito coinciden
+  si no se escribe uno distinto.
+- Campos de **tipo referencia** (`List`, `Integer`, `String`) → si el `datos.json` viejo no
+  trae la clave, el inicializador de campo corre y deja el valor por defecto declarado (p. ej.
+  `new ArrayList<>()`, no `null`). Si la clave está presente pero con `null` explícito (un
+  respaldo importado manualmente, por ejemplo), el inicializador **no** se usa — Gson asigna
+  `null` igual. `DataStore.normalizarColecciones()` cubre ese caso para las colecciones de
+  nivel raíz; se llama desde `DataManager.load()` y `leerDataStoreDesde()`.
 
-- Campos **primitivos** (`int`, `double`, `boolean`) → 0 / 0.0 / false. Seguros.
-- Campos de **tipo referencia** (`List`, `Integer`, `String`) → **`null`**, aunque estén
-  escritos como `= new ArrayList<>()`. Hay que comprobar `null` explícitamente al leerlos.
-
-`Sesion.ejercicios` es el ejemplo vivo: está declarado `= new ArrayList<>()` y ese
-inicializador **nunca corre al deserializar**. Hoy funciona solo porque toda sesión ya
-guardada trae el arreglo en el JSON.
-
-Regla práctica: **para un campo nuevo, preferir un tipo primitivo.** Si tiene que ser una
-colección, normalizarla a no-`null` en el constructor de `DataManager`, no confiar en el
-inicializador.
-
-Comprobar a qué grupo pertenece una clase:
-
-```bash
-cd app/src/main/java/com/ironquest/mvp/model
-for f in *.java; do n="${f%.java}"; grep -qE "public +$n *\(" "$f" \
-  && echo "$n: inicializadores SALTADOS" || echo "$n: inicializadores OK"; done
-```
+Regla práctica: **para un campo nuevo, seguir prefiriendo un tipo primitivo** cuando el dato
+lo permita — sigue siendo la opción más simple. Para una colección nueva, el inicializador de
+campo ya es confiable contra `datos.json` viejo; solo hay que normalizar explícitamente si el
+campo puede llegar en `null` por una vía distinta a "clave ausente" (importación, por ejemplo).
 
 ### 4. `DataManager.load()` no puede llamar a `save()`
 

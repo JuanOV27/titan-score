@@ -71,12 +71,12 @@ public class PhysicalHistoryAdapter extends RecyclerView.Adapter<PhysicalHistory
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView fecha;
-        final TextView pesoAltura;
-        final TextView imc;
-        final TextView medidas;
+        private final TextView fecha;
+        private final TextView pesoAltura;
+        private final TextView imc;
+        private final TextView medidas;
 
-        ViewHolder(@NonNull View itemView) {
+        private ViewHolder(@NonNull View itemView) {
             super(itemView);
             fecha = itemView.findViewById(R.id.text_fecha_registro_fisico);
             pesoAltura = itemView.findViewById(R.id.text_peso_altura_registro);

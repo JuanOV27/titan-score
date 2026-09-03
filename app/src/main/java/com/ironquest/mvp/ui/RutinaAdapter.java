@@ -55,11 +55,11 @@ public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.ViewHolder
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView nombre;
-        final TextView resumen;
-        final ImageButton botonEditar;
+        private final TextView nombre;
+        private final TextView resumen;
+        private final ImageButton botonEditar;
 
-        ViewHolder(@NonNull View itemView) {
+        private ViewHolder(@NonNull View itemView) {
             super(itemView);
             nombre = itemView.findViewById(R.id.text_nombre_rutina);
             resumen = itemView.findViewById(R.id.text_resumen_rutina);

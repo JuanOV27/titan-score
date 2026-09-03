@@ -25,10 +25,8 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.ironquest.mvp.R;
@@ -52,7 +50,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ActiveSessionActivity extends AppCompatActivity {
+public class ActiveSessionActivity extends BaseActivity {
 
     public static final String EXTRA_RUTINA_ID = "extra_rutina_id";
     public static final String EXTRA_RESUMIR = "extra_resumir";
@@ -82,8 +80,7 @@ public class ActiveSessionActivity extends AppCompatActivity {
 
         permissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> { });
 
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        configurarToolbar(R.id.toolbar, null, false);
 
         dataManager = DataManager.getInstance(this);
         dataStore = dataManager.getDataStore();

@@ -66,12 +66,12 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView rutina;
-        final TextView fecha;
-        final TextView duracion;
-        final TextView cumplimiento;
+        private final TextView rutina;
+        private final TextView fecha;
+        private final TextView duracion;
+        private final TextView cumplimiento;
 
-        ViewHolder(@NonNull View itemView) {
+        private ViewHolder(@NonNull View itemView) {
             super(itemView);
             rutina = itemView.findViewById(R.id.text_rutina_sesion);
             fecha = itemView.findViewById(R.id.text_fecha_sesion);

@@ -64,16 +64,16 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView nombre;
-        final EditText series;
-        final EditText repeticiones;
-        final EditText peso;
-        final Spinner esquemaProgresion;
-        final EditText repeticionesMax;
-        final ImageButton botonQuitar;
+        private final TextView nombre;
+        private final EditText series;
+        private final EditText repeticiones;
+        private final EditText peso;
+        private final Spinner esquemaProgresion;
+        private final EditText repeticionesMax;
+        private final ImageButton botonQuitar;
         private RutinaEjercicio current;
 
-        ViewHolder(@NonNull View itemView) {
+        private ViewHolder(@NonNull View itemView) {
             super(itemView);
             nombre = itemView.findViewById(R.id.text_nombre_ejercicio);
             series = itemView.findViewById(R.id.edit_series);
@@ -132,7 +132,7 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
             });
         }
 
-        void bind(RutinaEjercicio item) {
+        private void bind(RutinaEjercicio item) {
             current = null;
             Ejercicio ejercicio = catalogoPorId.get(item.getEjercicioId());
             nombre.setText(ejercicio != null ? ejercicio.getNombre() : "Ejercicio");

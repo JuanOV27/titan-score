@@ -13,15 +13,29 @@ import java.util.Locale;
 
 public class BarChartView extends View {
 
-    public static class Barra {
-        public final String etiqueta;
-        public final float valor;
-        public final String textoValor;
+    /** Un valor a graficar. Objeto de valor inmutable: se construye desde fuera, se lee solo aquí. */
+    public static final class Barra {
+
+        private final String etiqueta;
+        private final float valor;
+        private final String textoValor;
 
         public Barra(String etiqueta, float valor, String textoValor) {
             this.etiqueta = etiqueta;
             this.valor = valor;
             this.textoValor = textoValor;
+        }
+
+        public String getEtiqueta() {
+            return etiqueta;
+        }
+
+        public float getValor() {
+            return valor;
+        }
+
+        public String getTextoValor() {
+            return textoValor;
         }
     }
 
@@ -91,7 +105,7 @@ public class BarChartView extends View {
 
         float maxValor = lineaReferencia;
         for (Barra barra : barras) {
-            maxValor = Math.max(maxValor, barra.valor);
+            maxValor = Math.max(maxValor, barra.getValor());
         }
         if (maxValor <= 0) {
             maxValor = 1f;
@@ -108,18 +122,18 @@ public class BarChartView extends View {
         for (int i = 0; i < barras.size(); i++) {
             Barra barra = barras.get(i);
             float centerX = slotWidth * i + slotWidth / 2f;
-            float barHeight = maxValor > 0 ? (barra.valor / maxValor) * chartHeight : 0;
+            float barHeight = maxValor > 0 ? (barra.getValor() / maxValor) * chartHeight : 0;
             float top = padTop + chartHeight - barHeight;
             float left = centerX - barWidth / 2f;
             float right = centerX + barWidth / 2f;
 
             canvas.drawRoundRect(left, top, right, padTop + chartHeight, 8f, 8f, paintBarra);
 
-            String valorTexto = barra.textoValor != null
-                    ? barra.textoValor
-                    : String.format(Locale.getDefault(), "%.0f", barra.valor);
+            String valorTexto = barra.getTextoValor() != null
+                    ? barra.getTextoValor()
+                    : String.format(Locale.getDefault(), "%.0f", barra.getValor());
             canvas.drawText(valorTexto, centerX, Math.max(top - 10f, 24f), paintTexto);
-            canvas.drawText(barra.etiqueta, centerX, height - 15f, paintEtiqueta);
+            canvas.drawText(barra.getEtiqueta(), centerX, height - 15f, paintEtiqueta);
         }
     }
 }

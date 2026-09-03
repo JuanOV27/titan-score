@@ -4,11 +4,9 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.ironquest.mvp.R;
 import com.ironquest.mvp.data.DataManager;
@@ -20,7 +18,7 @@ import com.ironquest.mvp.model.RutinaEjercicio;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EditRoutineActivity extends AppCompatActivity {
+public class EditRoutineActivity extends BaseActivity {
 
     public static final String EXTRA_RUTINA_ID = "extra_rutina_id";
 
@@ -38,8 +36,7 @@ public class EditRoutineActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_routine);
 
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        configurarToolbar(R.id.toolbar, null, false);
 
         dataManager = DataManager.getInstance(this);
         dataStore = dataManager.getDataStore();

@@ -9,9 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.ironquest.mvp.R;
 import com.ironquest.mvp.data.DataManager;
@@ -25,7 +22,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.DoubleConsumer;
 
-public class PhysicalProfileActivity extends AppCompatActivity {
+public class PhysicalProfileActivity extends BaseActivity {
 
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.US);
 
@@ -53,13 +50,7 @@ public class PhysicalProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_physical_profile);
 
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        setTitle("Registrar medidas");
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-        toolbar.setNavigationOnClickListener(v -> finish());
+        configurarToolbar(R.id.toolbar, "Registrar medidas", true);
 
         dataManager = DataManager.getInstance(this);
         dataStore = dataManager.getDataStore();

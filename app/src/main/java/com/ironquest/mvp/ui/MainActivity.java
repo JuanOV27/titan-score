@@ -10,11 +10,9 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.ironquest.mvp.R;
 import com.ironquest.mvp.data.DataManager;
@@ -29,7 +27,7 @@ import java.io.InputStream;
  * Es dueño del toolbar, del menú de nivel app y de la verja de autenticación; las pantallas
  * de detalle siguen siendo Activities que los fragments lanzan con un Intent.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     public static final String EXTRA_SUGERIR_FISICO = "extra_sugerir_fisico";
     public static final String EXTRA_TAB_INICIAL = "extra_tab_inicial";
@@ -63,9 +61,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_main);
-
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        configurarToolbar(R.id.toolbar, null, false);
 
         importLauncher = registerForActivityResult(
                 new ActivityResultContracts.OpenDocument(), this::onArchivoSeleccionado);
