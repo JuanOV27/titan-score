@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.google.android.material.snackbar.Snackbar;
 import com.ironquest.mvp.R;
 import com.ironquest.mvp.data.DataManager;
 import com.ironquest.mvp.model.DataStore;
@@ -292,9 +294,7 @@ public class ActiveSessionActivity extends BaseActivity {
             explicacion.setVisibility(View.VISIBLE);
         }
 
-        for (SerieSesion serie : ejercicioSesion.getSeries()) {
-            containerSeries.addView(crearFilaSerie(inflater, containerSeries, serie));
-        }
+        redibujarSeries(ejercicioSesion, containerSeries);
 
         MaterialButton botonAgregarSerie = block.findViewById(R.id.button_agregar_serie);
         botonAgregarSerie.setOnClickListener(v -> {
@@ -303,7 +303,7 @@ public class ActiveSessionActivity extends BaseActivity {
                     : ejercicioSesion.getSeries().get(ejercicioSesion.getSeries().size() - 1);
             SerieSesion nueva = new SerieSesion(ejercicioSesion.getSeries().size() + 1, ultima.getPeso(), ultima.getRepeticiones(), true);
             ejercicioSesion.agregarSerie(nueva);
-            containerSeries.addView(crearFilaSerie(inflater, containerSeries, nueva));
+            containerSeries.addView(crearFilaSerie(inflater, containerSeries, ejercicioSesion, nueva));
             guardarProgreso();
         });
 
@@ -339,12 +339,35 @@ public class ActiveSessionActivity extends BaseActivity {
         dialogDescansoActivo.show();
     }
 
-    private View crearFilaSerie(LayoutInflater inflater, LinearLayout parent, SerieSesion serie) {
-        View row = inflater.inflate(R.layout.view_serie_sesion_row, parent, false);
+    private void redibujarSeries(EjercicioSesion ejercicioSesion, LinearLayout containerSeries) {
+        containerSeries.removeAllViews();
+        for (SerieSesion serie : ejercicioSesion.getSeries()) {
+            containerSeries.addView(crearFilaSerie(inflater, containerSeries, ejercicioSesion, serie));
+        }
+    }
+
+    private void eliminarSerieConDeshacer(EjercicioSesion ejercicioSesion, LinearLayout containerSeries, SerieSesion serie) {
+        int posicion = ejercicioSesion.getSeries().indexOf(serie);
+        ejercicioSesion.quitarSerie(serie);
+        redibujarSeries(ejercicioSesion, containerSeries);
+        guardarProgreso();
+        vibrarConfirmacion();
+
+        Snackbar.make(containerSeries, "Serie eliminada", Snackbar.LENGTH_LONG)
+                .setAction("Deshacer", v -> {
+                    ejercicioSesion.insertarSerie(posicion, serie);
+                    redibujarSeries(ejercicioSesion, containerSeries);
+                    guardarProgreso();
+                })
+                .show();
+    }
+
+    private View crearFilaSerie(LayoutInflater inflater, LinearLayout containerSeries, EjercicioSesion ejercicioSesion, SerieSesion serie) {
+        View row = inflater.inflate(R.layout.view_serie_sesion_row, containerSeries, false);
 
         TextView textNumero = row.findViewById(R.id.text_numero_serie);
-        TextView textPeso = row.findViewById(R.id.text_peso);
-        TextView textReps = row.findViewById(R.id.text_reps);
+        EditText textPeso = row.findViewById(R.id.text_peso);
+        EditText textReps = row.findViewById(R.id.text_reps);
         ImageButton botonPesoMenos = row.findViewById(R.id.button_peso_menos);
         ImageButton botonPesoMas = row.findViewById(R.id.button_peso_mas);
         ImageButton botonRepsMenos = row.findViewById(R.id.button_reps_menos);
@@ -355,6 +378,11 @@ public class ActiveSessionActivity extends BaseActivity {
         textPeso.setText(formatearPeso(serie.getPeso()));
         textReps.setText(String.valueOf(serie.getRepeticiones()));
         actualizarIconoCompletada(botonCompletada, serie.isCompletada());
+
+        textNumero.setOnLongClickListener(v -> {
+            eliminarSerieConDeshacer(ejercicioSesion, containerSeries, serie);
+            return true;
+        });
 
         botonPesoMenos.setOnClickListener(v -> {
             serie.setPeso(Math.max(0, serie.getPeso() - PASO_PESO));
@@ -382,7 +410,38 @@ public class ActiveSessionActivity extends BaseActivity {
             guardarProgreso();
         });
 
+        textPeso.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void onChanged(String text) {
+                serie.setPeso(parseDoubleOrZero(text));
+                guardarProgreso();
+            }
+        });
+        textReps.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void onChanged(String text) {
+                serie.setRepeticiones(parseIntOrZero(text));
+                guardarProgreso();
+            }
+        });
+
         return row;
+    }
+
+    private static double parseDoubleOrZero(String text) {
+        try {
+            return Double.parseDouble(text.trim());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    private static int parseIntOrZero(String text) {
+        try {
+            return Integer.parseInt(text.trim());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     private void actualizarIconoCompletada(ImageButton boton, boolean completada) {

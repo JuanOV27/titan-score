@@ -2,8 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="6dp"
     android:orientation="horizontal"
     android:gravity="center_vertical"
+    android:background="@drawable/bg_fila_serie"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
     android:paddingTop="6dp"
     android:paddingBottom="6dp">
 
@@ -11,6 +15,9 @@
         android:id="@+id/text_numero_serie"
         android:layout_width="56dp"
         android:layout_height="wrap_content"
+        android:minHeight="36dp"
+        android:gravity="center_vertical"
+        android:contentDescription="Mantén presionado para eliminar esta serie"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -27,12 +34,20 @@
             android:contentDescription="Menos peso"
             android:src="@android:drawable/ic_media_previous" />
 
-        <TextView
+        <EditText
             android:id="@+id/text_peso"
             android:layout_width="56dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:inputType="numberDecimal"
+            android:imeOptions="actionDone"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:background="@null"
+            android:minHeight="0dp"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp" />
 
         <ImageButton
             android:id="@+id/button_peso_mas"
@@ -58,12 +73,20 @@
             android:contentDescription="Menos repeticiones"
             android:src="@android:drawable/ic_media_previous" />
 
-        <TextView
+        <EditText
             android:id="@+id/text_reps"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:inputType="number"
+            android:imeOptions="actionDone"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:background="@null"
+            android:minHeight="0dp"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp" />
 
         <ImageButton
             android:id="@+id/button_reps_mas"

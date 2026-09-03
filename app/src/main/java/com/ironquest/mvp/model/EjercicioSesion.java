@@ -21,6 +21,24 @@ public class EjercicioSesion {
         series.add(serie);
     }
 
+    /** Quita una serie y renumera las que quedan para que no haya huecos. */
+    public void quitarSerie(SerieSesion serie) {
+        series.remove(serie);
+        renumerar();
+    }
+
+    /** Reinserta una serie en una posición específica (deshacer una eliminación). */
+    public void insertarSerie(int posicion, SerieSesion serie) {
+        series.add(Math.min(posicion, series.size()), serie);
+        renumerar();
+    }
+
+    private void renumerar() {
+        for (int i = 0; i < series.size(); i++) {
+            series.get(i).setNumero(i + 1);
+        }
+    }
+
     /** Suma el esfuerzo de las series marcadas como completadas; las pendientes no cuentan. */
     public double calcularVolumen() {
         double total = 0;
