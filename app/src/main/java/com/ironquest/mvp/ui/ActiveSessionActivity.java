@@ -42,7 +42,8 @@ import com.ironquest.mvp.model.Sesion;
 import com.ironquest.mvp.model.SerieSesion;
 import com.ironquest.mvp.service.SesionTrackingService;
 import com.ironquest.mvp.util.EstadisticasUtil;
-import com.ironquest.mvp.util.ProgresionUtil;
+import com.ironquest.mvp.util.progresion.EstrategiaProgresion;
+import com.ironquest.mvp.util.progresion.Sugerencia;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -122,7 +123,8 @@ public class ActiveSessionActivity extends AppCompatActivity {
 
             double volumenPlaneado = 0;
             for (RutinaEjercicio re : rutina.getEjercicios()) {
-                ProgresionUtil.Sugerencia sugerencia = ProgresionUtil.sugerir(re, dataStore.getSesiones());
+                Sugerencia sugerencia = EstrategiaProgresion.para(re.getEsquemaProgresion())
+                        .sugerir(re, dataStore.getSesiones());
                 EjercicioSesion ejercicioSesion = new EjercicioSesion(re.getEjercicioId());
                 for (int i = 1; i <= re.getSeries(); i++) {
                     ejercicioSesion.agregarSerie(
@@ -277,7 +279,7 @@ public class ActiveSessionActivity extends AppCompatActivity {
         agregarBloqueEjercicio(ejercicioSesion, null);
     }
 
-    private void agregarBloqueEjercicio(EjercicioSesion ejercicioSesion, ProgresionUtil.Sugerencia sugerencia) {
+    private void agregarBloqueEjercicio(EjercicioSesion ejercicioSesion, Sugerencia sugerencia) {
         View block = inflater.inflate(R.layout.view_ejercicio_sesion_block, containerEjercicios, false);
         TextView nombre = block.findViewById(R.id.text_nombre_ejercicio_sesion);
         TextView explicacion = block.findViewById(R.id.text_explicacion_progresion);
