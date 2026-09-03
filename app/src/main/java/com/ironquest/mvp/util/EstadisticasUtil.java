@@ -53,8 +53,8 @@ public final class EstadisticasUtil {
     private static List<LocalDate> diasConSesion(List<Sesion> sesiones) {
         Set<LocalDate> unicos = new HashSet<>();
         for (Sesion sesion : sesiones) {
-            if (sesion.fechaHoraFin != null) {
-                unicos.add(LocalDateTime.parse(sesion.fechaHoraFin).toLocalDate());
+            if (sesion.estaFinalizada()) {
+                unicos.add(LocalDateTime.parse(sesion.getFechaHoraFin()).toLocalDate());
             }
         }
         List<LocalDate> ordenados = new ArrayList<>(unicos);

@@ -40,8 +40,8 @@ public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Rutina rutina = rutinas.get(position);
-        holder.nombre.setText(rutina.nombre);
-        int cantidadEjercicios = rutina.ejercicios.size();
+        holder.nombre.setText(rutina.getNombre());
+        int cantidadEjercicios = rutina.getCantidadEjercicios();
         holder.resumen.setText(cantidadEjercicios == 1
                 ? "1 ejercicio"
                 : cantidadEjercicios + " ejercicios");

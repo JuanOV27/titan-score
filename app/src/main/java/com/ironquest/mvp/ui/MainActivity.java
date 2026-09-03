@@ -55,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         dataManager = DataManager.getInstance(this);
-        Usuario usuario = dataManager.getDataStore().usuario;
-        if (usuario == null || !usuario.sesionActiva) {
+        Usuario usuario = dataManager.getDataStore().getUsuario();
+        if (usuario == null || !usuario.isSesionActiva()) {
             startActivity(new Intent(this, AuthActivity.class));
             finish();
             return;
@@ -208,8 +208,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        int rutinasNuevas = importado.rutinas.size();
-        int sesionesNuevas = importado.sesiones.size();
+        int rutinasNuevas = importado.getRutinas().size();
+        int sesionesNuevas = importado.getSesiones().size();
         new AlertDialog.Builder(this)
                 .setTitle("Importar datos")
                 .setMessage("Esto reemplazará tus rutinas, ejercicios y sesiones actuales por los del archivo (" +

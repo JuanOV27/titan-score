@@ -88,8 +88,8 @@ public class ActiveSessionActivity extends AppCompatActivity {
         dataStore = dataManager.getDataStore();
 
         catalogoPorId = new HashMap<>();
-        for (Ejercicio ejercicio : dataStore.ejercicios) {
-            catalogoPorId.put(ejercicio.id, ejercicio);
+        for (Ejercicio ejercicio : dataStore.getEjercicios()) {
+            catalogoPorId.put(ejercicio.getId(), ejercicio);
         }
 
         containerEjercicios = findViewById(R.id.container_ejercicios);
@@ -97,17 +97,17 @@ public class ActiveSessionActivity extends AppCompatActivity {
         TextView textHoraInicio = findViewById(R.id.text_hora_inicio);
 
         boolean resumir = getIntent().getBooleanExtra(EXTRA_RESUMIR, false);
-        if (resumir && dataStore.sesionEnProgreso != null) {
-            sesionActual = dataStore.sesionEnProgreso;
-            inicioSesion = LocalDateTime.parse(sesionActual.fechaHoraInicio);
-            setTitle(sesionActual.rutinaNombre);
+        if (resumir && dataStore.getSesionEnProgreso() != null) {
+            sesionActual = dataStore.getSesionEnProgreso();
+            inicioSesion = LocalDateTime.parse(sesionActual.getFechaHoraInicio());
+            setTitle(sesionActual.getRutinaNombre());
             textHoraInicio.setText("Inicio: " + inicioSesion.format(FORMATO_HORA));
-            for (EjercicioSesion ejercicioSesion : sesionActual.ejercicios) {
+            for (EjercicioSesion ejercicioSesion : sesionActual.getEjercicios()) {
                 agregarBloqueEjercicio(ejercicioSesion);
             }
         } else {
             String rutinaId = getIntent().getStringExtra(EXTRA_RUTINA_ID);
-            Rutina rutina = buscarRutina(rutinaId);
+            Rutina rutina = dataStore.buscarRutina(rutinaId);
             if (rutina == null) {
                 Toast.makeText(this, "No se encontró la rutina", Toast.LENGTH_SHORT).show();
                 finish();
@@ -115,23 +115,26 @@ public class ActiveSessionActivity extends AppCompatActivity {
             }
 
             inicioSesion = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-            sesionActual = new Sesion(dataManager.newId("s"), rutina.id, rutina.nombre, inicioSesion.toString());
+            sesionActual = new Sesion(dataManager.newId("s"), rutina.getId(), rutina.getNombre(), inicioSesion.toString());
 
-            setTitle(rutina.nombre);
+            setTitle(rutina.getNombre());
             textHoraInicio.setText("Inicio: " + inicioSesion.format(FORMATO_HORA));
 
             double volumenPlaneado = 0;
-            for (RutinaEjercicio re : rutina.ejercicios) {
-                ProgresionUtil.Sugerencia sugerencia = ProgresionUtil.sugerir(re, dataStore.sesiones);
-                EjercicioSesion ejercicioSesion = new EjercicioSesion(re.ejercicioId);
-                for (int i = 1; i <= re.series; i++) {
-                    ejercicioSesion.series.add(new SerieSesion(i, sugerencia.peso, sugerencia.repeticiones, true));
+            for (RutinaEjercicio re : rutina.getEjercicios()) {
+                ProgresionUtil.Sugerencia sugerencia = ProgresionUtil.sugerir(re, dataStore.getSesiones());
+                EjercicioSesion ejercicioSesion = new EjercicioSesion(re.getEjercicioId());
+                for (int i = 1; i <= re.getSeries(); i++) {
+                    ejercicioSesion.agregarSerie(
+                            new SerieSesion(i, sugerencia.getPeso(), sugerencia.getRepeticiones(), true));
                 }
-                sesionActual.ejercicios.add(ejercicioSesion);
+                sesionActual.agregarEjercicio(ejercicioSesion);
                 agregarBloqueEjercicio(ejercicioSesion, sugerencia);
-                volumenPlaneado += unidadEsfuerzo(sugerencia.peso, sugerencia.repeticiones) * re.series;
+                // Todas las series nacen marcadas como completadas, así que el volumen del bloque
+                // recién creado es exactamente el plan de este ejercicio.
+                volumenPlaneado += ejercicioSesion.calcularVolumen();
             }
-            sesionActual.volumenPlaneado = volumenPlaneado;
+            sesionActual.setVolumenPlaneado(volumenPlaneado);
         }
 
         guardarProgreso();
@@ -141,12 +144,12 @@ public class ActiveSessionActivity extends AppCompatActivity {
         findViewById(R.id.button_iniciar_descanso).setOnClickListener(v -> mostrarTemporizadorDescanso());
         findViewById(R.id.button_agregar_ejercicio_sesion).setOnClickListener(v ->
                 EjercicioPicker.mostrar(this, dataManager, dataStore, ejercicio -> {
-                    catalogoPorId.putIfAbsent(ejercicio.id, ejercicio);
-                    EjercicioSesion nuevo = new EjercicioSesion(ejercicio.id);
+                    catalogoPorId.putIfAbsent(ejercicio.getId(), ejercicio);
+                    EjercicioSesion nuevo = new EjercicioSesion(ejercicio.getId());
                     for (int i = 1; i <= 3; i++) {
-                        nuevo.series.add(new SerieSesion(i, 0.0, 10, true));
+                        nuevo.agregarSerie(new SerieSesion(i, 0.0, 10, true));
                     }
-                    sesionActual.ejercicios.add(nuevo);
+                    sesionActual.agregarEjercicio(nuevo);
                     agregarBloqueEjercicio(nuevo);
                     guardarProgreso();
                 }));
@@ -197,7 +200,7 @@ public class ActiveSessionActivity extends AppCompatActivity {
         if (dialogDescansoActivo != null && dialogDescansoActivo.isShowing()) {
             dialogDescansoActivo.dismiss();
         }
-        dataStore.sesionEnProgreso = null;
+        dataStore.setSesionEnProgreso(null);
         dataManager.save();
         SesionTrackingService.detener(this);
         Toast.makeText(this, "Sesión descartada", Toast.LENGTH_SHORT).show();
@@ -205,7 +208,7 @@ public class ActiveSessionActivity extends AppCompatActivity {
     }
 
     private void guardarProgreso() {
-        dataStore.sesionEnProgreso = sesionActual;
+        dataStore.setSesionEnProgreso(sesionActual);
         dataManager.save();
     }
 
@@ -215,7 +218,7 @@ public class ActiveSessionActivity extends AppCompatActivity {
                         != PackageManager.PERMISSION_GRANTED) {
             permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
         }
-        SesionTrackingService.iniciar(this, sesionActual.rutinaNombre, sesionActual.fechaHoraInicio);
+        SesionTrackingService.iniciar(this, sesionActual.getRutinaNombre(), sesionActual.getFechaHoraInicio());
     }
 
     private void configurarBotonFinalizar() {
@@ -282,33 +285,33 @@ public class ActiveSessionActivity extends AppCompatActivity {
         ImageButton botonEliminar = block.findViewById(R.id.button_eliminar_ejercicio_sesion);
         LinearLayout containerSeries = block.findViewById(R.id.container_series);
 
-        actualizarNombreBloque(nombre, ejercicioSesion.ejercicioId);
-        if (sugerencia != null && sugerencia.explicacion != null) {
-            explicacion.setText(sugerencia.explicacion);
+        actualizarNombreBloque(nombre, ejercicioSesion.getEjercicioId());
+        if (sugerencia != null && sugerencia.getExplicacion() != null) {
+            explicacion.setText(sugerencia.getExplicacion());
             explicacion.setTextColor(ContextCompat.getColor(this,
-                    sugerencia.estancado ? R.color.cumplimiento_bajo : R.color.cumplimiento_medio));
+                    sugerencia.isEstancado() ? R.color.cumplimiento_bajo : R.color.cumplimiento_medio));
             explicacion.setVisibility(View.VISIBLE);
         }
 
-        for (SerieSesion serie : ejercicioSesion.series) {
+        for (SerieSesion serie : ejercicioSesion.getSeries()) {
             containerSeries.addView(crearFilaSerie(inflater, containerSeries, serie));
         }
 
         MaterialButton botonAgregarSerie = block.findViewById(R.id.button_agregar_serie);
         botonAgregarSerie.setOnClickListener(v -> {
-            SerieSesion ultima = ejercicioSesion.series.isEmpty()
+            SerieSesion ultima = ejercicioSesion.getSeries().isEmpty()
                     ? new SerieSesion(0, 0.0, 10, true)
-                    : ejercicioSesion.series.get(ejercicioSesion.series.size() - 1);
-            SerieSesion nueva = new SerieSesion(ejercicioSesion.series.size() + 1, ultima.peso, ultima.repeticiones, true);
-            ejercicioSesion.series.add(nueva);
+                    : ejercicioSesion.getSeries().get(ejercicioSesion.getSeries().size() - 1);
+            SerieSesion nueva = new SerieSesion(ejercicioSesion.getSeries().size() + 1, ultima.getPeso(), ultima.getRepeticiones(), true);
+            ejercicioSesion.agregarSerie(nueva);
             containerSeries.addView(crearFilaSerie(inflater, containerSeries, nueva));
             guardarProgreso();
         });
 
         botonCambiar.setOnClickListener(v -> EjercicioPicker.mostrar(this, dataManager, dataStore, nuevoEjercicio -> {
-            catalogoPorId.putIfAbsent(nuevoEjercicio.id, nuevoEjercicio);
-            ejercicioSesion.ejercicioId = nuevoEjercicio.id;
-            actualizarNombreBloque(nombre, nuevoEjercicio.id);
+            catalogoPorId.putIfAbsent(nuevoEjercicio.getId(), nuevoEjercicio);
+            ejercicioSesion.setEjercicioId(nuevoEjercicio.getId());
+            actualizarNombreBloque(nombre, nuevoEjercicio.getId());
             guardarProgreso();
         }));
 
@@ -316,7 +319,7 @@ public class ActiveSessionActivity extends AppCompatActivity {
                 .setTitle("Eliminar ejercicio")
                 .setMessage("¿Quitar este ejercicio de la sesión?")
                 .setPositiveButton("Eliminar", (dialog, which) -> {
-                    sesionActual.ejercicios.remove(ejercicioSesion);
+                    sesionActual.getEjercicios().remove(ejercicioSesion);
                     containerEjercicios.removeView(block);
                     guardarProgreso();
                 })
@@ -328,7 +331,7 @@ public class ActiveSessionActivity extends AppCompatActivity {
 
     private void actualizarNombreBloque(TextView nombre, String ejercicioId) {
         Ejercicio ejercicio = catalogoPorId.get(ejercicioId);
-        nombre.setText(ejercicio != null ? ejercicio.nombre : "Ejercicio");
+        nombre.setText(ejercicio != null ? ejercicio.getNombre() : "Ejercicio");
     }
 
     private void mostrarTemporizadorDescanso() {
@@ -349,34 +352,34 @@ public class ActiveSessionActivity extends AppCompatActivity {
         ImageButton botonRepsMas = row.findViewById(R.id.button_reps_mas);
         ImageButton botonCompletada = row.findViewById(R.id.button_completada);
 
-        textNumero.setText("Serie " + serie.numero);
-        textPeso.setText(formatearPeso(serie.peso));
-        textReps.setText(String.valueOf(serie.repeticiones));
-        actualizarIconoCompletada(botonCompletada, serie.completada);
+        textNumero.setText("Serie " + serie.getNumero());
+        textPeso.setText(formatearPeso(serie.getPeso()));
+        textReps.setText(String.valueOf(serie.getRepeticiones()));
+        actualizarIconoCompletada(botonCompletada, serie.isCompletada());
 
         botonPesoMenos.setOnClickListener(v -> {
-            serie.peso = Math.max(0, serie.peso - PASO_PESO);
-            textPeso.setText(formatearPeso(serie.peso));
+            serie.setPeso(Math.max(0, serie.getPeso() - PASO_PESO));
+            textPeso.setText(formatearPeso(serie.getPeso()));
             guardarProgreso();
         });
         botonPesoMas.setOnClickListener(v -> {
-            serie.peso += PASO_PESO;
-            textPeso.setText(formatearPeso(serie.peso));
+            serie.setPeso(serie.getPeso() + PASO_PESO);
+            textPeso.setText(formatearPeso(serie.getPeso()));
             guardarProgreso();
         });
         botonRepsMenos.setOnClickListener(v -> {
-            serie.repeticiones = Math.max(0, serie.repeticiones - 1);
-            textReps.setText(String.valueOf(serie.repeticiones));
+            serie.setRepeticiones(Math.max(0, serie.getRepeticiones() - 1));
+            textReps.setText(String.valueOf(serie.getRepeticiones()));
             guardarProgreso();
         });
         botonRepsMas.setOnClickListener(v -> {
-            serie.repeticiones += 1;
-            textReps.setText(String.valueOf(serie.repeticiones));
+            serie.setRepeticiones(serie.getRepeticiones() + 1);
+            textReps.setText(String.valueOf(serie.getRepeticiones()));
             guardarProgreso();
         });
         botonCompletada.setOnClickListener(v -> {
-            serie.completada = !serie.completada;
-            actualizarIconoCompletada(botonCompletada, serie.completada);
+            serie.setCompletada(!serie.isCompletada());
+            actualizarIconoCompletada(botonCompletada, serie.isCompletada());
             guardarProgreso();
         });
 
@@ -399,60 +402,26 @@ public class ActiveSessionActivity extends AppCompatActivity {
         return String.valueOf(peso);
     }
 
-    private static double unidadEsfuerzo(double peso, int repeticiones) {
-        return peso > 0 ? peso * repeticiones : repeticiones;
-    }
-
-    private Rutina buscarRutina(String id) {
-        if (id == null) {
-            return null;
-        }
-        for (Rutina r : dataStore.rutinas) {
-            if (r.id.equals(id)) {
-                return r;
-            }
-        }
-        return null;
-    }
-
     private void finalizarSesion() {
         sesionFinalizada = true;
         LocalDateTime ahora = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-        sesionActual.fechaHoraFin = ahora.toString();
-
-        double volumenReal = 0;
-        for (EjercicioSesion ejercicioSesion : sesionActual.ejercicios) {
-            for (SerieSesion serie : ejercicioSesion.series) {
-                if (serie.completada) {
-                    volumenReal += unidadEsfuerzo(serie.peso, serie.repeticiones);
-                }
-            }
-        }
-        sesionActual.volumenReal = volumenReal;
-
-        int porcentaje;
-        if (sesionActual.volumenPlaneado > 0) {
-            porcentaje = (int) Math.round(volumenReal / sesionActual.volumenPlaneado * 100);
-        } else {
-            porcentaje = volumenReal > 0 ? 100 : 0;
-        }
-        sesionActual.porcentajeCumplimiento = Math.max(0, porcentaje);
+        sesionActual.finalizar(ahora.toString());
 
         long duracionMinutos = Duration.between(inicioSesion, ahora).toMinutes();
 
-        dataStore.sesiones.add(sesionActual);
-        dataStore.sesionEnProgreso = null;
+        dataStore.getSesiones().add(sesionActual);
+        dataStore.setSesionEnProgreso(null);
         dataManager.save();
 
-        int racha = EstadisticasUtil.calcularRachaDias(dataStore.sesiones);
+        int racha = EstadisticasUtil.calcularRachaDias(dataStore.getSesiones());
 
         SesionTrackingService.detener(this);
 
         Intent intent = new Intent(this, SessionSummaryActivity.class);
-        intent.putExtra(SessionSummaryActivity.EXTRA_RUTINA_NOMBRE, sesionActual.rutinaNombre);
+        intent.putExtra(SessionSummaryActivity.EXTRA_RUTINA_NOMBRE, sesionActual.getRutinaNombre());
         intent.putExtra(SessionSummaryActivity.EXTRA_DURACION_MINUTOS, duracionMinutos);
         intent.putExtra(SessionSummaryActivity.EXTRA_RACHA_DIAS, racha);
-        intent.putExtra(SessionSummaryActivity.EXTRA_PORCENTAJE, sesionActual.porcentajeCumplimiento);
+        intent.putExtra(SessionSummaryActivity.EXTRA_PORCENTAJE, sesionActual.getPorcentajeCumplimiento());
         startActivity(intent);
         finish();
     }

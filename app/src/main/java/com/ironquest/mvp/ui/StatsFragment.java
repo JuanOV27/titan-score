@@ -44,8 +44,8 @@ public class StatsFragment extends Fragment {
 
     private void renderizar(View raiz) {
         DataManager dataManager = DataManager.getInstance(requireContext());
-        List<Sesion> sesiones = new ArrayList<>(dataManager.getDataStore().sesiones);
-        sesiones.sort(Comparator.comparing(s -> s.fechaHoraInicio));
+        List<Sesion> sesiones = new ArrayList<>(dataManager.getDataStore().getSesiones());
+        sesiones.sort(Comparator.comparing(s -> s.getFechaHoraInicio()));
 
         View containerResumen = raiz.findViewById(R.id.container_resumen);
         View labelVolumen = raiz.findViewById(R.id.label_volumen);
@@ -80,11 +80,11 @@ public class StatsFragment extends Fragment {
         List<BarChartView.Barra> barrasVolumen = new ArrayList<>();
         List<BarChartView.Barra> barrasCumplimiento = new ArrayList<>();
         for (Sesion sesion : ultimas) {
-            String etiqueta = LocalDateTime.parse(sesion.fechaHoraInicio).format(FORMATO_ETIQUETA);
-            barrasVolumen.add(new BarChartView.Barra(etiqueta, (float) sesion.volumenReal,
-                    String.format(Locale.getDefault(), "%.0f", sesion.volumenReal)));
-            barrasCumplimiento.add(new BarChartView.Barra(etiqueta, sesion.porcentajeCumplimiento,
-                    sesion.porcentajeCumplimiento + "%"));
+            String etiqueta = LocalDateTime.parse(sesion.getFechaHoraInicio()).format(FORMATO_ETIQUETA);
+            barrasVolumen.add(new BarChartView.Barra(etiqueta, (float) sesion.getVolumenReal(),
+                    String.format(Locale.getDefault(), "%.0f", sesion.getVolumenReal())));
+            barrasCumplimiento.add(new BarChartView.Barra(etiqueta, sesion.getPorcentajeCumplimiento(),
+                    sesion.getPorcentajeCumplimiento() + "%"));
         }
         chartVolumen.setDatos(barrasVolumen);
         chartCumplimiento.setDatos(barrasCumplimiento);
@@ -102,9 +102,9 @@ public class StatsFragment extends Fragment {
         long sumaCumplimiento = 0;
         int sesionesFinalizadas = 0;
         for (Sesion sesion : sesiones) {
-            volumenTotal += sesion.volumenReal;
-            if (sesion.fechaHoraFin != null) {
-                sumaCumplimiento += sesion.porcentajeCumplimiento;
+            volumenTotal += sesion.getVolumenReal();
+            if (sesion.estaFinalizada()) {
+                sumaCumplimiento += sesion.getPorcentajeCumplimiento();
                 sesionesFinalizadas++;
             }
         }
@@ -127,7 +127,7 @@ public class StatsFragment extends Fragment {
 
         int[] conteos = new int[inicios.size()];
         for (Sesion sesion : sesiones) {
-            LocalDate fecha = LocalDateTime.parse(sesion.fechaHoraInicio).toLocalDate();
+            LocalDate fecha = LocalDateTime.parse(sesion.getFechaHoraInicio()).toLocalDate();
             for (int i = 0; i < inicios.size(); i++) {
                 LocalDate inicioSemana = inicios.get(i);
                 LocalDate finSemana = inicioSemana.plusDays(6);

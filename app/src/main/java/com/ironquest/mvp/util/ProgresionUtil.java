@@ -17,7 +17,7 @@ import java.util.List;
  * nueva, igual que la racha.
  *
  * El peso base para incrementar siempre sale del último peso realmente registrado (no de
- * {@code RutinaEjercicio.peso}, que nunca lo toca este motor), porque el usuario puede haber
+ * {@code RutinaEjercicio.getPeso()}, que nunca lo toca este motor), porque el usuario puede haber
  * ajustado el peso con los botones +/- durante la sesión.
  */
 public final class ProgresionUtil {
@@ -28,11 +28,13 @@ public final class ProgresionUtil {
     private ProgresionUtil() {
     }
 
+    /** Valor de salida inmutable: solo se construye aquí dentro y solo se lee desde fuera. */
     public static class Sugerencia {
-        public final double peso;
-        public final int repeticiones;
-        public final String explicacion;
-        public final boolean estancado;
+
+        private final double peso;
+        private final int repeticiones;
+        private final String explicacion;
+        private final boolean estancado;
 
         Sugerencia(double peso, int repeticiones, String explicacion, boolean estancado) {
             this.peso = peso;
@@ -40,32 +42,48 @@ public final class ProgresionUtil {
             this.explicacion = explicacion;
             this.estancado = estancado;
         }
+
+        public double getPeso() {
+            return peso;
+        }
+
+        public int getRepeticiones() {
+            return repeticiones;
+        }
+
+        public String getExplicacion() {
+            return explicacion;
+        }
+
+        public boolean isEstancado() {
+            return estancado;
+        }
     }
 
     public static Sugerencia sugerir(RutinaEjercicio config, List<Sesion> historial) {
-        if (config.esquemaProgresion == RutinaEjercicio.ESQUEMA_NINGUNO) {
-            return new Sugerencia(config.peso, config.repeticiones, null, false);
+        if (config.getEsquemaProgresion() == RutinaEjercicio.ESQUEMA_NINGUNO) {
+            return new Sugerencia(config.getPeso(), config.getRepeticiones(), null, false);
         }
 
-        List<EjercicioSesion> pasadas = historialDelEjercicio(config.ejercicioId, historial);
+        List<EjercicioSesion> pasadas = historialDelEjercicio(config.getEjercicioId(), historial);
         if (pasadas.isEmpty()) {
-            return new Sugerencia(config.peso, config.repeticiones,
+            return new Sugerencia(config.getPeso(), config.getRepeticiones(),
                     "Primera vez con este esquema: arrancas con el plan de la rutina.", false);
         }
 
         EjercicioSesion ultima = pasadas.get(pasadas.size() - 1);
-        double pesoBase = pesoDeLaSesion(ultima, config.peso);
+        double pesoBase = pesoDeLaSesion(ultima, config.getPeso());
 
         int fallosSeguidos = contarFallosSeguidos(config, pasadas);
         if (fallosSeguidos >= SESIONES_PARA_ESTANCAMIENTO) {
             double pesoDeload = redondearA(pesoBase * 0.9, INCREMENTO_KG);
-            return new Sugerencia(pesoDeload, config.repeticiones,
+            return new Sugerencia(pesoDeload, config.getRepeticiones(),
                     "Llevas " + fallosSeguidos + " sesiones seguidas sin cumplir el objetivo. Posible "
                             + "estancamiento: baja a " + formatearPeso(pesoDeload) + "kg y retoma la progresión.",
                     true);
         }
 
-        switch (config.esquemaProgresion) {
+        switch (config.getEsquemaProgresion()) {
             case RutinaEjercicio.ESQUEMA_GREYSKULL:
                 return sugerirGreyskull(config, ultima);
             case RutinaEjercicio.ESQUEMA_DOBLE_PROGRESION:
@@ -77,61 +95,61 @@ public final class ProgresionUtil {
     }
 
     private static Sugerencia sugerirLineal(RutinaEjercicio config, EjercicioSesion ultima, double pesoBase) {
-        boolean exito = todasLasSeriesCumplen(ultima, config.repeticiones);
+        boolean exito = todasLasSeriesCumplen(ultima, config.getRepeticiones());
         if (exito) {
             double nuevoPeso = pesoBase + INCREMENTO_KG;
-            return new Sugerencia(nuevoPeso, config.repeticiones,
-                    "Cumpliste el objetivo de " + config.repeticiones + " reps en todas las series con "
+            return new Sugerencia(nuevoPeso, config.getRepeticiones(),
+                    "Cumpliste el objetivo de " + config.getRepeticiones() + " reps en todas las series con "
                             + formatearPeso(pesoBase) + "kg. Sugerencia: sube a " + formatearPeso(nuevoPeso) + "kg.",
                     false);
         }
-        return new Sugerencia(pesoBase, config.repeticiones,
-                "No completaste el objetivo de " + config.repeticiones + " reps la última vez. Repite "
+        return new Sugerencia(pesoBase, config.getRepeticiones(),
+                "No completaste el objetivo de " + config.getRepeticiones() + " reps la última vez. Repite "
                         + formatearPeso(pesoBase) + "kg.",
                 false);
     }
 
     private static Sugerencia sugerirGreyskull(RutinaEjercicio config, EjercicioSesion ultima) {
-        SerieSesion amrap = ultimaSerieCompletada(ultima);
+        SerieSesion amrap = ultima.getUltimaSerieCompletada();
         if (amrap == null) {
-            return new Sugerencia(config.peso, config.repeticiones,
-                    "Repite " + formatearPeso(config.peso) + "kg.", false);
+            return new Sugerencia(config.getPeso(), config.getRepeticiones(),
+                    "Repite " + formatearPeso(config.getPeso()) + "kg.", false);
         }
-        if (amrap.repeticiones >= config.repeticiones) {
-            double nuevoPeso = amrap.peso + INCREMENTO_KG;
-            return new Sugerencia(nuevoPeso, config.repeticiones,
-                    "Tu última serie (AMRAP) fue de " + amrap.repeticiones + " reps con " + formatearPeso(amrap.peso)
-                            + "kg, cumpliendo el objetivo de " + config.repeticiones + ". Sugerencia: sube a "
+        if (amrap.getRepeticiones() >= config.getRepeticiones()) {
+            double nuevoPeso = amrap.getPeso() + INCREMENTO_KG;
+            return new Sugerencia(nuevoPeso, config.getRepeticiones(),
+                    "Tu última serie (AMRAP) fue de " + amrap.getRepeticiones() + " reps con " + formatearPeso(amrap.getPeso())
+                            + "kg, cumpliendo el objetivo de " + config.getRepeticiones() + ". Sugerencia: sube a "
                             + formatearPeso(nuevoPeso) + "kg.",
                     false);
         }
-        return new Sugerencia(amrap.peso, config.repeticiones,
-                "Tu última serie (AMRAP) fue de " + amrap.repeticiones + " reps, por debajo del objetivo de "
-                        + config.repeticiones + ". Repite " + formatearPeso(amrap.peso) + "kg.",
+        return new Sugerencia(amrap.getPeso(), config.getRepeticiones(),
+                "Tu última serie (AMRAP) fue de " + amrap.getRepeticiones() + " reps, por debajo del objetivo de "
+                        + config.getRepeticiones() + ". Repite " + formatearPeso(amrap.getPeso()) + "kg.",
                 false);
     }
 
     private static Sugerencia sugerirDobleProgresion(RutinaEjercicio config, EjercicioSesion ultima, double pesoBase) {
-        int techo = config.repeticionesMax > 0 ? config.repeticionesMax : config.repeticiones;
+        int techo = config.getTechoRepeticiones();
         int repsLogradas = repeticionesMinimasCompletadas(ultima);
 
-        if (repsLogradas < config.repeticiones) {
-            return new Sugerencia(pesoBase, config.repeticiones,
-                    "No llegaste a " + config.repeticiones + " reps en todas las series. Repite "
+        if (repsLogradas < config.getRepeticiones()) {
+            return new Sugerencia(pesoBase, config.getRepeticiones(),
+                    "No llegaste a " + config.getRepeticiones() + " reps en todas las series. Repite "
                             + formatearPeso(pesoBase) + "kg.",
                     false);
         }
         if (repsLogradas >= techo) {
             double nuevoPeso = pesoBase + INCREMENTO_KG;
-            return new Sugerencia(nuevoPeso, config.repeticiones,
+            return new Sugerencia(nuevoPeso, config.getRepeticiones(),
                     "Llegaste a " + techo + " reps en todas las series con " + formatearPeso(pesoBase)
                             + "kg — tope del rango. Sugerencia: sube a " + formatearPeso(nuevoPeso) + "kg y vuelve a "
-                            + config.repeticiones + " reps.",
+                            + config.getRepeticiones() + " reps.",
                     false);
         }
         int siguienteReps = repsLogradas + 1;
         return new Sugerencia(pesoBase, siguienteReps,
-                "Vas en " + repsLogradas + " de " + config.repeticiones + "-" + techo + " reps con "
+                "Vas en " + repsLogradas + " de " + config.getRepeticiones() + "-" + techo + " reps con "
                         + formatearPeso(pesoBase) + "kg. Sugerencia: intenta " + siguienteReps + " reps.",
                 false);
     }
@@ -141,19 +159,17 @@ public final class ProgresionUtil {
     private static List<EjercicioSesion> historialDelEjercicio(String ejercicioId, List<Sesion> sesiones) {
         List<Sesion> finalizadas = new ArrayList<>();
         for (Sesion sesion : sesiones) {
-            if (sesion.fechaHoraFin != null) {
+            if (sesion.estaFinalizada()) {
                 finalizadas.add(sesion);
             }
         }
-        finalizadas.sort(Comparator.comparing(s -> LocalDateTime.parse(s.fechaHoraInicio)));
+        finalizadas.sort(Comparator.comparing(s -> LocalDateTime.parse(s.getFechaHoraInicio())));
 
         List<EjercicioSesion> resultado = new ArrayList<>();
         for (Sesion sesion : finalizadas) {
-            for (EjercicioSesion es : sesion.ejercicios) {
-                if (es.ejercicioId.equals(ejercicioId)) {
-                    resultado.add(es);
-                    break;
-                }
+            EjercicioSesion es = sesion.buscarEjercicio(ejercicioId);
+            if (es != null) {
+                resultado.add(es);
             }
         }
         return resultado;
@@ -171,27 +187,27 @@ public final class ProgresionUtil {
     }
 
     private static boolean fueExitosa(RutinaEjercicio config, EjercicioSesion sesionPasada) {
-        switch (config.esquemaProgresion) {
+        switch (config.getEsquemaProgresion()) {
             case RutinaEjercicio.ESQUEMA_GREYSKULL: {
-                SerieSesion amrap = ultimaSerieCompletada(sesionPasada);
-                return amrap != null && amrap.repeticiones >= config.repeticiones;
+                SerieSesion amrap = sesionPasada.getUltimaSerieCompletada();
+                return amrap != null && amrap.getRepeticiones() >= config.getRepeticiones();
             }
             case RutinaEjercicio.ESQUEMA_DOBLE_PROGRESION:
-                return repeticionesMinimasCompletadas(sesionPasada) >= config.repeticiones;
+                return repeticionesMinimasCompletadas(sesionPasada) >= config.getRepeticiones();
             case RutinaEjercicio.ESQUEMA_LINEAL:
             default:
-                return todasLasSeriesCumplen(sesionPasada, config.repeticiones);
+                return todasLasSeriesCumplen(sesionPasada, config.getRepeticiones());
         }
     }
 
     private static boolean todasLasSeriesCumplen(EjercicioSesion sesionPasada, int repsObjetivo) {
         boolean algunaCompletada = false;
-        for (SerieSesion serie : sesionPasada.series) {
-            if (!serie.completada) {
+        for (SerieSesion serie : sesionPasada.getSeries()) {
+            if (!serie.isCompletada()) {
                 continue;
             }
             algunaCompletada = true;
-            if (serie.repeticiones < repsObjetivo) {
+            if (serie.getRepeticiones() < repsObjetivo) {
                 return false;
             }
         }
@@ -201,30 +217,21 @@ public final class ProgresionUtil {
     /** Mínimo de reps entre las series completadas: la serie más floja determina si el rango se cumplió. */
     private static int repeticionesMinimasCompletadas(EjercicioSesion sesionPasada) {
         int minimo = -1;
-        for (SerieSesion serie : sesionPasada.series) {
-            if (!serie.completada) {
+        for (SerieSesion serie : sesionPasada.getSeries()) {
+            if (!serie.isCompletada()) {
                 continue;
             }
-            if (minimo == -1 || serie.repeticiones < minimo) {
-                minimo = serie.repeticiones;
+            if (minimo == -1 || serie.getRepeticiones() < minimo) {
+                minimo = serie.getRepeticiones();
             }
         }
         return Math.max(minimo, 0);
     }
 
-    private static SerieSesion ultimaSerieCompletada(EjercicioSesion sesionPasada) {
-        SerieSesion ultima = null;
-        for (SerieSesion serie : sesionPasada.series) {
-            if (serie.completada) {
-                ultima = serie;
-            }
-        }
-        return ultima;
-    }
 
     private static double pesoDeLaSesion(EjercicioSesion sesionPasada, double fallback) {
-        SerieSesion ultima = ultimaSerieCompletada(sesionPasada);
-        return ultima != null ? ultima.peso : fallback;
+        SerieSesion ultima = sesionPasada.getUltimaSerieCompletada();
+        return ultima != null ? ultima.getPeso() : fallback;
     }
 
     private static double redondearA(double valor, double paso) {

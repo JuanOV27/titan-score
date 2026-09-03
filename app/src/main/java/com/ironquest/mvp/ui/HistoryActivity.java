@@ -34,8 +34,8 @@ public class HistoryActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> finish());
 
         DataManager dataManager = DataManager.getInstance(this);
-        List<Sesion> sesiones = new ArrayList<>(dataManager.getDataStore().sesiones);
-        Collections.sort(sesiones, (a, b) -> b.fechaHoraInicio.compareTo(a.fechaHoraInicio));
+        List<Sesion> sesiones = new ArrayList<>(dataManager.getDataStore().getSesiones());
+        Collections.sort(sesiones, (a, b) -> b.getFechaHoraInicio().compareTo(a.getFechaHoraInicio()));
 
         RecyclerView recyclerView = findViewById(R.id.recycler_historial);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

@@ -28,7 +28,7 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
         DataManager dataManager = DataManager.getInstance(requireContext());
-        int racha = EstadisticasUtil.calcularRachaDias(dataManager.getDataStore().sesiones);
+        int racha = EstadisticasUtil.calcularRachaDias(dataManager.getDataStore().getSesiones());
 
         TextView textRacha = requireView().findViewById(R.id.text_racha_inicio);
         textRacha.setText(racha == 1 ? "1 día" : racha + " días");

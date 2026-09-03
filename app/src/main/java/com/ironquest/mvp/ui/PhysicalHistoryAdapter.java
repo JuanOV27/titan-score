@@ -40,22 +40,22 @@ public class PhysicalHistoryAdapter extends RecyclerView.Adapter<PhysicalHistory
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         RegistroFisico registro = registros.get(position);
 
-        LocalDate fecha = LocalDate.parse(registro.fecha);
+        LocalDate fecha = LocalDate.parse(registro.getFecha());
         holder.fecha.setText(fecha.format(FORMATO_FECHA));
 
         holder.pesoAltura.setText(String.format(Locale.US, "Peso: %s · Altura: %s",
-                formatearValor(registro.pesoKg, " kg"), formatearValor(registro.alturaCm, " cm")));
+                formatearValor(registro.getPesoKg(), " kg"), formatearValor(registro.getAlturaCm(), " cm")));
 
-        holder.imc.setText(String.format(Locale.US, "IMC: %.1f (%s)", registro.imc,
-                PerfilFisicoUtil.clasificarImc(registro.imc)));
+        holder.imc.setText(String.format(Locale.US, "IMC: %.1f (%s)", registro.getImc(),
+                PerfilFisicoUtil.clasificarImc(registro.getImc())));
         holder.imc.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),
-                PerfilFisicoUtil.colorParaImc(registro.imc)));
+                PerfilFisicoUtil.colorParaImc(registro.getImc())));
 
         holder.medidas.setText(String.format(Locale.US,
                 "Pecho: %s · Cintura: %s · Cadera: %s\nBrazo: %s · Piernas: %s · %s",
-                formatearValor(registro.pechoCm, " cm"), formatearValor(registro.cinturaCm, " cm"),
-                formatearValor(registro.caderaCm, " cm"), formatearValor(registro.brazoCm, " cm"),
-                formatearValor(registro.piernaCm, " cm"), registro.tipoCuerpo));
+                formatearValor(registro.getPechoCm(), " cm"), formatearValor(registro.getCinturaCm(), " cm"),
+                formatearValor(registro.getCaderaCm(), " cm"), formatearValor(registro.getBrazoCm(), " cm"),
+                formatearValor(registro.getPiernaCm(), " cm"), registro.getTipoCuerpo()));
     }
 
     @Override

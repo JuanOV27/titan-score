@@ -38,23 +38,23 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Sesion sesion = sesiones.get(position);
-        holder.rutina.setText(sesion.rutinaNombre != null ? sesion.rutinaNombre : "Rutina");
+        holder.rutina.setText(sesion.getRutinaNombre() != null ? sesion.getRutinaNombre() : "Rutina");
 
-        LocalDateTime inicio = LocalDateTime.parse(sesion.fechaHoraInicio);
+        LocalDateTime inicio = LocalDateTime.parse(sesion.getFechaHoraInicio());
         holder.fecha.setText(inicio.format(FORMATO_FECHA));
 
-        if (sesion.fechaHoraFin != null) {
-            LocalDateTime fin = LocalDateTime.parse(sesion.fechaHoraFin);
+        if (sesion.estaFinalizada()) {
+            LocalDateTime fin = LocalDateTime.parse(sesion.getFechaHoraFin());
             long minutos = Duration.between(inicio, fin).toMinutes();
             holder.duracion.setText("Duración: " + minutos + " min");
         } else {
             holder.duracion.setText("Duración: --");
         }
 
-        holder.cumplimiento.setText("Cumplimiento: " + sesion.porcentajeCumplimiento + "%");
-        int colorRes = sesion.porcentajeCumplimiento >= 100
+        holder.cumplimiento.setText("Cumplimiento: " + sesion.getPorcentajeCumplimiento() + "%");
+        int colorRes = sesion.getPorcentajeCumplimiento() >= 100
                 ? R.color.cumplimiento_alto
-                : sesion.porcentajeCumplimiento >= 60
+                : sesion.getPorcentajeCumplimiento() >= 60
                 ? R.color.cumplimiento_medio
                 : R.color.cumplimiento_bajo;
         holder.cumplimiento.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), colorRes));

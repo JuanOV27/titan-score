@@ -77,7 +77,7 @@ public class PhysicalHistoryActivity extends AppCompatActivity {
     }
 
     private void actualizarLista() {
-        List<RegistroFisico> historial = dataManager.getDataStore().historialFisico;
+        List<RegistroFisico> historial = dataManager.getDataStore().getHistorialFisico();
 
         boolean vacio = historial.isEmpty();
         textEmpty.setVisibility(vacio ? View.VISIBLE : View.GONE);
@@ -87,10 +87,10 @@ public class PhysicalHistoryActivity extends AppCompatActivity {
 
         if (!vacio) {
             RegistroFisico ultimo = historial.get(historial.size() - 1);
-            textImcActual.setText(String.format(Locale.US, "%.1f (%s)", ultimo.imc,
-                    PerfilFisicoUtil.clasificarImc(ultimo.imc)));
-            textImcActual.setTextColor(ContextCompat.getColor(this, PerfilFisicoUtil.colorParaImc(ultimo.imc)));
-            textFechaUltimoRegistro.setText("Último registro: " + LocalDate.parse(ultimo.fecha).format(FORMATO_FECHA));
+            textImcActual.setText(String.format(Locale.US, "%.1f (%s)", ultimo.getImc(),
+                    PerfilFisicoUtil.clasificarImc(ultimo.getImc())));
+            textImcActual.setTextColor(ContextCompat.getColor(this, PerfilFisicoUtil.colorParaImc(ultimo.getImc())));
+            textFechaUltimoRegistro.setText("Último registro: " + LocalDate.parse(ultimo.getFecha()).format(FORMATO_FECHA));
 
             actualizarAnalisisFisico(ultimo);
         }
@@ -101,17 +101,17 @@ public class PhysicalHistoryActivity extends AppCompatActivity {
     }
 
     private void actualizarAnalisisFisico(RegistroFisico r) {
-        double icc = PerfilFisicoUtil.calcularIcc(r.cinturaCm, r.caderaCm);
+        double icc = PerfilFisicoUtil.calcularIcc(r.getCinturaCm(), r.getCaderaCm());
         textIcc.setText(String.format(Locale.US, "Índice cintura-cadera: %.2f (%s)", icc,
-                PerfilFisicoUtil.clasificarIcc(icc, r.tipoCuerpo)));
-        textIcc.setTextColor(ContextCompat.getColor(this, PerfilFisicoUtil.colorParaIcc(icc, r.tipoCuerpo)));
+                PerfilFisicoUtil.clasificarIcc(icc, r.getTipoCuerpo())));
+        textIcc.setTextColor(ContextCompat.getColor(this, PerfilFisicoUtil.colorParaIcc(icc, r.getTipoCuerpo())));
 
-        double icEst = PerfilFisicoUtil.calcularIcEst(r.cinturaCm, r.alturaCm);
+        double icEst = PerfilFisicoUtil.calcularIcEst(r.getCinturaCm(), r.getAlturaCm());
         textIcEst.setText(String.format(Locale.US, "Índice cintura-altura: %.2f (%s)", icEst,
                 PerfilFisicoUtil.clasificarIcEst(icEst)));
         textIcEst.setTextColor(ContextCompat.getColor(this, PerfilFisicoUtil.colorParaIcEst(icEst)));
 
-        double vTaper = PerfilFisicoUtil.calcularVTaper(r.pechoCm, r.cinturaCm);
+        double vTaper = PerfilFisicoUtil.calcularVTaper(r.getPechoCm(), r.getCinturaCm());
         textVTaper.setText(String.format(Locale.US, "Contraste pecho-cintura: %.2f (%s)", vTaper,
                 PerfilFisicoUtil.clasificarVTaper(vTaper)));
         textVTaper.setTextColor(ContextCompat.getColor(this, PerfilFisicoUtil.colorParaVTaper(vTaper)));

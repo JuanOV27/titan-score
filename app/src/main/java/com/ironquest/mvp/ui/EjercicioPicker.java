@@ -23,10 +23,10 @@ public final class EjercicioPicker {
     }
 
     public static void mostrar(Activity activity, DataManager dataManager, DataStore dataStore, Listener listener) {
-        String[] opciones = new String[dataStore.ejercicios.size() + 1];
-        for (int i = 0; i < dataStore.ejercicios.size(); i++) {
-            Ejercicio ejercicio = dataStore.ejercicios.get(i);
-            opciones[i] = ejercicio.nombre + " (" + ejercicio.grupoMuscular + ")";
+        String[] opciones = new String[dataStore.getEjercicios().size() + 1];
+        for (int i = 0; i < dataStore.getEjercicios().size(); i++) {
+            Ejercicio ejercicio = dataStore.getEjercicios().get(i);
+            opciones[i] = ejercicio.getNombre() + " (" + ejercicio.getGrupoMuscular() + ")";
         }
         opciones[opciones.length - 1] = "+ Ejercicio personalizado";
 
@@ -36,7 +36,7 @@ public final class EjercicioPicker {
                     if (which == opciones.length - 1) {
                         mostrarPersonalizado(activity, dataManager, dataStore, listener);
                     } else {
-                        listener.onEjercicioElegido(dataStore.ejercicios.get(which));
+                        listener.onEjercicioElegido(dataStore.getEjercicios().get(which));
                     }
                 })
                 .show();
@@ -61,7 +61,7 @@ public final class EjercicioPicker {
                         grupo = "Personalizado";
                     }
                     Ejercicio nuevo = new Ejercicio(dataManager.newId("ex"), nombre, grupo);
-                    dataStore.ejercicios.add(nuevo);
+                    dataStore.getEjercicios().add(nuevo);
                     listener.onEjercicioElegido(nuevo);
                 })
                 .setNegativeButton("Cancelar", null)

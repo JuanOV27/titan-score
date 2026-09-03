@@ -52,7 +52,7 @@ public class PerfilFisicoUtil {
             return true;
         }
         RegistroFisico ultimo = historial.get(historial.size() - 1);
-        LocalDate fecha = LocalDate.parse(ultimo.fecha);
+        LocalDate fecha = LocalDate.parse(ultimo.getFecha());
         return Period.between(fecha, LocalDate.now()).toTotalMonths() >= 1;
     }
 
@@ -143,11 +143,11 @@ public class PerfilFisicoUtil {
 
     public static List<String> generarRecomendaciones(RegistroFisico r) {
         List<String> lista = new ArrayList<>();
-        boolean esHombre = esHombre(r.tipoCuerpo);
-        double icc = calcularIcc(r.cinturaCm, r.caderaCm);
-        double icEst = calcularIcEst(r.cinturaCm, r.alturaCm);
-        double vTaper = calcularVTaper(r.pechoCm, r.cinturaCm);
-        double piernaBrazo = r.piernaCm / r.brazoCm;
+        boolean esHombre = esHombre(r.getTipoCuerpo());
+        double icc = calcularIcc(r.getCinturaCm(), r.getCaderaCm());
+        double icEst = calcularIcEst(r.getCinturaCm(), r.getAlturaCm());
+        double vTaper = calcularVTaper(r.getPechoCm(), r.getCinturaCm());
+        double piernaBrazo = r.getPiernaCm() / r.getBrazoCm();
 
         if (icEst >= 0.5) {
             lista.add("Tu cintura es amplia en relación a tu altura: reducir grasa abdominal mejoraría tu proporción general y tu salud metabólica.");

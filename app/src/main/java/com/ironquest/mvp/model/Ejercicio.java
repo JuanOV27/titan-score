@@ -1,13 +1,39 @@
 package com.ironquest.mvp.model;
 
-public class Ejercicio {
-    public String id;
-    public String nombre;
-    public String grupoMuscular;
+/** Un ejercicio del catálogo. Los IDs {@code ex1..ex20} son los que se siembran por defecto. */
+public class Ejercicio extends EntidadIdentificable {
+
+    private String nombre;
+    private String grupoMuscular;
+
+    /** Constructor sin argumentos para Gson. Privado: nadie más debe crear un Ejercicio vacío. */
+    private Ejercicio() {
+    }
 
     public Ejercicio(String id, String nombre, String grupoMuscular) {
-        this.id = id;
+        super(id);
         this.nombre = nombre;
         this.grupoMuscular = grupoMuscular;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getGrupoMuscular() {
+        return grupoMuscular;
+    }
+
+    public void setGrupoMuscular(String grupoMuscular) {
+        this.grupoMuscular = grupoMuscular;
+    }
+
+    @Override
+    public String toString() {
+        return nombre != null ? nombre : super.toString();
     }
 }

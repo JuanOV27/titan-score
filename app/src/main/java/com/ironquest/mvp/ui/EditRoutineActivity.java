@@ -45,13 +45,13 @@ public class EditRoutineActivity extends AppCompatActivity {
         dataStore = dataManager.getDataStore();
 
         catalogoPorId = new HashMap<>();
-        for (Ejercicio ejercicio : dataStore.ejercicios) {
-            catalogoPorId.put(ejercicio.id, ejercicio);
+        for (Ejercicio ejercicio : dataStore.getEjercicios()) {
+            catalogoPorId.put(ejercicio.getId(), ejercicio);
         }
 
         String rutinaId = getIntent().getStringExtra(EXTRA_RUTINA_ID);
         if (rutinaId != null) {
-            rutina = buscarRutina(rutinaId);
+            rutina = dataStore.buscarRutina(rutinaId);
             esNueva = false;
         }
         if (rutina == null) {
@@ -61,12 +61,12 @@ public class EditRoutineActivity extends AppCompatActivity {
         setTitle(esNueva ? "Nueva rutina" : "Editar rutina");
 
         editNombre = findViewById(R.id.edit_nombre_rutina);
-        editNombre.setText(rutina.nombre);
+        editNombre.setText(rutina.getNombre());
 
         RecyclerView recycler = findViewById(R.id.recycler_ejercicios_rutina);
         recycler.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new RutinaEjercicioEditAdapter(rutina.ejercicios, catalogoPorId, position -> {
-            rutina.ejercicios.remove(position);
+        adapter = new RutinaEjercicioEditAdapter(rutina.getEjercicios(), catalogoPorId, position -> {
+            rutina.quitarEjercicio(position);
             adapter.notifyItemRemoved(position);
         });
         recycler.setAdapter(adapter);
@@ -76,19 +76,10 @@ public class EditRoutineActivity extends AppCompatActivity {
         findViewById(R.id.button_guardar_rutina).setOnClickListener(v -> guardarRutina());
     }
 
-    private Rutina buscarRutina(String id) {
-        for (Rutina r : dataStore.rutinas) {
-            if (r.id.equals(id)) {
-                return r;
-            }
-        }
-        return null;
-    }
-
     private void agregarEjercicioARutina(Ejercicio ejercicio) {
-        catalogoPorId.putIfAbsent(ejercicio.id, ejercicio);
-        rutina.ejercicios.add(new RutinaEjercicio(ejercicio.id, 3, 10, 0.0));
-        adapter.notifyItemInserted(rutina.ejercicios.size() - 1);
+        catalogoPorId.putIfAbsent(ejercicio.getId(), ejercicio);
+        rutina.agregarEjercicio(new RutinaEjercicio(ejercicio.getId(), 3, 10, 0.0));
+        adapter.notifyItemInserted(rutina.getCantidadEjercicios() - 1);
     }
 
     private void guardarRutina() {
@@ -97,13 +88,13 @@ public class EditRoutineActivity extends AppCompatActivity {
             Toast.makeText(this, "Ponle un nombre a la rutina", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (rutina.ejercicios.isEmpty()) {
+        if (rutina.getEjercicios().isEmpty()) {
             Toast.makeText(this, "Agrega al menos un ejercicio", Toast.LENGTH_SHORT).show();
             return;
         }
-        rutina.nombre = nombre;
+        rutina.setNombre(nombre);
         if (esNueva) {
-            dataStore.rutinas.add(rutina);
+            dataStore.getRutinas().add(rutina);
         }
         dataManager.save();
         finish();

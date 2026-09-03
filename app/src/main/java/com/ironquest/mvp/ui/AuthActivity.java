@@ -53,7 +53,7 @@ public class AuthActivity extends AppCompatActivity {
         buttonSubmit = findViewById(R.id.button_auth_submit);
         textToggleModo = findViewById(R.id.text_toggle_auth_mode);
 
-        modoRegistro = dataStore.usuario == null;
+        modoRegistro = dataStore.getUsuario() == null;
 
         textToggleModo.setOnClickListener(v -> {
             modoRegistro = !modoRegistro;
@@ -71,7 +71,7 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     private void actualizarModo() {
-        boolean hayUsuario = dataStore.usuario != null;
+        boolean hayUsuario = dataStore.getUsuario() != null;
         layoutCamposRegistro.setVisibility(modoRegistro ? View.VISIBLE : View.GONE);
         layoutCampoEdad.setVisibility(modoRegistro ? View.VISIBLE : View.GONE);
         textTitulo.setText(modoRegistro ? "Crea tu cuenta" : "Inicia sesión");
@@ -111,15 +111,15 @@ public class AuthActivity extends AppCompatActivity {
         }
 
         Usuario usuario = new Usuario();
-        usuario.id = dataManager.newId("user");
-        usuario.username = username;
-        usuario.email = email;
-        usuario.passwordHash = PasswordUtil.hash(password);
-        usuario.edad = edad;
-        usuario.sesionActiva = true;
-        usuario.fechaRegistro = LocalDate.now().toString();
+        usuario.setId(dataManager.newId("user"));
+        usuario.setUsername(username);
+        usuario.setEmail(email);
+        usuario.setPasswordHash(PasswordUtil.hash(password));
+        usuario.setEdad(edad);
+        usuario.setSesionActiva(true);
+        usuario.setFechaRegistro(LocalDate.now().toString());
 
-        dataStore.usuario = usuario;
+        dataStore.setUsuario(usuario);
         dataManager.save();
 
         continuarDespuesDeAuth();
@@ -134,14 +134,14 @@ public class AuthActivity extends AppCompatActivity {
             return;
         }
 
-        Usuario usuario = dataStore.usuario;
-        if (usuario == null || !usuario.email.equalsIgnoreCase(email)
-                || !usuario.passwordHash.equals(PasswordUtil.hash(password))) {
+        Usuario usuario = dataStore.getUsuario();
+        if (usuario == null || !usuario.getEmail().equalsIgnoreCase(email)
+                || !usuario.coincideHash(PasswordUtil.hash(password))) {
             Toast.makeText(this, "Correo o contraseña incorrectos", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        usuario.sesionActiva = true;
+        usuario.setSesionActiva(true);
         dataManager.save();
 
         continuarDespuesDeAuth();
@@ -149,7 +149,7 @@ public class AuthActivity extends AppCompatActivity {
 
     private void continuarDespuesDeAuth() {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(MainActivity.EXTRA_SUGERIR_FISICO, dataStore.historialFisico.isEmpty());
+        intent.putExtra(MainActivity.EXTRA_SUGERIR_FISICO, dataStore.getHistorialFisico().isEmpty());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();

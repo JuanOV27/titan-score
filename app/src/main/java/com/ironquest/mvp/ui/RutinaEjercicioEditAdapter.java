@@ -90,7 +90,7 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
                 @Override
                 public void onChanged(String text) {
                     if (current != null) {
-                        current.series = parseIntOrZero(text);
+                        current.setSeries(parseIntOrZero(text));
                     }
                 }
             });
@@ -98,7 +98,7 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
                 @Override
                 public void onChanged(String text) {
                     if (current != null) {
-                        current.repeticiones = parseIntOrZero(text);
+                        current.setRepeticiones(parseIntOrZero(text));
                     }
                 }
             });
@@ -106,7 +106,7 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
                 @Override
                 public void onChanged(String text) {
                     if (current != null) {
-                        current.peso = parseDoubleOrZero(text);
+                        current.setPeso(parseDoubleOrZero(text));
                     }
                 }
             });
@@ -114,7 +114,7 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
                 @Override
                 public void onChanged(String text) {
                     if (current != null) {
-                        current.repeticionesMax = parseIntOrZero(text);
+                        current.setRepeticionesMax(parseIntOrZero(text));
                     }
                 }
             });
@@ -122,7 +122,7 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     if (current != null) {
-                        current.esquemaProgresion = position;
+                        current.setEsquemaProgresion(position);
                     }
                 }
 
@@ -134,13 +134,13 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
 
         void bind(RutinaEjercicio item) {
             current = null;
-            Ejercicio ejercicio = catalogoPorId.get(item.ejercicioId);
-            nombre.setText(ejercicio != null ? ejercicio.nombre : "Ejercicio");
-            series.setText(String.valueOf(item.series));
-            repeticiones.setText(String.valueOf(item.repeticiones));
-            peso.setText(String.valueOf(item.peso));
-            repeticionesMax.setText(String.valueOf(item.repeticionesMax));
-            esquemaProgresion.setSelection(item.esquemaProgresion);
+            Ejercicio ejercicio = catalogoPorId.get(item.getEjercicioId());
+            nombre.setText(ejercicio != null ? ejercicio.getNombre() : "Ejercicio");
+            series.setText(String.valueOf(item.getSeries()));
+            repeticiones.setText(String.valueOf(item.getRepeticiones()));
+            peso.setText(String.valueOf(item.getPeso()));
+            repeticionesMax.setText(String.valueOf(item.getRepeticionesMax()));
+            esquemaProgresion.setSelection(item.getEsquemaProgresion());
             current = item;
         }
     }

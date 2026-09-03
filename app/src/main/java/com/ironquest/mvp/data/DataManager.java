@@ -13,7 +13,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class DataManager {
@@ -73,33 +72,25 @@ public class DataManager {
             if (importado == null) {
                 throw new IOException("El archivo no contiene datos válidos");
             }
-            if (importado.ejercicios == null) {
-                importado.ejercicios = new ArrayList<>();
-            }
-            if (importado.rutinas == null) {
-                importado.rutinas = new ArrayList<>();
-            }
-            if (importado.sesiones == null) {
-                importado.sesiones = new ArrayList<>();
-            }
+            importado.normalizarColecciones();
             return importado;
         }
     }
 
     public void reemplazarTodo(DataStore nuevo) {
-        dataStore.ejercicios.clear();
-        dataStore.ejercicios.addAll(nuevo.ejercicios);
-        dataStore.rutinas.clear();
-        dataStore.rutinas.addAll(nuevo.rutinas);
-        dataStore.sesiones.clear();
-        dataStore.sesiones.addAll(nuevo.sesiones);
+        dataStore.getEjercicios().clear();
+        dataStore.getEjercicios().addAll(nuevo.getEjercicios());
+        dataStore.getRutinas().clear();
+        dataStore.getRutinas().addAll(nuevo.getRutinas());
+        dataStore.getSesiones().clear();
+        dataStore.getSesiones().addAll(nuevo.getSesiones());
         save();
     }
 
     private DataStore load() {
         if (!file.exists()) {
             DataStore fresh = new DataStore();
-            fresh.ejercicios.addAll(seedEjercicios());
+            fresh.getEjercicios().addAll(seedEjercicios());
             dataStore = fresh;
             save();
             return fresh;
@@ -109,8 +100,10 @@ public class DataManager {
             if (loaded == null) {
                 loaded = new DataStore();
             }
-            if (loaded.ejercicios.isEmpty()) {
-                loaded.ejercicios.addAll(seedEjercicios());
+            // No puede llamar a save(): load() corre antes de que this.dataStore esté asignado.
+            loaded.normalizarColecciones();
+            if (loaded.getEjercicios().isEmpty()) {
+                loaded.getEjercicios().addAll(seedEjercicios());
             }
             return loaded;
         } catch (IOException e) {

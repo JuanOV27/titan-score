@@ -105,19 +105,19 @@ public class PhysicalProfileActivity extends AppCompatActivity {
     }
 
     private void precargarUltimoRegistro() {
-        List<RegistroFisico> historial = dataStore.historialFisico;
+        List<RegistroFisico> historial = dataStore.getHistorialFisico();
         if (historial.isEmpty()) {
             return;
         }
         RegistroFisico ultimo = historial.get(historial.size() - 1);
-        peso = ultimo.pesoKg;
-        altura = ultimo.alturaCm;
-        pecho = ultimo.pechoCm;
-        cintura = ultimo.cinturaCm;
-        cadera = ultimo.caderaCm;
-        brazo = ultimo.brazoCm;
-        pierna = ultimo.piernaCm;
-        tipoCuerpo = ultimo.tipoCuerpo;
+        peso = ultimo.getPesoKg();
+        altura = ultimo.getAlturaCm();
+        pecho = ultimo.getPechoCm();
+        cintura = ultimo.getCinturaCm();
+        cadera = ultimo.getCaderaCm();
+        brazo = ultimo.getBrazoCm();
+        pierna = ultimo.getPiernaCm();
+        tipoCuerpo = ultimo.getTipoCuerpo();
     }
 
     private void mostrarSelectorFecha() {
@@ -146,19 +146,19 @@ public class PhysicalProfileActivity extends AppCompatActivity {
         }
 
         RegistroFisico registro = new RegistroFisico();
-        registro.id = dataManager.newId("fis");
-        registro.fecha = fechaSeleccionada.toString();
-        registro.pesoKg = peso;
-        registro.alturaCm = altura;
-        registro.imc = PerfilFisicoUtil.calcularImc(peso, altura);
-        registro.pechoCm = pecho;
-        registro.cinturaCm = cintura;
-        registro.caderaCm = cadera;
-        registro.brazoCm = brazo;
-        registro.piernaCm = pierna;
-        registro.tipoCuerpo = tipoCuerpo;
+        registro.setId(dataManager.newId("fis"));
+        registro.setFecha(fechaSeleccionada.toString());
+        registro.setPesoKg(peso);
+        registro.setAlturaCm(altura);
+        registro.setImc(PerfilFisicoUtil.calcularImc(peso, altura));
+        registro.setPechoCm(pecho);
+        registro.setCinturaCm(cintura);
+        registro.setCaderaCm(cadera);
+        registro.setBrazoCm(brazo);
+        registro.setPiernaCm(pierna);
+        registro.setTipoCuerpo(tipoCuerpo);
 
-        dataStore.historialFisico.add(registro);
+        dataStore.getHistorialFisico().add(registro);
         dataManager.save();
 
         Toast.makeText(this, "Medidas guardadas", Toast.LENGTH_SHORT).show();

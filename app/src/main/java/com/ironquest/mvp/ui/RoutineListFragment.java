@@ -51,7 +51,7 @@ public class RoutineListFragment extends Fragment implements RutinaAdapter.Liste
         recyclerView = view.findViewById(R.id.recycler_rutinas);
         textEmpty = view.findViewById(R.id.text_empty);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        adapter = new RutinaAdapter(dataManager.getDataStore().rutinas, this);
+        adapter = new RutinaAdapter(dataManager.getDataStore().getRutinas(), this);
         recyclerView.setAdapter(adapter);
 
         FloatingActionButton fab = view.findViewById(R.id.fab_nueva_rutina);
@@ -63,7 +63,7 @@ public class RoutineListFragment extends Fragment implements RutinaAdapter.Liste
     public void onResume() {
         super.onResume();
         adapter.notifyDataSetChanged();
-        boolean vacio = dataManager.getDataStore().rutinas.isEmpty();
+        boolean vacio = dataManager.getDataStore().getRutinas().isEmpty();
         textEmpty.setVisibility(vacio ? View.VISIBLE : View.GONE);
         recyclerView.setVisibility(vacio ? View.GONE : View.VISIBLE);
         actualizarTarjetaSesionEnCurso();
@@ -73,7 +73,7 @@ public class RoutineListFragment extends Fragment implements RutinaAdapter.Liste
     private void actualizarTarjetaRecordatorioFisico() {
         View raiz = requireView();
         View card = raiz.findViewById(R.id.card_recordatorio_fisico);
-        List<RegistroFisico> historial = dataManager.getDataStore().historialFisico;
+        List<RegistroFisico> historial = dataManager.getDataStore().getHistorialFisico();
         boolean necesitaActualizar = PerfilFisicoUtil.necesitaActualizacion(historial);
         card.setVisibility(necesitaActualizar ? View.VISIBLE : View.GONE);
         if (necesitaActualizar) {
@@ -89,33 +89,33 @@ public class RoutineListFragment extends Fragment implements RutinaAdapter.Liste
     private void actualizarTarjetaSesionEnCurso() {
         View raiz = requireView();
         View card = raiz.findViewById(R.id.card_sesion_en_curso);
-        Sesion enProgreso = dataManager.getDataStore().sesionEnProgreso;
+        Sesion enProgreso = dataManager.getDataStore().getSesionEnProgreso();
         if (enProgreso == null) {
             card.setVisibility(View.GONE);
             return;
         }
         card.setVisibility(View.VISIBLE);
         long minutos = Duration.between(
-                LocalDateTime.parse(enProgreso.fechaHoraInicio), LocalDateTime.now()).toMinutes();
+                LocalDateTime.parse(enProgreso.getFechaHoraInicio()), LocalDateTime.now()).toMinutes();
         TextView textDetalle = raiz.findViewById(R.id.text_sesion_en_curso_detalle);
-        textDetalle.setText(enProgreso.rutinaNombre + " · " + minutos + " min");
+        textDetalle.setText(enProgreso.getRutinaNombre() + " · " + minutos + " min");
         raiz.findViewById(R.id.button_continuar_sesion)
                 .setOnClickListener(v -> continuarSesionEnCurso());
     }
 
     private void continuarSesionEnCurso() {
-        Sesion enProgreso = dataManager.getDataStore().sesionEnProgreso;
+        Sesion enProgreso = dataManager.getDataStore().getSesionEnProgreso();
         if (enProgreso == null) {
             return;
         }
         Intent intent = new Intent(requireContext(), ActiveSessionActivity.class);
-        intent.putExtra(ActiveSessionActivity.EXTRA_RUTINA_ID, enProgreso.rutinaId);
+        intent.putExtra(ActiveSessionActivity.EXTRA_RUTINA_ID, enProgreso.getRutinaId());
         intent.putExtra(ActiveSessionActivity.EXTRA_RESUMIR, true);
         startActivity(intent);
     }
 
     private void descartarSesionEnCurso() {
-        dataManager.getDataStore().sesionEnProgreso = null;
+        dataManager.getDataStore().setSesionEnProgreso(null);
         dataManager.save();
         SesionTrackingService.detener(requireContext());
         actualizarTarjetaSesionEnCurso();
@@ -123,11 +123,11 @@ public class RoutineListFragment extends Fragment implements RutinaAdapter.Liste
 
     @Override
     public void onRutinaClick(Rutina rutina) {
-        Sesion enProgreso = dataManager.getDataStore().sesionEnProgreso;
+        Sesion enProgreso = dataManager.getDataStore().getSesionEnProgreso();
         if (enProgreso != null) {
             new AlertDialog.Builder(requireContext())
                     .setTitle("Ya tienes un entrenamiento en curso")
-                    .setMessage("Tienes una sesión de \"" + enProgreso.rutinaNombre + "\" sin finalizar. ¿Qué quieres hacer?")
+                    .setMessage("Tienes una sesión de \"" + enProgreso.getRutinaNombre() + "\" sin finalizar. ¿Qué quieres hacer?")
                     .setPositiveButton("Continuar la actual", (dialog, which) -> continuarSesionEnCurso())
                     .setNegativeButton("Descartar y empezar nueva", (dialog, which) -> {
                         descartarSesionEnCurso();
@@ -142,14 +142,14 @@ public class RoutineListFragment extends Fragment implements RutinaAdapter.Liste
 
     private void iniciarSesionNueva(Rutina rutina) {
         Intent intent = new Intent(requireContext(), ActiveSessionActivity.class);
-        intent.putExtra(ActiveSessionActivity.EXTRA_RUTINA_ID, rutina.id);
+        intent.putExtra(ActiveSessionActivity.EXTRA_RUTINA_ID, rutina.getId());
         startActivity(intent);
     }
 
     @Override
     public void onEditarClick(Rutina rutina) {
         Intent intent = new Intent(requireContext(), EditRoutineActivity.class);
-        intent.putExtra(EditRoutineActivity.EXTRA_RUTINA_ID, rutina.id);
+        intent.putExtra(EditRoutineActivity.EXTRA_RUTINA_ID, rutina.getId());
         startActivity(intent);
     }
 }
