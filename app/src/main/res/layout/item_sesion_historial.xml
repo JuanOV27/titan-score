@@ -12,12 +12,28 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <TextView
-            android:id="@+id/text_rutina_sesion"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="17sp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/text_rutina_sesion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textStyle="bold"
+                android:textSize="17sp" />
+
+            <ImageView
+                android:id="@+id/icon_expandir_sesion"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="Toca para ver el detalle de la sesión"
+                android:src="@android:drawable/arrow_down_float" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/text_fecha_sesion"
@@ -40,6 +56,14 @@
             android:layout_marginTop="2dp"
             android:textStyle="bold"
             android:textSize="14sp" />
+
+        <LinearLayout
+            android:id="@+id/container_detalle_sesion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
 
     </LinearLayout>
 
