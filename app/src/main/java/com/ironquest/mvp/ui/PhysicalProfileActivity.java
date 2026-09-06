@@ -15,6 +15,8 @@ import com.ironquest.mvp.data.DataManager;
 import com.ironquest.mvp.model.DataStore;
 import com.ironquest.mvp.model.RegistroFisico;
 import com.ironquest.mvp.util.PerfilFisicoUtil;
+import com.ironquest.mvp.data.PerfilSync;
+import com.ironquest.mvp.model.Usuario;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -151,6 +153,12 @@ public class PhysicalProfileActivity extends BaseActivity {
 
         dataStore.getHistorialFisico().add(registro);
         dataManager.save();
+
+        Usuario usuarioActivo = dataStore.getUsuario();
+        if (usuarioActivo != null && usuarioActivo.getFirebaseUid() != null) {
+            PerfilSync.getInstance().pushCompleto(
+                    usuarioActivo.getFirebaseUid(), usuarioActivo, dataStore.getHistorialFisico());
+        }
 
         Toast.makeText(this, "Medidas guardadas", Toast.LENGTH_SHORT).show();
         finish();
