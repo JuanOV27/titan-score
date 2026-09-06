@@ -18,6 +18,8 @@ import com.ironquest.mvp.R;
 import com.ironquest.mvp.data.DataManager;
 import com.ironquest.mvp.model.DataStore;
 import com.ironquest.mvp.model.Usuario;
+import com.google.firebase.auth.FirebaseUser;
+import com.ironquest.mvp.data.AuthManager;
 
 import java.io.File;
 import java.io.InputStream;
@@ -54,7 +56,10 @@ public class MainActivity extends BaseActivity {
 
         dataManager = DataManager.getInstance(this);
         Usuario usuario = dataManager.getDataStore().getUsuario();
-        if (usuario == null || !usuario.isSesionActiva()) {
+        FirebaseUser firebaseUser = AuthManager.getInstance().usuarioActual();
+        boolean sesionValida = usuario != null && firebaseUser != null
+                && firebaseUser.getUid().equals(usuario.getFirebaseUid());
+        if (!sesionValida) {
             startActivity(new Intent(this, AuthActivity.class));
             finish();
             return;
