@@ -14,8 +14,10 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.ironquest.mvp.BuildConfig;
 import com.ironquest.mvp.R;
 import com.ironquest.mvp.data.DataManager;
+import com.ironquest.mvp.data.VersionChecker;
 import com.ironquest.mvp.model.DataStore;
 import com.ironquest.mvp.model.Usuario;
 import com.google.firebase.auth.FirebaseUser;
@@ -53,6 +55,12 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        VersionChecker.getInstance().verificar(BuildConfig.VERSION_CODE, resultado -> {
+            if (!isFinishing() && !isDestroyed()) {
+                mostrarDialogoVersion(resultado);
+            }
+        });
 
         dataManager = DataManager.getInstance(this);
         Usuario usuario = dataManager.getDataStore().getUsuario();
@@ -97,6 +105,22 @@ public class MainActivity extends BaseActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(ESTADO_TAB, tabActual);
+    }
+
+    private void mostrarDialogoVersion(VersionChecker.Resultado resultado) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle(resultado.bloqueoDuro ? "Actualización requerida" : "Nueva versión disponible")
+                .setMessage((resultado.bloqueoDuro
+                        ? "Necesitas actualizar Titan Score para seguir usándolo."
+                        : "Hay una nueva versión de Titan Score disponible (" + resultado.latestVersionName + ").")
+                        + (resultado.notas != null && !resultado.notas.isEmpty() ? "\n\n" + resultado.notas : ""))
+                .setPositiveButton("Actualizar", (dialog, which) ->
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(resultado.urlDescarga))))
+                .setCancelable(!resultado.bloqueoDuro);
+        if (!resultado.bloqueoDuro) {
+            builder.setNegativeButton("Ahora no", null);
+        }
+        builder.show();
     }
 
     /** Permite que un fragment mande al usuario a otra pestaña sin duplicar su lógica. */

@@ -1,6 +1,7 @@
 package com.ironquest.mvp.ui;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
@@ -14,10 +15,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.ironquest.mvp.BuildConfig;
 import com.ironquest.mvp.R;
 import com.ironquest.mvp.data.AuthManager;
 import com.ironquest.mvp.data.DataManager;
 import com.ironquest.mvp.data.PerfilSync;
+import com.ironquest.mvp.data.VersionChecker;
 import com.ironquest.mvp.model.DataStore;
 import com.ironquest.mvp.model.RegistroFisico;
 import com.ironquest.mvp.model.Usuario;
@@ -67,6 +70,13 @@ public class AuthActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        VersionChecker.getInstance().verificar(BuildConfig.VERSION_CODE, resultado -> {
+            if (!isFinishing() && !isDestroyed()) {
+                mostrarDialogoVersion(resultado);
+            }
+        });
+
         setContentView(R.layout.activity_auth);
 
         dataManager = DataManager.getInstance(this);
@@ -319,5 +329,21 @@ public class AuthActivity extends AppCompatActivity {
 
     private String contrasenaDe(TextInputEditText edit) {
         return edit.getText() == null ? "" : edit.getText().toString();
+    }
+
+    private void mostrarDialogoVersion(VersionChecker.Resultado resultado) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle(resultado.bloqueoDuro ? "Actualización requerida" : "Nueva versión disponible")
+                .setMessage((resultado.bloqueoDuro
+                        ? "Necesitas actualizar Titan Score para seguir usándolo."
+                        : "Hay una nueva versión de Titan Score disponible (" + resultado.latestVersionName + ").")
+                        + (resultado.notas != null && !resultado.notas.isEmpty() ? "\n\n" + resultado.notas : ""))
+                .setPositiveButton("Actualizar", (dialog, which) ->
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(resultado.urlDescarga))))
+                .setCancelable(!resultado.bloqueoDuro);
+        if (!resultado.bloqueoDuro) {
+            builder.setNegativeButton("Ahora no", null);
+        }
+        builder.show();
     }
 }
