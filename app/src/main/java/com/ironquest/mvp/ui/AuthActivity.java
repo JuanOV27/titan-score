@@ -273,7 +273,7 @@ public class AuthActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onError(String mensaje) {
+                    public void onNoEncontrado() {
                         Usuario usuarioMinimo = new Usuario();
                         usuarioMinimo.setId(dataManager.newId("user"));
                         usuarioMinimo.setEmail(email);
@@ -285,6 +285,14 @@ public class AuthActivity extends AppCompatActivity {
                         dataStore.setUsuario(usuarioMinimo);
                         dataManager.save();
                         continuarDespuesDeAuth();
+                    }
+
+                    @Override
+                    public void onError(String mensaje) {
+                        buttonSubmit.setEnabled(true);
+                        Toast.makeText(AuthActivity.this,
+                                "No se pudo recuperar tu perfil de la nube: " + mensaje + ". Intenta de nuevo.",
+                                Toast.LENGTH_LONG).show();
                     }
                 });
             }

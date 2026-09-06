@@ -20,6 +20,7 @@ public class PerfilSync {
 
     public interface CallbackPull {
         void onListo(Usuario usuario, List<RegistroFisico> historial);
+        void onNoEncontrado();
         void onError(String mensaje);
     }
 
@@ -53,7 +54,7 @@ public class PerfilSync {
         firestore.collection("usuarios").document(uid).get()
                 .addOnSuccessListener(documento -> {
                     if (!documento.exists() || documento.getData() == null) {
-                        callback.onError("No hay perfil guardado en la nube todavía");
+                        callback.onNoEncontrado();
                         return;
                     }
                     Usuario usuario = usuarioDesdeMapa(uid, documento.getData());
