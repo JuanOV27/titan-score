@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,7 @@ public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.ViewHolder
         void onRutinaClick(Rutina rutina);
         void onEditarClick(Rutina rutina);
         void onCompartirClick(Rutina rutina);
+        void onEliminarClick(Rutina rutina);
     }
 
     private final List<Rutina> rutinas;
@@ -46,9 +48,30 @@ public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.ViewHolder
         holder.resumen.setText(cantidadEjercicios == 1
                 ? "1 ejercicio"
                 : cantidadEjercicios + " ejercicios");
-        holder.itemView.setOnClickListener(v -> listener.onRutinaClick(rutina));
-        holder.botonEditar.setOnClickListener(v -> listener.onEditarClick(rutina));
-        holder.botonCompartir.setOnClickListener(v -> listener.onCompartirClick(rutina));
+        holder.botonIniciar.setOnClickListener(v -> listener.onRutinaClick(rutina));
+        holder.botonMasOpciones.setOnClickListener(v -> mostrarMenuOpciones(holder.botonMasOpciones, rutina));
+    }
+
+    private void mostrarMenuOpciones(View ancla, Rutina rutina) {
+        PopupMenu menu = new PopupMenu(ancla.getContext(), ancla);
+        menu.inflate(R.menu.menu_rutina_item);
+        menu.setOnMenuItemClickListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.action_editar_rutina) {
+                listener.onEditarClick(rutina);
+                return true;
+            }
+            if (id == R.id.action_compartir_rutina) {
+                listener.onCompartirClick(rutina);
+                return true;
+            }
+            if (id == R.id.action_eliminar_rutina) {
+                listener.onEliminarClick(rutina);
+                return true;
+            }
+            return false;
+        });
+        menu.show();
     }
 
     @Override
@@ -59,15 +82,15 @@ public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.ViewHolder
     static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView nombre;
         private final TextView resumen;
-        private final ImageButton botonEditar;
-        private final ImageButton botonCompartir;
+        private final ImageButton botonIniciar;
+        private final ImageButton botonMasOpciones;
 
         private ViewHolder(@NonNull View itemView) {
             super(itemView);
             nombre = itemView.findViewById(R.id.text_nombre_rutina);
             resumen = itemView.findViewById(R.id.text_resumen_rutina);
-            botonEditar = itemView.findViewById(R.id.button_editar_rutina);
-            botonCompartir = itemView.findViewById(R.id.button_compartir_rutina);
+            botonIniciar = itemView.findViewById(R.id.button_iniciar_rutina);
+            botonMasOpciones = itemView.findViewById(R.id.button_mas_opciones_rutina);
         }
     }
 }

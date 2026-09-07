@@ -67,11 +67,15 @@ public class RoutineListFragment extends Fragment implements RutinaAdapter.Liste
     public void onResume() {
         super.onResume();
         adapter.notifyDataSetChanged();
+        actualizarEstadoVacio();
+        actualizarTarjetaSesionEnCurso();
+        actualizarTarjetaRecordatorioFisico();
+    }
+
+    private void actualizarEstadoVacio() {
         boolean vacio = dataManager.getDataStore().getRutinas().isEmpty();
         textEmpty.setVisibility(vacio ? View.VISIBLE : View.GONE);
         recyclerView.setVisibility(vacio ? View.GONE : View.VISIBLE);
-        actualizarTarjetaSesionEnCurso();
-        actualizarTarjetaRecordatorioFisico();
     }
 
     private void actualizarTarjetaRecordatorioFisico() {
@@ -155,6 +159,22 @@ public class RoutineListFragment extends Fragment implements RutinaAdapter.Liste
         Intent intent = new Intent(requireContext(), EditRoutineActivity.class);
         intent.putExtra(EditRoutineActivity.EXTRA_RUTINA_ID, rutina.getId());
         startActivity(intent);
+    }
+
+    @Override
+    public void onEliminarClick(Rutina rutina) {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Eliminar rutina")
+                .setMessage("¿Eliminar \"" + rutina.getNombre() + "\"? Tu historial de sesiones ya registradas no se ve afectado.")
+                .setPositiveButton("Eliminar", (dialog, which) -> {
+                    dataManager.getDataStore().getRutinas().remove(rutina);
+                    dataManager.save();
+                    adapter.notifyDataSetChanged();
+                    actualizarEstadoVacio();
+                    Toast.makeText(requireContext(), "Rutina eliminada", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
     }
 
     @Override
