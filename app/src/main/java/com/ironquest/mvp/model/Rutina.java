@@ -22,6 +22,11 @@ public class Rutina extends EntidadIdentificable {
         ejercicios.add(ejercicio);
     }
 
+    /** Cambia la posición de un ejercicio dentro de la rutina (para arrastrar y soltar). */
+    public void moverEjercicio(int desde, int hasta) {
+        ejercicios.add(hasta, ejercicios.remove(desde));
+    }
+
     public void quitarEjercicio(int posicion) {
         if (posicion >= 0 && posicion < ejercicios.size()) {
             ejercicios.remove(posicion);
