@@ -22,6 +22,7 @@ import com.ironquest.mvp.model.DataStore;
 import com.ironquest.mvp.model.Usuario;
 import com.google.firebase.auth.FirebaseUser;
 import com.ironquest.mvp.data.AuthManager;
+import com.ironquest.mvp.model.RutinaCompartida;
 
 import java.io.File;
 import java.io.InputStream;
@@ -50,6 +51,7 @@ public class MainActivity extends BaseActivity {
     private DataManager dataManager;
     private BottomNavigationView bottomNav;
     private ActivityResultLauncher<String[]> importLauncher;
+    private ActivityResultLauncher<String[]> importRutinaLauncher;
     private int tabActual = TAB_POR_DEFECTO;
 
     @Override
@@ -78,6 +80,8 @@ public class MainActivity extends BaseActivity {
 
         importLauncher = registerForActivityResult(
                 new ActivityResultContracts.OpenDocument(), this::onArchivoSeleccionado);
+        importRutinaLauncher = registerForActivityResult(
+                new ActivityResultContracts.OpenDocument(), this::onArchivoRutinaSeleccionado);
 
         bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setOnItemSelectedListener(item -> {
@@ -189,6 +193,10 @@ public class MainActivity extends BaseActivity {
             importLauncher.launch(new String[]{"application/json", "text/plain", "application/octet-stream", "*/*"});
             return true;
         }
+        if (id == R.id.action_importar_rutina) {
+            importRutinaLauncher.launch(new String[]{"application/json", "text/plain", "application/octet-stream", "*/*"});
+            return true;
+        }
         if (id == R.id.action_feedback) {
             abrirFormularioFeedback();
             return true;
@@ -244,6 +252,35 @@ public class MainActivity extends BaseActivity {
                     // Volver a montar la pestaña actual es lo que refresca la lista.
                     mostrarTab(tabActual);
                     Toast.makeText(this, "Datos importados correctamente", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void onArchivoRutinaSeleccionado(Uri uri) {
+        if (uri == null) {
+            return;
+        }
+        RutinaCompartida paquete;
+        try (InputStream inputStream = getContentResolver().openInputStream(uri)) {
+            if (inputStream == null) {
+                throw new java.io.IOException("No se pudo abrir el archivo");
+            }
+            paquete = dataManager.leerRutinaCompartidaDesde(inputStream);
+        } catch (Exception e) {
+            Toast.makeText(this, "No se pudo leer el archivo: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        int cantidadEjercicios = paquete.getRutina().getCantidadEjercicios();
+        new AlertDialog.Builder(this)
+                .setTitle("Importar rutina")
+                .setMessage("¿Agregar la rutina \"" + paquete.getRutina().getNombre() + "\" con "
+                        + cantidadEjercicios + " ejercicios? Tus rutinas actuales no se modifican.")
+                .setPositiveButton("Agregar", (dialog, which) -> {
+                    dataManager.importarRutina(paquete);
+                    mostrarTab(tabActual);
+                    Toast.makeText(this, "Rutina agregada correctamente", Toast.LENGTH_SHORT).show();
                 })
                 .setNegativeButton("Cancelar", null)
                 .show();

@@ -16,6 +16,10 @@
         android:title="Importar datos"
         android:showAsAction="never" />
     <item
+        android:id="@+id/action_importar_rutina"
+        android:title="Importar rutina"
+        android:showAsAction="never" />
+    <item
         android:id="@+id/action_feedback"
         android:title="Enviar feedback"
         android:showAsAction="never" />
