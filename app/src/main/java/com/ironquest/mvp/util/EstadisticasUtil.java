@@ -50,6 +50,29 @@ public final class EstadisticasUtil {
         return racha;
     }
 
+    /** Minutos reales entre inicio y fin de la sesión. 0 si todavía no está finalizada. */
+    public static long calcularDuracionMinutos(Sesion sesion) {
+        if (!sesion.estaFinalizada()) {
+            return 0;
+        }
+        return ChronoUnit.MINUTES.between(
+                LocalDateTime.parse(sesion.getFechaHoraInicio()),
+                LocalDateTime.parse(sesion.getFechaHoraFin()));
+    }
+
+    /** "45m", "2h" o "1h30m" — compacto para caber en la etiqueta de una barra. */
+    public static String formatearDuracion(long minutosTotales) {
+        long horas = minutosTotales / 60;
+        long minutos = minutosTotales % 60;
+        if (horas == 0) {
+            return minutos + "m";
+        }
+        if (minutos == 0) {
+            return horas + "h";
+        }
+        return horas + "h" + minutos + "m";
+    }
+
     private static List<LocalDate> diasConSesion(List<Sesion> sesiones) {
         Set<LocalDate> unicos = new HashSet<>();
         for (Sesion sesion : sesiones) {

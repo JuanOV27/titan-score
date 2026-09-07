@@ -112,19 +112,20 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/label_volumen"
+            android:id="@+id/label_duracion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Volumen por sesión (últimas 10)"
+            android:text="Tiempo entrenado por sesión (últimas 10)"
             android:textStyle="bold"
             android:textSize="15sp" />
 
         <com.ironquest.mvp.ui.BarChartView
-            android:id="@+id/chart_volumen"
+            android:id="@+id/chart_duracion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_contenedor_grafica" />
 
         <TextView
             android:id="@+id/label_cumplimiento"
@@ -139,7 +140,8 @@
             android:id="@+id/chart_cumplimiento"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_contenedor_grafica" />
 
         <TextView
             android:id="@+id/label_frecuencia"
@@ -156,7 +158,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/bg_contenedor_grafica" />
 
     </LinearLayout>
 
