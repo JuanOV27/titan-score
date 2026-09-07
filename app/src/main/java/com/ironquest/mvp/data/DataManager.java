@@ -6,6 +6,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ironquest.mvp.model.DataStore;
 import com.ironquest.mvp.model.Ejercicio;
+import com.ironquest.mvp.model.Rutina;
+import com.ironquest.mvp.model.RutinaCompartida;
+import com.ironquest.mvp.model.RutinaEjercicio;
 
 import java.io.File;
 import java.io.FileReader;
@@ -13,6 +16,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class DataManager {
@@ -105,6 +110,72 @@ public class DataManager {
         dataStore.getSesiones().clear();
         dataStore.getSesiones().addAll(nuevo.getSesiones());
         save();
+    }
+
+    public File exportarRutinaComoArchivo(Rutina rutina) throws IOException {
+        File dir = new File(appContext.getCacheDir(), "exportaciones");
+        if (!dir.exists() && !dir.mkdirs()) {
+            throw new IOException("No se pudo crear la carpeta de exportación");
+        }
+        RutinaCompartida paquete = new RutinaCompartida();
+        paquete.setRutina(rutina);
+        java.util.List<Ejercicio> ejerciciosUsados = new java.util.ArrayList<>();
+        for (RutinaEjercicio re : rutina.getEjercicios()) {
+            Ejercicio ejercicio = dataStore.buscarEjercicio(re.getEjercicioId());
+            if (ejercicio != null) {
+                ejerciciosUsados.add(ejercicio);
+            }
+        }
+        paquete.setEjercicios(ejerciciosUsados);
+
+        File exportFile = new File(dir, "rutina_" + rutina.getId() + ".json");
+        try (FileWriter writer = new FileWriter(exportFile)) {
+            gson.toJson(paquete, writer);
+        }
+        return exportFile;
+    }
+
+    public RutinaCompartida leerRutinaCompartidaDesde(InputStream inputStream) throws IOException {
+        try (InputStreamReader reader = new InputStreamReader(inputStream)) {
+            RutinaCompartida paquete = gson.fromJson(reader, RutinaCompartida.class);
+            if (paquete == null || paquete.getRutina() == null) {
+                throw new IOException("El archivo no contiene una rutina válida");
+            }
+            if (paquete.getEjercicios() == null) {
+                paquete.setEjercicios(new java.util.ArrayList<>());
+            }
+            return paquete;
+        }
+    }
+
+    public Rutina importarRutina(RutinaCompartida paquete) {
+        Map<String, String> idsRemapeados = new HashMap<>();
+        for (Ejercicio ejercicioImportado : paquete.getEjercicios()) {
+            Ejercicio existente = dataStore.buscarEjercicio(ejercicioImportado.getId());
+            if (existente != null) {
+                idsRemapeados.put(ejercicioImportado.getId(), existente.getId());
+            } else {
+                String nuevoId = newId("ex");
+                Ejercicio nuevo = new Ejercicio(
+                        nuevoId, ejercicioImportado.getNombre(), ejercicioImportado.getGrupoMuscular());
+                nuevo.setPersonalizado(true);
+                dataStore.getEjercicios().add(nuevo);
+                idsRemapeados.put(ejercicioImportado.getId(), nuevoId);
+            }
+        }
+
+        Rutina original = paquete.getRutina();
+        Rutina nueva = new Rutina(newId("r"), original.getNombre());
+        for (RutinaEjercicio re : original.getEjercicios()) {
+            String idRemapeado = idsRemapeados.getOrDefault(re.getEjercicioId(), re.getEjercicioId());
+            RutinaEjercicio copia = new RutinaEjercicio(idRemapeado, re.getSeries(), re.getRepeticiones(), re.getPeso());
+            copia.setEsquemaProgresion(re.getEsquemaProgresion());
+            copia.setRepeticionesMax(re.getRepeticionesMax());
+            nueva.agregarEjercicio(copia);
+        }
+        dataStore.getRutinas().add(nueva);
+        save();
+        return nueva;
     }
 
     private DataStore load() {
