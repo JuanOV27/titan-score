@@ -19,6 +19,7 @@ public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.ViewHolder
     public interface Listener {
         void onRutinaClick(Rutina rutina);
         void onEditarClick(Rutina rutina);
+        void onCompartirClick(Rutina rutina);
     }
 
     private final List<Rutina> rutinas;
@@ -47,6 +48,7 @@ public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.ViewHolder
                 : cantidadEjercicios + " ejercicios");
         holder.itemView.setOnClickListener(v -> listener.onRutinaClick(rutina));
         holder.botonEditar.setOnClickListener(v -> listener.onEditarClick(rutina));
+        holder.botonCompartir.setOnClickListener(v -> listener.onCompartirClick(rutina));
     }
 
     @Override
@@ -58,12 +60,14 @@ public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.ViewHolder
         private final TextView nombre;
         private final TextView resumen;
         private final ImageButton botonEditar;
+        private final ImageButton botonCompartir;
 
         private ViewHolder(@NonNull View itemView) {
             super(itemView);
             nombre = itemView.findViewById(R.id.text_nombre_rutina);
             resumen = itemView.findViewById(R.id.text_resumen_rutina);
             botonEditar = itemView.findViewById(R.id.button_editar_rutina);
+            botonCompartir = itemView.findViewById(R.id.button_compartir_rutina);
         }
     }
 }

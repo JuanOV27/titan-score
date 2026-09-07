@@ -35,6 +35,14 @@
         </LinearLayout>
 
         <ImageButton
+            android:id="@+id/button_compartir_rutina"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Compartir rutina"
+            android:src="@android:drawable/ic_menu_share" />
+
+        <ImageButton
             android:id="@+id/button_editar_rutina"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

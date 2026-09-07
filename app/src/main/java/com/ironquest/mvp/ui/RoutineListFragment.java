@@ -1,15 +1,18 @@
 package com.ironquest.mvp.ui;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,6 +26,7 @@ import com.ironquest.mvp.model.Sesion;
 import com.ironquest.mvp.service.SesionTrackingService;
 import com.ironquest.mvp.util.PerfilFisicoUtil;
 
+import java.io.File;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -151,5 +155,21 @@ public class RoutineListFragment extends Fragment implements RutinaAdapter.Liste
         Intent intent = new Intent(requireContext(), EditRoutineActivity.class);
         intent.putExtra(EditRoutineActivity.EXTRA_RUTINA_ID, rutina.getId());
         startActivity(intent);
+    }
+
+    @Override
+    public void onCompartirClick(Rutina rutina) {
+        try {
+            File archivo = dataManager.exportarRutinaComoArchivo(rutina);
+            Uri uri = FileProvider.getUriForFile(requireContext(),
+                    requireContext().getPackageName() + ".fileprovider", archivo);
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("application/json");
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(intent, "Compartir rutina"));
+        } catch (Exception e) {
+            Toast.makeText(requireContext(), "No se pudo compartir: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 }
