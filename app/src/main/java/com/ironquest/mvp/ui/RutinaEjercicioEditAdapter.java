@@ -1,6 +1,7 @@
 package com.ironquest.mvp.ui;
 
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -24,6 +25,8 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
 
     public interface Listener {
         void onQuitar(int position);
+        void onEditarPersonalizado(int position);
+        void onIniciarArrastre(RecyclerView.ViewHolder viewHolder);
     }
 
     private static final String[] OPCIONES_ESQUEMA =
@@ -49,12 +52,24 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(items.get(position));
+        holder.bind(items.get(position), catalogoPorId.get(items.get(position).getEjercicioId()));
         holder.botonQuitar.setOnClickListener(v -> {
             int adapterPos = holder.getBindingAdapterPosition();
             if (adapterPos != RecyclerView.NO_POSITION) {
                 listener.onQuitar(adapterPos);
             }
+        });
+        holder.botonEditarNombre.setOnClickListener(v -> {
+            int adapterPos = holder.getBindingAdapterPosition();
+            if (adapterPos != RecyclerView.NO_POSITION) {
+                listener.onEditarPersonalizado(adapterPos);
+            }
+        });
+        holder.manija.setOnTouchListener((v, event) -> {
+            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                listener.onIniciarArrastre(holder);
+            }
+            return false;
         });
     }
 
@@ -64,7 +79,9 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView manija;
         private final TextView nombre;
+        private final ImageButton botonEditarNombre;
         private final EditText series;
         private final EditText repeticiones;
         private final EditText peso;
@@ -75,7 +92,9 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
 
         private ViewHolder(@NonNull View itemView) {
             super(itemView);
+            manija = itemView.findViewById(R.id.icon_arrastrar_ejercicio);
             nombre = itemView.findViewById(R.id.text_nombre_ejercicio);
+            botonEditarNombre = itemView.findViewById(R.id.button_editar_nombre_ejercicio);
             series = itemView.findViewById(R.id.edit_series);
             repeticiones = itemView.findViewById(R.id.edit_repeticiones);
             peso = itemView.findViewById(R.id.edit_peso);
@@ -132,10 +151,11 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
             });
         }
 
-        private void bind(RutinaEjercicio item) {
+        private void bind(RutinaEjercicio item, Ejercicio ejercicio) {
             current = null;
-            Ejercicio ejercicio = catalogoPorId.get(item.getEjercicioId());
             nombre.setText(ejercicio != null ? ejercicio.getNombre() : "Ejercicio");
+            botonEditarNombre.setVisibility(ejercicio != null && ejercicio.isPersonalizado()
+                    ? View.VISIBLE : View.GONE);
             series.setText(String.valueOf(item.getSeries()));
             repeticiones.setText(String.valueOf(item.getRepeticiones()));
             peso.setText(String.valueOf(item.getPeso()));
