@@ -5,6 +5,7 @@ public class Ejercicio extends EntidadIdentificable {
 
     private String nombre;
     private String grupoMuscular;
+    private boolean personalizado;
 
     /** Constructor sin argumentos para Gson. Privado: nadie más debe crear un Ejercicio vacío. */
     private Ejercicio() {
@@ -30,6 +31,14 @@ public class Ejercicio extends EntidadIdentificable {
 
     public void setGrupoMuscular(String grupoMuscular) {
         this.grupoMuscular = grupoMuscular;
+    }
+
+    public boolean isPersonalizado() {
+        return personalizado;
+    }
+
+    public void setPersonalizado(boolean personalizado) {
+        this.personalizado = personalizado;
     }
 
     @Override

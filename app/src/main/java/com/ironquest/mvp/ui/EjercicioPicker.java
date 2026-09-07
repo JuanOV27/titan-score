@@ -61,6 +61,7 @@ public final class EjercicioPicker {
                         grupo = "Personalizado";
                     }
                     Ejercicio nuevo = new Ejercicio(dataManager.newId("ex"), nombre, grupo);
+                    nuevo.setPersonalizado(true);
                     dataStore.getEjercicios().add(nuevo);
                     listener.onEjercicioElegido(nuevo);
                 })
