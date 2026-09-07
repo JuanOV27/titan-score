@@ -29,6 +29,26 @@ public class DataManager {
         appContext = context.getApplicationContext();
         file = new File(appContext.getFilesDir(), FILE_NAME);
         dataStore = load();
+        migrarEjerciciosPersonalizados();
+    }
+
+    /**
+     * Antes de que existiera el campo {@code personalizado}, los ejercicios creados por el
+     * usuario ya llevaban un id con prefijo "ex_" (via {@code newId("ex")}), distinto de los 20
+     * ids sembrados ("ex1".."ex20", sin guion bajo). Se usa ese prefijo, una sola vez, para
+     * marcarlos retroactivamente — no vuelve a aplicar una vez migrados, porque ya quedan en true.
+     */
+    private void migrarEjerciciosPersonalizados() {
+        boolean cambio = false;
+        for (Ejercicio ejercicio : dataStore.getEjercicios()) {
+            if (!ejercicio.isPersonalizado() && ejercicio.getId() != null && ejercicio.getId().startsWith("ex_")) {
+                ejercicio.setPersonalizado(true);
+                cambio = true;
+            }
+        }
+        if (cambio) {
+            save();
+        }
     }
 
     public static synchronized DataManager getInstance(Context context) {
