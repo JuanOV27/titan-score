@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.ironquest.mvp.R;
@@ -49,13 +50,13 @@ public class StatsFragment extends Fragment {
         sesiones.sort(Comparator.comparing(s -> s.getFechaHoraInicio()));
 
         View containerResumen = raiz.findViewById(R.id.container_resumen);
-        View labelDuracion = raiz.findViewById(R.id.label_duracion);
+        View cardDuracion = raiz.findViewById(R.id.card_duracion);
         BarChartView chartDuracion = raiz.findViewById(R.id.chart_duracion);
-        View labelCumplimiento = raiz.findViewById(R.id.label_cumplimiento);
+        View cardCumplimiento = raiz.findViewById(R.id.card_cumplimiento);
         BarChartView chartCumplimiento = raiz.findViewById(R.id.chart_cumplimiento);
-        View labelFrecuencia = raiz.findViewById(R.id.label_frecuencia);
+        View cardFrecuencia = raiz.findViewById(R.id.card_frecuencia);
         BarChartView chartFrecuencia = raiz.findViewById(R.id.chart_frecuencia);
-        TextView textSinDatos = raiz.findViewById(R.id.text_sin_datos);
+        View textSinDatos = raiz.findViewById(R.id.text_sin_datos);
 
         // Fijar visibilidad en AMBAS ramas: como fragment reutilizable, quedarse solo con la
         // rama GONE dejaría la pantalla en blanco para siempre tras registrar la primera sesión.
@@ -63,12 +64,9 @@ public class StatsFragment extends Fragment {
         int visibilidadDatos = vacio ? View.GONE : View.VISIBLE;
         textSinDatos.setVisibility(vacio ? View.VISIBLE : View.GONE);
         containerResumen.setVisibility(visibilidadDatos);
-        labelDuracion.setVisibility(visibilidadDatos);
-        chartDuracion.setVisibility(visibilidadDatos);
-        labelCumplimiento.setVisibility(visibilidadDatos);
-        chartCumplimiento.setVisibility(visibilidadDatos);
-        labelFrecuencia.setVisibility(visibilidadDatos);
-        chartFrecuencia.setVisibility(visibilidadDatos);
+        cardDuracion.setVisibility(visibilidadDatos);
+        cardCumplimiento.setVisibility(visibilidadDatos);
+        cardFrecuencia.setVisibility(visibilidadDatos);
 
         if (vacio) {
             return;
@@ -78,15 +76,17 @@ public class StatsFragment extends Fragment {
 
         List<Sesion> ultimas = sesiones.subList(Math.max(0, sesiones.size() - 10), sesiones.size());
 
+        int colorDuracion = ContextCompat.getColor(requireContext(), R.color.ironquest_orange);
+
         List<BarChartView.Barra> barrasDuracion = new ArrayList<>();
         List<BarChartView.Barra> barrasCumplimiento = new ArrayList<>();
         for (Sesion sesion : ultimas) {
             String etiqueta = LocalDateTime.parse(sesion.getFechaHoraInicio()).format(FORMATO_ETIQUETA);
             long duracionMinutos = EstadisticasUtil.calcularDuracionMinutos(sesion);
             barrasDuracion.add(new BarChartView.Barra(etiqueta, duracionMinutos,
-                    EstadisticasUtil.formatearDuracion(duracionMinutos)));
+                    EstadisticasUtil.formatearDuracion(duracionMinutos), colorDuracion));
             barrasCumplimiento.add(new BarChartView.Barra(etiqueta, sesion.getPorcentajeCumplimiento(),
-                    sesion.getPorcentajeCumplimiento() + "%"));
+                    sesion.getPorcentajeCumplimiento() + "%", colorCumplimiento(sesion.getPorcentajeCumplimiento())));
         }
         chartDuracion.setDatos(barrasDuracion);
         chartCumplimiento.setDatos(barrasCumplimiento);
@@ -112,10 +112,22 @@ public class StatsFragment extends Fragment {
         }
 
         textTotalSesiones.setText(String.valueOf(sesiones.size()));
-        textVolumenTotal.setText(String.format(Locale.getDefault(), "%.0f", volumenTotal));
+        textVolumenTotal.setText(volumenTotal > 10000
+                ? String.format(Locale.getDefault(), "%.1fk", volumenTotal / 1000.0)
+                : String.format(Locale.getDefault(), "%.0f", volumenTotal));
         int promedio = sesionesFinalizadas > 0
                 ? Math.round((float) sumaCumplimiento / sesionesFinalizadas) : 0;
         textCumplimientoPromedio.setText(promedio + "%");
+    }
+
+    /** Mismos umbrales que HistorialAdapter/SessionSummaryActivity para el color de cumplimiento. */
+    private int colorCumplimiento(int porcentaje) {
+        int colorRes = porcentaje >= 100
+                ? R.color.cumplimiento_alto
+                : porcentaje >= 60
+                ? R.color.cumplimiento_medio
+                : R.color.cumplimiento_bajo;
+        return ContextCompat.getColor(requireContext(), colorRes);
     }
 
     private List<BarChartView.Barra> calcularFrecuenciaSemanal(List<Sesion> sesiones) {
@@ -140,10 +152,11 @@ public class StatsFragment extends Fragment {
             }
         }
 
+        int colorFrecuencia = ContextCompat.getColor(requireContext(), R.color.ironquest_orange);
         List<BarChartView.Barra> barras = new ArrayList<>();
         for (int i = 0; i < inicios.size(); i++) {
             String etiqueta = inicios.get(i).format(FORMATO_ETIQUETA);
-            barras.add(new BarChartView.Barra(etiqueta, conteos[i], String.valueOf(conteos[i])));
+            barras.add(new BarChartView.Barra(etiqueta, conteos[i], String.valueOf(conteos[i]), colorFrecuencia));
         }
         return barras;
     }

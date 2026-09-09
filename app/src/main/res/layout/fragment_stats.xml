@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -9,27 +11,57 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <TextView
+        <!-- Estado vacío -->
+        <LinearLayout
             android:id="@+id/text_sin_datos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="64dp"
             android:gravity="center"
-            android:text="Todavía no hay sesiones registradas."
-            android:textSize="16sp"
-            android:visibility="gone" />
+            android:orientation="vertical"
+            android:visibility="gone">
 
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:alpha="0.3"
+                android:src="@android:drawable/ic_menu_today"
+                app:tint="?attr/colorPrimary"
+                android:contentDescription="Sin datos" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="¡Empieza tu viaje hoy!"
+                android:textStyle="bold"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Tus estadísticas aparecerán aquí después de tu primera sesión."
+                android:gravity="center"
+                android:alpha="0.7"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- Resumen rápido -->
         <LinearLayout
             android:id="@+id/container_resumen"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:baselineAligned="false">
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_margin="4dp">
+                android:layout_margin="4dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -42,14 +74,18 @@
                         android:id="@+id/text_total_sesiones"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="22sp"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="24sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Sesiones"
-                        android:textSize="12sp" />
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.05"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -57,7 +93,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_margin="4dp">
+                android:layout_margin="4dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -70,14 +108,18 @@
                         android:id="@+id/text_volumen_total"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="22sp"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="24sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Volumen total"
-                        android:textSize="12sp" />
+                        android:text="Volumen"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.05"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -85,7 +127,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_margin="4dp">
+                android:layout_margin="4dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -98,68 +142,143 @@
                         android:id="@+id/text_cumplimiento_promedio"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="22sp"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="24sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cumplim. prom."
-                        android:textSize="12sp" />
+                        android:text="Cumplim. %"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.05"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/label_duracion"
+        <!-- Gráfico: tiempo entrenado -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_duracion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Tiempo entrenado por sesión (últimas 10)"
-            android:textStyle="bold"
-            android:textSize="15sp" />
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="16dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="?attr/colorOutlineVariant">
 
-        <com.ironquest.mvp.ui.BarChartView
-            android:id="@+id/chart_duracion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/bg_contenedor_grafica" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-        <TextView
-            android:id="@+id/label_cumplimiento"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Cumplimiento por sesión (%)"
-            android:textStyle="bold"
-            android:textSize="15sp" />
+                <TextView
+                    android:id="@+id/label_duracion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tiempo entrenado por sesión"
+                    android:textStyle="bold"
+                    android:textSize="16sp" />
 
-        <com.ironquest.mvp.ui.BarChartView
-            android:id="@+id/chart_cumplimiento"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/bg_contenedor_grafica" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Minutos entrenados (últimas 10 sesiones)"
+                    android:alpha="0.6"
+                    android:textSize="12sp" />
 
-        <TextView
-            android:id="@+id/label_frecuencia"
+                <com.ironquest.mvp.ui.BarChartView
+                    android:id="@+id/chart_duracion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_contenedor_grafica" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Gráfico: cumplimiento -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_cumplimiento"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="16dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="?attr/colorOutlineVariant">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/label_cumplimiento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Porcentaje de cumplimiento"
+                    android:textStyle="bold"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Series planeadas vs. realizadas"
+                    android:alpha="0.6"
+                    android:textSize="12sp" />
+
+                <com.ironquest.mvp.ui.BarChartView
+                    android:id="@+id/chart_cumplimiento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_contenedor_grafica" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Gráfico: frecuencia -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_frecuencia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="24dp"
-            android:text="Sesiones por semana (últimas 8 semanas)"
-            android:textStyle="bold"
-            android:textSize="15sp" />
+            app:cardCornerRadius="16dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="?attr/colorOutlineVariant">
 
-        <com.ironquest.mvp.ui.BarChartView
-            android:id="@+id/chart_frecuencia"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="24dp"
-            android:background="@drawable/bg_contenedor_grafica" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/label_frecuencia"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Frecuencia semanal"
+                    android:textStyle="bold"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sesiones por semana (últimas 8)"
+                    android:alpha="0.6"
+                    android:textSize="12sp" />
+
+                <com.ironquest.mvp.ui.BarChartView
+                    android:id="@+id/chart_frecuencia"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_contenedor_grafica" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 

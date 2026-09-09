@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -19,11 +20,17 @@ public class BarChartView extends View {
         private final String etiqueta;
         private final float valor;
         private final String textoValor;
+        private final Integer color;
 
         public Barra(String etiqueta, float valor, String textoValor) {
+            this(etiqueta, valor, textoValor, null);
+        }
+
+        public Barra(String etiqueta, float valor, String textoValor, Integer color) {
             this.etiqueta = etiqueta;
             this.valor = valor;
             this.textoValor = textoValor;
+            this.color = color;
         }
 
         public String getEtiqueta() {
@@ -37,6 +44,10 @@ public class BarChartView extends View {
         public String getTextoValor() {
             return textoValor;
         }
+
+        public Integer getColor() {
+            return color;
+        }
     }
 
     private List<Barra> barras = new ArrayList<>();
@@ -46,6 +57,9 @@ public class BarChartView extends View {
     private final Paint paintTexto = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint paintEtiqueta = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint paintReferencia = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final RectF rectBarra = new RectF();
+
+    private final int colorPorDefecto = Color.parseColor("#FF6B35");
 
     public BarChartView(Context context) {
         super(context);
@@ -58,16 +72,20 @@ public class BarChartView extends View {
     }
 
     private void init() {
-        paintBarra.setColor(Color.parseColor("#FF6B35"));
+        paintBarra.setStyle(Paint.Style.FILL);
+
         paintTexto.setColor(Color.parseColor("#33261D"));
         paintTexto.setTextSize(28f);
         paintTexto.setTextAlign(Paint.Align.CENTER);
-        paintEtiqueta.setColor(Color.parseColor("#66332000"));
-        paintEtiqueta.setColor(Color.DKGRAY);
+        paintTexto.setFakeBoldText(true);
+
+        paintEtiqueta.setColor(Color.parseColor("#88666666"));
         paintEtiqueta.setTextSize(24f);
         paintEtiqueta.setTextAlign(Paint.Align.CENTER);
-        paintReferencia.setColor(Color.parseColor("#8822C55E"));
-        paintReferencia.setStrokeWidth(3f);
+
+        paintReferencia.setColor(Color.parseColor("#4422C55E"));
+        paintReferencia.setStrokeWidth(4f);
+        paintReferencia.setStyle(Paint.Style.STROKE);
     }
 
     public void setDatos(List<Barra> barras) {
@@ -84,7 +102,7 @@ public class BarChartView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec);
-        int height = 420;
+        int height = 500;
         setMeasuredDimension(width, height);
     }
 
@@ -99,8 +117,10 @@ public class BarChartView extends View {
 
         int width = getWidth();
         int height = getHeight();
-        float padBottom = 60f;
-        float padTop = 30f;
+        float padBottom = 80f;
+        float padTop = 60f;
+        float padSides = 40f;
+        float chartWidth = width - (padSides * 2);
         float chartHeight = height - padBottom - padTop;
 
         float maxValor = lineaReferencia;
@@ -111,29 +131,34 @@ public class BarChartView extends View {
             maxValor = 1f;
         }
 
-        float slotWidth = (float) width / barras.size();
-        float barWidth = Math.min(slotWidth * 0.55f, 90f);
+        float slotWidth = chartWidth / barras.size();
+        float barWidth = Math.min(slotWidth * 0.6f, 100f);
 
         if (lineaReferencia > 0) {
             float y = padTop + chartHeight - (lineaReferencia / maxValor) * chartHeight;
-            canvas.drawLine(0, y, width, y, paintReferencia);
+            canvas.drawLine(padSides, y, width - padSides, y, paintReferencia);
         }
 
         for (int i = 0; i < barras.size(); i++) {
             Barra barra = barras.get(i);
-            float centerX = slotWidth * i + slotWidth / 2f;
-            float barHeight = maxValor > 0 ? (barra.getValor() / maxValor) * chartHeight : 0;
+            float centerX = padSides + slotWidth * i + slotWidth / 2f;
+            float barHeight = (barra.getValor() / maxValor) * chartHeight;
+
             float top = padTop + chartHeight - barHeight;
+            float bottom = padTop + chartHeight;
             float left = centerX - barWidth / 2f;
             float right = centerX + barWidth / 2f;
 
-            canvas.drawRoundRect(left, top, right, padTop + chartHeight, 8f, 8f, paintBarra);
+            paintBarra.setColor(barra.getColor() != null ? barra.getColor() : colorPorDefecto);
+            rectBarra.set(left, top, right, bottom);
+            float radius = barWidth / 4f;
+            canvas.drawRoundRect(rectBarra, radius, radius, paintBarra);
 
             String valorTexto = barra.getTextoValor() != null
                     ? barra.getTextoValor()
                     : String.format(Locale.getDefault(), "%.0f", barra.getValor());
-            canvas.drawText(valorTexto, centerX, Math.max(top - 10f, 24f), paintTexto);
-            canvas.drawText(barra.getEtiqueta(), centerX, height - 15f, paintEtiqueta);
+            canvas.drawText(valorTexto, centerX, Math.max(top - 15f, 24f), paintTexto);
+            canvas.drawText(barra.getEtiqueta(), centerX, height - 25f, paintEtiqueta);
         }
     }
 }
