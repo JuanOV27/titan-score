@@ -51,6 +51,10 @@ public class AuthManager {
                 .addOnFailureListener(e -> callback.onError(traducirError(e)));
     }
 
+    public void cerrarSesion() {
+        firebaseAuth.signOut();
+    }
+
     private static String traducirError(Exception excepcion) {
         if (excepcion instanceof FirebaseAuthUserCollisionException) {
             return "Ese correo ya tiene una cuenta";

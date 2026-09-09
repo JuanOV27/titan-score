@@ -201,6 +201,10 @@ public class MainActivity extends BaseActivity {
             abrirFormularioFeedback();
             return true;
         }
+        if (id == R.id.action_cerrar_sesion) {
+            confirmarCerrarSesion();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -210,6 +214,23 @@ public class MainActivity extends BaseActivity {
         } catch (Exception e) {
             Toast.makeText(this, "No se pudo abrir el formulario", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void confirmarCerrarSesion() {
+        new AlertDialog.Builder(this)
+                .setTitle("Cerrar sesión")
+                .setMessage("¿Seguro que quieres cerrar sesión?")
+                .setPositiveButton("Cerrar sesión", (dialog, which) -> cerrarSesion())
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void cerrarSesion() {
+        AuthManager.getInstance().cerrarSesion();
+        Intent intent = new Intent(this, AuthActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private void exportarDatos() {

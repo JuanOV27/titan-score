@@ -41,7 +41,7 @@ public class EditRoutineActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_routine);
 
-        configurarToolbar(R.id.toolbar, null, false);
+        configurarToolbar(R.id.toolbar, null, true);
 
         dataManager = DataManager.getInstance(this);
         dataStore = dataManager.getDataStore();
@@ -116,6 +116,7 @@ public class EditRoutineActivity extends BaseActivity {
         findViewById(R.id.button_agregar_ejercicio).setOnClickListener(v ->
                 EjercicioPicker.mostrar(this, dataManager, dataStore, this::agregarEjercicioARutina));
         findViewById(R.id.button_guardar_rutina).setOnClickListener(v -> guardarRutina());
+        findViewById(R.id.button_cancelar_rutina).setOnClickListener(v -> finish());
     }
 
     private void agregarEjercicioARutina(Ejercicio ejercicio) {

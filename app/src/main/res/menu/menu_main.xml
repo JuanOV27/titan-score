@@ -23,4 +23,8 @@
         android:id="@+id/action_feedback"
         android:title="Enviar feedback"
         android:showAsAction="never" />
+    <item
+        android:id="@+id/action_cerrar_sesion"
+        android:title="Cerrar sesión"
+        android:showAsAction="never" />
 </menu>

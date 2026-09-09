@@ -11,6 +11,8 @@
         <item name="colorTertiary">@color/ironquest_orange_dark</item>
 
         <item name="bottomNavigationStyle">@style/Widget.IronQuest.BottomNavigationView</item>
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:windowLightStatusBar">@bool/window_light_status_bar</item>
     </style>
 
     <style name="Widget.IronQuest.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
