@@ -24,7 +24,6 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 /** Pestaña "Estadísticas": resumen acumulado y gráficas de duración, cumplimiento y frecuencia. */
 public class StatsFragment extends Fragment {
@@ -74,7 +73,7 @@ public class StatsFragment extends Fragment {
 
         mostrarResumen(raiz, sesiones);
 
-        List<Sesion> ultimas = sesiones.subList(Math.max(0, sesiones.size() - 10), sesiones.size());
+        List<Sesion> ultimas = sesiones.subList(Math.max(0, sesiones.size() - 7), sesiones.size());
 
         int colorDuracion = ContextCompat.getColor(requireContext(), R.color.ironquest_orange);
 
@@ -97,24 +96,23 @@ public class StatsFragment extends Fragment {
 
     private void mostrarResumen(View raiz, List<Sesion> sesiones) {
         TextView textTotalSesiones = raiz.findViewById(R.id.text_total_sesiones);
-        TextView textVolumenTotal = raiz.findViewById(R.id.text_volumen_total);
+        TextView textDuracionPromedio = raiz.findViewById(R.id.text_duracion_promedio);
         TextView textCumplimientoPromedio = raiz.findViewById(R.id.text_cumplimiento_promedio);
 
-        double volumenTotal = 0;
+        long sumaDuracion = 0;
         long sumaCumplimiento = 0;
         int sesionesFinalizadas = 0;
         for (Sesion sesion : sesiones) {
-            volumenTotal += sesion.getVolumenReal();
             if (sesion.estaFinalizada()) {
+                sumaDuracion += EstadisticasUtil.calcularDuracionMinutos(sesion);
                 sumaCumplimiento += sesion.getPorcentajeCumplimiento();
                 sesionesFinalizadas++;
             }
         }
 
         textTotalSesiones.setText(String.valueOf(sesiones.size()));
-        textVolumenTotal.setText(volumenTotal > 10000
-                ? String.format(Locale.getDefault(), "%.1fk", volumenTotal / 1000.0)
-                : String.format(Locale.getDefault(), "%.0f", volumenTotal));
+        long duracionPromedio = sesionesFinalizadas > 0 ? sumaDuracion / sesionesFinalizadas : 0;
+        textDuracionPromedio.setText(EstadisticasUtil.formatearDuracion(duracionPromedio));
         int promedio = sesionesFinalizadas > 0
                 ? Math.round((float) sumaCumplimiento / sesionesFinalizadas) : 0;
         textCumplimientoPromedio.setText(promedio + "%");

@@ -105,7 +105,7 @@
                     android:padding="12dp">
 
                     <TextView
-                        android:id="@+id/text_volumen_total"
+                        android:id="@+id/text_duracion_promedio"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="?attr/colorPrimary"
@@ -115,7 +115,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Volumen"
+                        android:text="Duración"
                         android:textAllCaps="true"
                         android:letterSpacing="0.05"
                         android:textSize="10sp"
@@ -186,7 +186,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Minutos entrenados (últimas 10 sesiones)"
+                    android:text="Minutos entrenados (últimas 7 sesiones)"
                     android:alpha="0.6"
                     android:textSize="12sp" />
 

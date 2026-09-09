@@ -16,7 +16,7 @@
     <style name="Widget.IronQuest.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
         <item name="backgroundTint">@color/ironquest_orange</item>
         <item name="itemIconTint">@color/nav_item_color</item>
-        <item name="itemTextColor">@color/nav_item_color</item>
+        <item name="itemTextColor">@color/nav_text_color</item>
         <item name="itemActiveIndicatorStyle">@style/Widget.IronQuest.BottomNavigation.ActiveIndicator</item>
     </style>
 

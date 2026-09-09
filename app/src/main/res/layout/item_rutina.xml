@@ -40,9 +40,11 @@
             android:layout_height="48dp"
             android:layout_marginEnd="4dp"
             android:padding="12dp"
-            android:background="@drawable/bg_boton_play"
+            android:background="@drawable/bg_boton_iniciar"
             android:contentDescription="Iniciar rutina"
-            android:src="@drawable/ic_play" />
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_mancuerna"
+            app:tint="@color/ironquest_on_orange" />
 
         <ImageButton
             android:id="@+id/button_mas_opciones_rutina"

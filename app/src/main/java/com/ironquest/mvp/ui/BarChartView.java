@@ -74,12 +74,12 @@ public class BarChartView extends View {
     private void init() {
         paintBarra.setStyle(Paint.Style.FILL);
 
-        paintTexto.setColor(Color.parseColor("#33261D"));
+        paintTexto.setColor(Color.parseColor("#F2F2F2"));
         paintTexto.setTextSize(28f);
         paintTexto.setTextAlign(Paint.Align.CENTER);
         paintTexto.setFakeBoldText(true);
 
-        paintEtiqueta.setColor(Color.parseColor("#88666666"));
+        paintEtiqueta.setColor(Color.parseColor("#99BBBBBB"));
         paintEtiqueta.setTextSize(24f);
         paintEtiqueta.setTextAlign(Paint.Align.CENTER);
 
