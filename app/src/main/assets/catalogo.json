@@ -1,0 +1,1728 @@
+[
+  {
+    "id": "gv_0175",
+    "nombre": "Crunch de rodillas en polea",
+    "grupoMuscular": "Abdomen",
+    "equipo": "Polea",
+    "musculoObjetivo": "Abdomen",
+    "musculosSecundarios": [
+      "Oblicuos"
+    ],
+    "instrucciones": [
+      "Sujeta una agarradera de cuerda a una polea alta y ponte de rodillas de espaldas a la máquina.",
+      "Sujeta la agarradera de cuerda con ambas manos y colócala detrás de la cabeza, manteniendo los codos hacia afuera a los lados.",
+      "Manteniendo las caderas inmóviles, flexiona la cintura y encoge el torso hacia los muslos.",
+      "Haz una pausa por un momento en la parte inferior, luego regresa lentamente a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0175.jpg",
+    "gifAsset": "gifs/gv_0175.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0001",
+    "nombre": "Abdominal 3/4",
+    "grupoMuscular": "Abdomen",
+    "equipo": "Peso corporal",
+    "musculoObjetivo": "Abdomen",
+    "musculosSecundarios": [
+      "Flexores de cadera",
+      "Zona lumbar"
+    ],
+    "instrucciones": [
+      "Túmbate sobre tu espalda con las rodillas flexionadas y los pies apoyados en el suelo.",
+      "Coloca las manos detrás de la cabeza con los codos apuntando hacia afuera.",
+      "Activando el abdomen, levanta lentamente la parte superior del cuerpo del suelo, curvándote hacia adelante hasta que tu torso forme un ángulo de 45 grados.",
+      "Haz una pausa por un momento en la parte superior, luego baja lentamente la parte superior del cuerpo de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0001.jpg",
+    "gifAsset": "gifs/gv_0001.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_3544",
+    "nombre": "Plancha lateral inclinada",
+    "grupoMuscular": "Abdomen",
+    "equipo": "Peso corporal",
+    "musculoObjetivo": "Abdomen",
+    "musculosSecundarios": [
+      "Oblicuos",
+      "Hombros"
+    ],
+    "instrucciones": [
+      "Comienza tumbado de lado con las piernas extendidas y apiladas una sobre la otra.",
+      "Coloca el antebrazo en el suelo justo debajo del hombro, con el codo flexionado en un ángulo de 90 grados.",
+      "Activa el core y levanta las caderas del suelo, formando una línea recta desde la cabeza hasta los pies.",
+      "Mantén esta posición durante el tiempo deseado.",
+      "Baja las caderas de nuevo al suelo y repite hacia el otro lado."
+    ],
+    "imgAsset": "img/gv_3544.jpg",
+    "gifAsset": "gifs/gv_3544.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0211",
+    "nombre": "Giro ruso en polea sobre balón",
+    "grupoMuscular": "Abdomen",
+    "equipo": "Polea",
+    "musculoObjetivo": "Abdomen",
+    "musculosSecundarios": [
+      "Oblicuos",
+      "Zona lumbar"
+    ],
+    "instrucciones": [
+      "Siéntate sobre un balón de estabilidad con los pies apoyados planos en el suelo y las rodillas flexionadas en un ángulo de 90 grados.",
+      "Sujeta la agarradera del cable con ambas manos y extiende los brazos rectos frente a ti.",
+      "Inclínate ligeramente hacia atrás manteniendo la espalda recta y el core activado.",
+      "Gira el torso hacia la derecha, llevando la agarradera del cable hacia la cadera derecha.",
+      "Haz una pausa por un momento y luego gira el torso hacia la izquierda, llevando la agarradera del cable hacia la cadera izquierda.",
+      "Continúa alternando los giros el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0211.jpg",
+    "gifAsset": "gifs/gv_0211.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_2799",
+    "nombre": "Elevación alterna de piernas sentado con barra",
+    "grupoMuscular": "Abdomen",
+    "equipo": "Barra",
+    "musculoObjetivo": "Abdomen",
+    "musculosSecundarios": [
+      "Flexores de cadera"
+    ],
+    "instrucciones": [
+      "Siéntate en un banco con la espalda recta y sujeta una barra sobre los muslos.",
+      "Manteniendo las piernas rectas, levanta una pierna lo más alto posible mientras mantienes la otra pierna en el suelo.",
+      "Baja la pierna elevada y repite con la otra pierna.",
+      "Continúa alternando las piernas durante el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_2799.jpg",
+    "gifAsset": "gifs/gv_2799.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0972",
+    "nombre": "Crunch bicicleta con banda",
+    "grupoMuscular": "Abdomen",
+    "equipo": "Banda elástica",
+    "musculoObjetivo": "Abdomen",
+    "musculosSecundarios": [
+      "Flexores de cadera",
+      "Oblicuos"
+    ],
+    "instrucciones": [
+      "Túmbate sobre tu espalda con las manos detrás de la cabeza y las rodillas flexionadas.",
+      "Levanta los pies del suelo y lleva la rodilla derecha hacia el pecho mientras simultáneamente giras el torso para llevar el codo izquierdo hacia la rodilla derecha.",
+      "Estira la pierna derecha mientras llevas la rodilla izquierda hacia el pecho y giras el torso para llevar el codo derecho hacia la rodilla izquierda.",
+      "Continúa alternando el movimiento de giro, como si estuvieras pedaleando una bicicleta, manteniendo el core activado durante todo el movimiento.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0972.jpg",
+    "gifAsset": "gifs/gv_0972.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0002",
+    "nombre": "Flexión lateral de tronco 45°",
+    "grupoMuscular": "Abdomen",
+    "equipo": "Peso corporal",
+    "musculoObjetivo": "Abdomen",
+    "musculosSecundarios": [
+      "Oblicuos"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros y los brazos extendidos hacia abajo a los lados.",
+      "Manteniendo la espalda recta y el core activado, flexiona lentamente el torso hacia un lado, bajando la mano hacia la rodilla.",
+      "Haz una pausa por un momento en la parte inferior, luego regresa lentamente a la posición inicial.",
+      "Repite del otro lado.",
+      "Continúa alternando lados durante el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0002.jpg",
+    "gifAsset": "gifs/gv_0002.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0472",
+    "nombre": "Elevación de piernas colgado",
+    "grupoMuscular": "Abdomen",
+    "equipo": "Peso corporal",
+    "musculoObjetivo": "Abdomen",
+    "musculosSecundarios": [
+      "Flexores de cadera"
+    ],
+    "instrucciones": [
+      "Cuélgate de una barra de dominadas con los brazos completamente extendidos y las palmas mirando hacia afuera.",
+      "Activa el core y levanta las piernas frente a ti, manteniéndolas rectas.",
+      "Continúa levantando hasta que las piernas estén paralelas al suelo o tan alto como puedas llegar cómodamente.",
+      "Haz una pausa por un momento en la parte superior, luego baja lentamente las piernas de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0472.jpg",
+    "gifAsset": "gifs/gv_0472.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0969",
+    "nombre": "V-up alterno con banda",
+    "grupoMuscular": "Abdomen",
+    "equipo": "Banda elástica",
+    "musculoObjetivo": "Abdomen",
+    "musculosSecundarios": [
+      "Flexores de cadera"
+    ],
+    "instrucciones": [
+      "Túmbate sobre tu espalda con las piernas rectas y los brazos extendidos por encima de la cabeza, sosteniendo la banda.",
+      "Activa el abdomen y levanta las piernas y la parte superior del cuerpo del suelo al mismo tiempo, llevando las manos hacia los dedos de los pies.",
+      "Mientras bajas las piernas y la parte superior del cuerpo de nuevo, cambia la posición de las piernas, cruzando una sobre la otra.",
+      "Repite el movimiento, alternando la posición de las piernas en cada repetición.",
+      "Continúa durante el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0969.jpg",
+    "gifAsset": "gifs/gv_0969.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_2466",
+    "nombre": "Puente con escalador cruzado",
+    "grupoMuscular": "Abdomen",
+    "equipo": "Peso corporal",
+    "musculoObjetivo": "Abdomen",
+    "musculosSecundarios": [
+      "Glúteos",
+      "Cuádriceps",
+      "Isquiotibiales",
+      "Hombros",
+      "Tríceps"
+    ],
+    "instrucciones": [
+      "Comienza en una posición de plancha alta con las manos justo debajo de los hombros y el cuerpo en línea recta.",
+      "Activa el core y levanta el pie derecho del suelo, llevando la rodilla derecha hacia el codo izquierdo.",
+      "Vuelve a colocar el pie derecho en la posición inicial y repite el movimiento llevando el pie izquierdo hacia el codo derecho.",
+      "Continúa alternando los lados, moviéndote a un ritmo controlado.",
+      "Mantén las caderas niveladas y evita levantarlas demasiado alto o dejarlas caer demasiado bajo.",
+      "Mantén un patrón de respiración constante durante todo el ejercicio.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_2466.jpg",
+    "gifAsset": "gifs/gv_2466.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0043",
+    "nombre": "Sentadilla completa con barra",
+    "grupoMuscular": "Pierna",
+    "equipo": "Barra",
+    "musculoObjetivo": "Glúteos",
+    "musculosSecundarios": [
+      "Cuádriceps",
+      "Isquiotibiales",
+      "Pantorrillas",
+      "Core"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros, con los dedos de los pies ligeramente hacia afuera.",
+      "Sujeta la barra sobre la parte superior de la espalda, apoyándola en los trapecios o los deltoides posteriores.",
+      "Activa el core y mantén el pecho elevado mientras comienzas a bajar el cuerpo.",
+      "Flexiona las rodillas y las caderas, empujando las caderas hacia atrás y hacia abajo como si te sentaras en una silla.",
+      "Baja hasta que los muslos queden paralelos al suelo o un poco por debajo.",
+      "Mantén las rodillas alineadas con los dedos de los pies y el peso sobre los talones.",
+      "Empuja con los talones para volver a ponerte de pie, extendiendo las caderas y las rodillas.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0043.jpg",
+    "gifAsset": "gifs/gv_0043.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0024",
+    "nombre": "Sentadilla frontal con barra en banco",
+    "grupoMuscular": "Pierna",
+    "equipo": "Barra",
+    "musculoObjetivo": "Cuádriceps",
+    "musculosSecundarios": [
+      "Isquiotibiales",
+      "Glúteos",
+      "Pantorrillas"
+    ],
+    "instrucciones": [
+      "Empieza de pie con los pies separados a la altura de los hombros y la barra apoyada en la parte superior del pecho, justo debajo de la clavícula.",
+      "Sujeta la barra con un agarre pronado, manteniendo los codos elevados y los brazos superiores paralelos al suelo.",
+      "Baja el cuerpo hacia una posición de sentadilla flexionando las rodillas y las caderas, manteniendo la espalda recta y el pecho elevado.",
+      "Haz una pausa breve en la parte baja de la sentadilla y luego empuja con los talones para volver a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0024.jpg",
+    "gifAsset": "gifs/gv_0024.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_2287",
+    "nombre": "Prensa de piernas alterna en máquina",
+    "grupoMuscular": "Pierna",
+    "equipo": "Máquina de palanca",
+    "musculoObjetivo": "Cuádriceps",
+    "musculosSecundarios": [
+      "Isquiotibiales",
+      "Glúteos"
+    ],
+    "instrucciones": [
+      "Ajusta el asiento y la plataforma para los pies de la máquina de palanca a la posición deseada.",
+      "Siéntate en la máquina con la espalda apoyada en el respaldo y los pies sobre la plataforma para los pies.",
+      "Coloca las manos en las asas o en los lados de la máquina para mayor estabilidad.",
+      "Empuja un pie contra la plataforma para los pies, extendiendo la pierna hasta que esté casi completamente recta.",
+      "Haz una pausa breve, luego flexiona lentamente la pierna y vuelve a la posición inicial.",
+      "Repite con la otra pierna.",
+      "Continúa alternando las piernas durante el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_2287.jpg",
+    "gifAsset": "gifs/gv_2287.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_1410",
+    "nombre": "Zancada lateral con barra",
+    "grupoMuscular": "Pierna",
+    "equipo": "Barra",
+    "musculoObjetivo": "Glúteos",
+    "musculosSecundarios": [
+      "Cuádriceps",
+      "Isquiotibiales",
+      "Pantorrillas"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros, sujetando una barra sobre la parte superior de la espalda.",
+      "Da un paso grande hacia el lado con el pie derecho, manteniendo el pie izquierdo fijo en el suelo.",
+      "Flexiona la rodilla derecha y baja el cuerpo hacia una posición de zancada, manteniendo la pierna izquierda recta.",
+      "Empuja con el pie derecho y vuelve a la posición inicial.",
+      "Repite hacia el otro lado, dando el paso con el pie izquierdo."
+    ],
+    "imgAsset": "img/gv_1410.jpg",
+    "gifAsset": "gifs/gv_1410.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0585",
+    "nombre": "Extensión de cuádriceps en máquina",
+    "grupoMuscular": "Pierna",
+    "equipo": "Máquina de palanca",
+    "musculoObjetivo": "Cuádriceps",
+    "musculosSecundarios": [
+      "Isquiotibiales"
+    ],
+    "instrucciones": [
+      "Ajusta la altura del asiento y el respaldo de la máquina a tu cuerpo.",
+      "Siéntate en la máquina con la espalda apoyada en el respaldo y los pies sobre la almohadilla para los pies.",
+      "Sujeta las asas o las barras laterales para mayor estabilidad.",
+      "Extiende las piernas hacia adelante enderezando las rodillas, levantando el peso.",
+      "Haz una pausa breve en lo alto, luego baja lentamente el peso de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0585.jpg",
+    "gifAsset": "gifs/gv_0585.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_3235",
+    "nombre": "Curl femoral inverso asistido en polea",
+    "grupoMuscular": "Pierna",
+    "equipo": "Polea",
+    "musculoObjetivo": "Isquiotibiales",
+    "musculosSecundarios": [
+      "Glúteos",
+      "Pantorrillas"
+    ],
+    "instrucciones": [
+      "Ajusta la máquina de cable de modo que el accesorio para el tobillo quede en la posición más baja.",
+      "Túmbate boca abajo en el banco con las piernas rectas y el accesorio para el tobillo sujeto a los tobillos.",
+      "Sujétate de las agarraderas del banco para mantener la estabilidad.",
+      "Manteniendo quieta la parte superior del cuerpo, exhala y flexiona las piernas hacia los glúteos doblando las rodillas.",
+      "Haz una pausa breve en la parte más alta del movimiento, contrayendo los isquiotibiales.",
+      "Inhala y baja lentamente las piernas de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_3235.jpg",
+    "gifAsset": "gifs/gv_3235.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0085",
+    "nombre": "Peso muerto rumano con barra",
+    "grupoMuscular": "Pierna",
+    "equipo": "Barra",
+    "musculoObjetivo": "Glúteos",
+    "musculosSecundarios": [
+      "Isquiotibiales",
+      "Zona lumbar"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros y los dedos de los pies apuntando hacia delante.",
+      "Sujeta la barra con un agarre pronado, manos un poco más separadas que el ancho de los hombros.",
+      "Flexiona las caderas, manteniendo la espalda recta y las rodillas ligeramente flexionadas.",
+      "Baja la barra hacia el suelo, manteniéndola cerca del cuerpo.",
+      "Siente el estiramiento en los isquiotibiales mientras bajas la barra.",
+      "Cuando sientas el estiramiento en los isquiotibiales, empuja las caderas hacia delante y ponte de pie.",
+      "Aprieta los glúteos en la parte alta del movimiento.",
+      "Baja la barra de vuelta a la posición inicial y repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0085.jpg",
+    "gifAsset": "gifs/gv_0085.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0044",
+    "nombre": "Buenos días con barra",
+    "grupoMuscular": "Pierna",
+    "equipo": "Barra",
+    "musculoObjetivo": "Isquiotibiales",
+    "musculosSecundarios": [
+      "Zona lumbar"
+    ],
+    "instrucciones": [
+      "Empieza de pie con los pies separados a la altura de los hombros y la barra apoyada sobre la parte superior de la espalda.",
+      "Manteniendo la espalda recta y el core activado, flexiona las caderas hacia delante, empujando los glúteos hacia atrás como si intentaras tocar la pared detrás de ti con ellos.",
+      "Baja el torso hasta que quede paralelo al suelo, sintiendo un estiramiento en los isquiotibiales.",
+      "Haz una pausa breve y luego vuelve a la posición inicial apretando los glúteos y empujando las caderas hacia delante.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0044.jpg",
+    "gifAsset": "gifs/gv_0044.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0114",
+    "nombre": "Subida al cajón con barra",
+    "grupoMuscular": "Pierna",
+    "equipo": "Barra",
+    "musculoObjetivo": "Glúteos",
+    "musculosSecundarios": [
+      "Cuádriceps",
+      "Isquiotibiales",
+      "Pantorrillas"
+    ],
+    "instrucciones": [
+      "Ponte de pie frente a un banco o escalón con una barra apoyada en la parte superior de la espalda.",
+      "Coloca un pie sobre el banco o escalón, asegurándote de que todo el pie esté en contacto con la superficie.",
+      "Empuja con el talón y sube al banco o escalón, extendiendo completamente la cadera y la rodilla.",
+      "Haz una pausa breve en la parte más alta, luego baja de vuelta a la posición inicial.",
+      "Repite con la pierna contraria.",
+      "Continúa alternando las piernas durante el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0114.jpg",
+    "gifAsset": "gifs/gv_0114.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0597",
+    "nombre": "Abducción de cadera sentado en máquina",
+    "grupoMuscular": "Pierna",
+    "equipo": "Máquina de palanca",
+    "musculoObjetivo": "Aductores/Abductores",
+    "musculosSecundarios": [
+      "Glúteos",
+      "Isquiotibiales"
+    ],
+    "instrucciones": [
+      "Ajusta la altura del asiento de modo que tus rodillas formen un ángulo de 90 grados.",
+      "Siéntate en la máquina con la espalda apoyada en el respaldo y los pies sobre los apoyapiés.",
+      "Coloca las manos en las asas laterales para mayor estabilidad.",
+      "Activa los abductores y empuja lentamente las piernas hacia afuera, alejándolas de la línea media del cuerpo.",
+      "Haz una pausa al final del movimiento y luego junta lentamente las piernas de nuevo hasta la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0597.jpg",
+    "gifAsset": "gifs/gv_0597.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0015",
+    "nombre": "Dominada agarre cerrado asistida",
+    "grupoMuscular": "Espalda",
+    "equipo": "Máquina de palanca",
+    "musculoObjetivo": "Dorsales",
+    "musculosSecundarios": [
+      "Bíceps",
+      "Antebrazos"
+    ],
+    "instrucciones": [
+      "Ajusta la máquina al peso y la altura deseados.",
+      "Coloca las manos en las barras paralelas con un agarre cerrado, con las palmas mirándose entre sí.",
+      "Cuélgate de las barras con los brazos completamente extendidos y los pies sin tocar el suelo.",
+      "Activa los músculos de la espalda y lleva el cuerpo hacia arriba hacia las barras, manteniendo los codos cerca del cuerpo.",
+      "Continúa subiendo hasta que la barbilla quede por encima de las barras.",
+      "Haz una pausa por un momento en la parte superior, luego baja lentamente el cuerpo de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0015.jpg",
+    "gifAsset": "gifs/gv_0015.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_3293",
+    "nombre": "Dominada arquero",
+    "grupoMuscular": "Espalda",
+    "equipo": "Peso corporal",
+    "musculoObjetivo": "Dorsales",
+    "musculosSecundarios": [
+      "Bíceps",
+      "Antebrazos"
+    ],
+    "instrucciones": [
+      "Comienza colgándote de una barra de dominadas con un agarre prono, un poco más separado que el ancho de los hombros.",
+      "Activa el core y lleva los omóplatos hacia abajo y atrás.",
+      "Mientras te elevas, flexiona un brazo y lleva el codo hacia el costado, manteniendo el otro brazo recto.",
+      "Continúa subiendo hasta que la barbilla quede por encima de la barra y el brazo flexionado esté completamente doblado.",
+      "Bájate de nuevo con control, estirando el brazo flexionado y repitiendo el movimiento del otro lado.",
+      "Alterna los lados en cada repetición."
+    ],
+    "imgAsset": "img/gv_3293.jpg",
+    "gifAsset": "gifs/gv_3293.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_1431",
+    "nombre": "Dominada supina asistida de pie",
+    "grupoMuscular": "Espalda",
+    "equipo": "Máquina de palanca",
+    "musculoObjetivo": "Dorsales",
+    "musculosSecundarios": [
+      "Bíceps",
+      "Antebrazos"
+    ],
+    "instrucciones": [
+      "Ajusta la máquina al nivel de asistencia deseado.",
+      "Sube a la plataforma para los pies y agarra las agarraderas con un agarre prono, un poco más separadas que el ancho de los hombros.",
+      "Mantén el pecho arriba y los hombros atrás, activa el core y flexiona ligeramente las rodillas.",
+      "Levanta el cuerpo flexionando los codos y llevándolos hacia abajo, en dirección a los costados.",
+      "Continúa subiendo hasta que la barbilla quede por encima de la barra.",
+      "Haz una pausa por un momento en la parte superior, luego baja lentamente el cuerpo de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_1431.jpg",
+    "gifAsset": "gifs/gv_1431.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_2330",
+    "nombre": "Jalón al pecho en polea (rango completo)",
+    "grupoMuscular": "Espalda",
+    "equipo": "Polea",
+    "musculoObjetivo": "Dorsales",
+    "musculosSecundarios": [
+      "Bíceps",
+      "Romboides",
+      "Deltoides posterior"
+    ],
+    "instrucciones": [
+      "Siéntate en la máquina de jalón al pecho con las rodillas colocadas debajo de las almohadillas.",
+      "Sujeta la barra del cable con un agarre prono, un poco más separado que el ancho de los hombros.",
+      "Inclínate ligeramente hacia atrás y mantén el pecho elevado, conservando un ligero arco en la zona lumbar.",
+      "Jala la barra hacia la parte superior del pecho, apretando los omóplatos entre sí.",
+      "Haz una pausa por un momento en la parte baja del movimiento y luego suelta lentamente la barra de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_2330.jpg",
+    "gifAsset": "gifs/gv_2330.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0180",
+    "nombre": "Remo bajo sentado en polea",
+    "grupoMuscular": "Espalda",
+    "equipo": "Polea",
+    "musculoObjetivo": "Espalda alta",
+    "musculosSecundarios": [
+      "Bíceps",
+      "Antebrazos"
+    ],
+    "instrucciones": [
+      "Siéntate en la máquina con los pies planos sobre los apoyapiés y las rodillas ligeramente flexionadas.",
+      "Sujeta las agarraderas con un agarre prono, con las palmas hacia abajo.",
+      "Mantén la espalda recta e inclínate ligeramente hacia adelante, manteniendo una ligera flexión en los codos.",
+      "Jala las agarraderas hacia el cuerpo, apretando los omóplatos entre sí.",
+      "Haz una pausa por un momento en el punto máximo del movimiento, luego suelta lentamente las agarraderas de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0180.jpg",
+    "gifAsset": "gifs/gv_0180.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0027",
+    "nombre": "Remo con barra inclinado",
+    "grupoMuscular": "Espalda",
+    "equipo": "Barra",
+    "musculoObjetivo": "Espalda alta",
+    "musculosSecundarios": [
+      "Bíceps",
+      "Antebrazos"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros y las rodillas ligeramente flexionadas.",
+      "Inclínate hacia delante desde las caderas manteniendo la espalda recta y el pecho elevado.",
+      "Agarra la barra con un agarre pronado, con las manos un poco más separadas que el ancho de los hombros.",
+      "Tira de la barra hacia la parte inferior del pecho retrayendo los omóplatos y contrayendo los músculos de la espalda.",
+      "Haz una pausa breve en la parte alta y luego baja lentamente la barra de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0027.jpg",
+    "gifAsset": "gifs/gv_0027.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_1349",
+    "nombre": "Remo en T invertido en máquina",
+    "grupoMuscular": "Espalda",
+    "equipo": "Máquina de palanca",
+    "musculoObjetivo": "Espalda alta",
+    "musculosSecundarios": [
+      "Bíceps",
+      "Antebrazos"
+    ],
+    "instrucciones": [
+      "Ajusta la altura del asiento y la posición de la placa para los pies en la máquina de palanca.",
+      "Siéntate en la máquina con el pecho contra la almohadilla y los pies planos sobre la placa para los pies.",
+      "Agarra las agarraderas con un agarre prono, un poco más separadas que el ancho de los hombros.",
+      "Mantén la espalda recta y activa el core.",
+      "Tira de las asas hacia el pecho, juntando los omóplatos.",
+      "Haz una pausa breve en la parte alta del movimiento, luego suelta lentamente y extiende los brazos de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_1349.jpg",
+    "gifAsset": "gifs/gv_1349.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_1010",
+    "nombre": "Peso muerto piernas rectas con banda",
+    "grupoMuscular": "Espalda",
+    "equipo": "Banda elástica",
+    "musculoObjetivo": "Zona lumbar",
+    "musculosSecundarios": [
+      "Isquiotibiales",
+      "Glúteos"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros y coloca la banda alrededor de los pies.",
+      "Sujeta la banda con ambas manos, con las palmas mirando hacia el cuerpo, y mantén los brazos rectos.",
+      "Activa el core y mantén una ligera flexión en las rodillas.",
+      "Inclínate lentamente hacia delante desde las caderas, manteniendo la espalda recta y el pecho elevado.",
+      "Baja la banda hacia el suelo manteniendo las piernas rectas.",
+      "Haz una pausa breve en la posición baja y luego contrae los glúteos y los isquiotibiales para volver a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_1010.jpg",
+    "gifAsset": "gifs/gv_1010.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0489",
+    "nombre": "Hiperextensión lumbar",
+    "grupoMuscular": "Espalda",
+    "equipo": "Peso corporal",
+    "musculoObjetivo": "Zona lumbar",
+    "musculosSecundarios": [
+      "Glúteos",
+      "Isquiotibiales"
+    ],
+    "instrucciones": [
+      "Ajusta el banco de hiperextensiones para que la parte superior de los muslos quede apoyada en la almohadilla y los pies queden asegurados.",
+      "Cruza los brazos sobre el pecho o coloca las manos detrás de la cabeza.",
+      "Baja la parte superior del cuerpo hacia el suelo manteniendo la espalda recta.",
+      "Haz una pausa breve en la parte baja, luego eleva la parte superior del cuerpo hasta que quede alineada con las piernas.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0489.jpg",
+    "gifAsset": "gifs/gv_0489.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0095",
+    "nombre": "Encogimiento de hombros con barra",
+    "grupoMuscular": "Espalda",
+    "equipo": "Barra",
+    "musculoObjetivo": "Trapecios",
+    "musculosSecundarios": [
+      "Hombros"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros y sujeta una barra frente a ti con un agarre pronado.",
+      "Mantén los brazos rectos y la espalda recta durante todo el ejercicio.",
+      "Levanta los hombros hacia las orejas lo más alto posible, apretando los trapecios en la parte alta.",
+      "Mantén la posición por un momento y luego baja lentamente los hombros de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0095.jpg",
+    "gifAsset": "gifs/gv_0095.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_1372",
+    "nombre": "Elevación de talones de pie con barra",
+    "grupoMuscular": "Pierna",
+    "equipo": "Barra",
+    "musculoObjetivo": "Pantorrillas",
+    "musculosSecundarios": [
+      "Isquiotibiales",
+      "Glúteos"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros y coloca una barra sobre la parte superior de la espalda.",
+      "Levanta los talones del suelo lo más alto posible, apoyándote solo en las puntas de los pies.",
+      "Haz una pausa breve en la parte alta y luego baja lentamente los talones de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_1372.jpg",
+    "gifAsset": "gifs/gv_1372.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0088",
+    "nombre": "Elevación de talones sentado con barra",
+    "grupoMuscular": "Pierna",
+    "equipo": "Barra",
+    "musculoObjetivo": "Pantorrillas",
+    "musculosSecundarios": [
+      "Isquiotibiales",
+      "Cuádriceps"
+    ],
+    "instrucciones": [
+      "Siéntate en un banco con los pies planos sobre el suelo y una barra apoyada sobre los muslos.",
+      "Coloca la parte delantera de los pies sobre una plataforma elevada, como un bloque o un escalón.",
+      "Coloca la barra sobre los muslos y sujétala con firmeza con las manos.",
+      "Manteniendo la espalda recta y el core activado, levanta los talones del suelo extendiendo los tobillos.",
+      "Haz una pausa breve en la parte alta y luego baja lentamente los talones de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0088.jpg",
+    "gifAsset": "gifs/gv_0088.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0284",
+    "nombre": "Elevación de talones burro",
+    "grupoMuscular": "Pierna",
+    "equipo": "Peso corporal",
+    "musculoObjetivo": "Pantorrillas",
+    "musculosSecundarios": [
+      "Isquiotibiales",
+      "Glúteos"
+    ],
+    "instrucciones": [
+      "Ponte de pie con las puntas de los pies sobre una superficie elevada, como un escalón o un bloque.",
+      "Coloca las manos en un soporte estable, como una pared o un pasamanos, para mantener el equilibrio.",
+      "Levanta los talones lo más alto posible, elevando el peso de tu cuerpo sobre las puntas de los pies.",
+      "Haz una pausa breve en la parte alta y luego baja lentamente los talones de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0284.jpg",
+    "gifAsset": "gifs/gv_0284.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_2289",
+    "nombre": "Prensa de pantorrilla en máquina",
+    "grupoMuscular": "Pierna",
+    "equipo": "Máquina de palanca",
+    "musculoObjetivo": "Pantorrillas",
+    "musculosSecundarios": [
+      "Isquiotibiales"
+    ],
+    "instrucciones": [
+      "Ajusta el asiento de la máquina de palanca de modo que los hombros queden alineados con la almohadilla de la palanca.",
+      "Coloca los dedos de los pies sobre la almohadilla de la palanca, con los talones colgando fuera del borde.",
+      "Sujeta las asas o los soportes laterales para mayor estabilidad.",
+      "Empuja la almohadilla de la palanca hacia abajo extendiendo los tobillos, contrayendo los músculos de las pantorrillas.",
+      "Haz una pausa por un momento en la parte baja del movimiento.",
+      "Vuelve lentamente a la posición inicial dejando que los talones se eleven de nuevo.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_2289.jpg",
+    "gifAsset": "gifs/gv_2289.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_1370",
+    "nombre": "Elevación de talones en el piso con barra",
+    "grupoMuscular": "Pierna",
+    "equipo": "Barra",
+    "musculoObjetivo": "Pantorrillas",
+    "musculosSecundarios": [
+      "Isquiotibiales"
+    ],
+    "instrucciones": [
+      "Coloca una barra en el suelo frente a ti.",
+      "Ponte de pie con la parte delantera de los pies sobre el borde de la barra, dejando los talones colgando.",
+      "Sujétate de un objeto estable para mantener el equilibrio si es necesario.",
+      "Levanta los talones lo más alto posible, usando las pantorrillas para elevar el cuerpo.",
+      "Haz una pausa breve en la parte alta y luego baja lentamente los talones de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_1370.jpg",
+    "gifAsset": "gifs/gv_1370.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_1368",
+    "nombre": "Círculos de tobillo",
+    "grupoMuscular": "Pierna",
+    "equipo": "Peso corporal",
+    "musculoObjetivo": "Pantorrillas",
+    "musculosSecundarios": [
+      "Estabilizadores del tobillo"
+    ],
+    "instrucciones": [
+      "Siéntate en el suelo con las piernas extendidas frente a ti.",
+      "Levanta una pierna del suelo y rota el tobillo con un movimiento circular.",
+      "Realiza el número de círculos deseado en una dirección, luego cambia a la dirección contraria.",
+      "Repite con la otra pierna."
+    ],
+    "imgAsset": "img/gv_1368.jpg",
+    "gifAsset": "gifs/gv_1368.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0108",
+    "nombre": "Elevación de talones de pie con barra (piernas)",
+    "grupoMuscular": "Pierna",
+    "equipo": "Barra",
+    "musculoObjetivo": "Pantorrillas",
+    "musculosSecundarios": [
+      "Isquiotibiales",
+      "Glúteos"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros y coloca una barra sobre la parte superior de la espalda.",
+      "Levanta los talones del suelo lo más alto posible, usando las pantorrillas.",
+      "Haz una pausa breve en la parte alta y luego baja lentamente los talones de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0108.jpg",
+    "gifAsset": "gifs/gv_0108.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0111",
+    "nombre": "Elevación de talones de pie con balanceo y barra",
+    "grupoMuscular": "Pierna",
+    "equipo": "Barra",
+    "musculoObjetivo": "Pantorrillas",
+    "musculosSecundarios": [
+      "Isquiotibiales",
+      "Cuádriceps"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros y sujeta una barra sobre la parte superior de la espalda.",
+      "Levanta los talones del suelo lo más alto posible, manteniendo el equilibrio sobre las puntas de los pies.",
+      "Baja lentamente los talones de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0111.jpg",
+    "gifAsset": "gifs/gv_0111.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_1373",
+    "nombre": "Elevación de talones de pie (peso corporal)",
+    "grupoMuscular": "Pierna",
+    "equipo": "Peso corporal",
+    "musculoObjetivo": "Pantorrillas",
+    "musculosSecundarios": [
+      "Tobillos",
+      "Pies"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros, con las puntas de los pies apuntando hacia adelante.",
+      "Coloca las manos sobre una pared o superficie estable para mantener el equilibrio.",
+      "Levanta lentamente los talones del suelo, llevando el peso del cuerpo hacia las puntas de los pies.",
+      "Haz una pausa breve en la parte alta y luego baja lentamente los talones de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_1373.jpg",
+    "gifAsset": "gifs/gv_1373.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_1374",
+    "nombre": "Salto de cajón con estabilización a una pierna",
+    "grupoMuscular": "Pierna",
+    "equipo": "Peso corporal",
+    "musculoObjetivo": "Pantorrillas",
+    "musculosSecundarios": [
+      "Cuádriceps",
+      "Isquiotibiales",
+      "Glúteos"
+    ],
+    "instrucciones": [
+      "Ponte de pie frente a una caja o plataforma con los pies separados a la altura de los hombros.",
+      "Flexiona las rodillas y salta sobre la caja, aterrizando suavemente con un pie sobre la caja y el otro pie colgando del borde.",
+      "Estabilízate sobre la caja con el pie que está sobre ella, mientras mantienes el otro pie fuera del suelo.",
+      "Mantén esta posición durante unos segundos, activando los músculos de la pantorrilla para conservar el equilibrio.",
+      "Baja lentamente con el pie que está sobre la caja, volviendo a la posición inicial.",
+      "Repite el ejercicio con la otra pierna."
+    ],
+    "imgAsset": "img/gv_1374.jpg",
+    "gifAsset": "gifs/gv_1374.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0025",
+    "nombre": "Press de banca con barra",
+    "grupoMuscular": "Pecho",
+    "equipo": "Barra",
+    "musculoObjetivo": "Pectorales",
+    "musculosSecundarios": [
+      "Tríceps",
+      "Hombros"
+    ],
+    "instrucciones": [
+      "Túmbate sobre un banco con los pies apoyados en el suelo y la espalda presionada contra el banco.",
+      "Agarra la barra con un agarre pronado un poco más ancho que la separación de los hombros.",
+      "Levanta la barra del soporte y sostenla directamente sobre el pecho con los brazos completamente extendidos.",
+      "Baja la barra lentamente hacia el pecho, manteniendo los codos pegados al cuerpo.",
+      "Haz una pausa breve cuando la barra toque el pecho.",
+      "Empuja la barra de vuelta a la posición inicial extendiendo los brazos.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0025.jpg",
+    "gifAsset": "gifs/gv_0025.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0289",
+    "nombre": "Press de banca con mancuernas",
+    "grupoMuscular": "Pecho",
+    "equipo": "Mancuerna",
+    "musculoObjetivo": "Pectorales",
+    "musculosSecundarios": [
+      "Tríceps",
+      "Hombros"
+    ],
+    "instrucciones": [
+      "Túmbate sobre un banco con los pies apoyados en el suelo y la espalda presionada contra el banco.",
+      "Sujeta una mancuerna en cada mano, con las palmas hacia adelante y los brazos extendidos por encima del pecho.",
+      "Baja lentamente las mancuernas hacia los lados del pecho, manteniendo los codos en un ángulo de 90 grados.",
+      "Haz una pausa breve, luego empuja las mancuernas de vuelta hacia arriba hasta la posición inicial, extendiendo completamente los brazos.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0289.jpg",
+    "gifAsset": "gifs/gv_0289.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0047",
+    "nombre": "Press inclinado con barra",
+    "grupoMuscular": "Pecho",
+    "equipo": "Barra",
+    "musculoObjetivo": "Pectorales",
+    "musculosSecundarios": [
+      "Hombros",
+      "Tríceps"
+    ],
+    "instrucciones": [
+      "Coloca un banco inclinado a un ángulo de 45 grados.",
+      "Túmbate en el banco con los pies planos sobre el suelo.",
+      "Agarra la barra con un agarre pronado un poco más ancho que la separación de los hombros.",
+      "Saca la barra del soporte y bájala lentamente hacia el pecho, manteniendo los codos a un ángulo de 45 grados.",
+      "Haz una pausa breve en la parte baja y luego empuja la barra de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0047.jpg",
+    "gifAsset": "gifs/gv_0047.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0033",
+    "nombre": "Press declinado con barra",
+    "grupoMuscular": "Pecho",
+    "equipo": "Barra",
+    "musculoObjetivo": "Pectorales",
+    "musculosSecundarios": [
+      "Tríceps",
+      "Hombros"
+    ],
+    "instrucciones": [
+      "Túmbate en un banco declinado con los pies sujetos y la cabeza más baja que las caderas.",
+      "Agarra la barra con un agarre pronado un poco más ancho que la separación de los hombros.",
+      "Saca la barra del soporte y bájala lentamente hacia el pecho, manteniendo los codos pegados al cuerpo.",
+      "Haz una pausa breve en la parte baja y luego empuja la barra de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0033.jpg",
+    "gifAsset": "gifs/gv_0033.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_2144",
+    "nombre": "Press de pecho sentado en polea",
+    "grupoMuscular": "Pecho",
+    "equipo": "Polea",
+    "musculoObjetivo": "Pectorales",
+    "musculosSecundarios": [
+      "Hombros",
+      "Tríceps"
+    ],
+    "instrucciones": [
+      "Ajusta la altura del asiento y las agarraderas del cable a una posición cómoda.",
+      "Siéntate en el banco con la espalda recta y los pies apoyados planos en el suelo.",
+      "Sujeta las agarraderas del cable con un agarre prono a la altura del hombro.",
+      "Empuja las agarraderas hacia adelante y alejándolas del cuerpo, extendiendo los brazos por completo.",
+      "Haz una pausa por un momento y luego regresa lentamente las agarraderas a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_2144.jpg",
+    "gifAsset": "gifs/gv_2144.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0308",
+    "nombre": "Aperturas con mancuernas en banco plano",
+    "grupoMuscular": "Pecho",
+    "equipo": "Mancuerna",
+    "musculoObjetivo": "Pectorales",
+    "musculosSecundarios": [
+      "Hombros"
+    ],
+    "instrucciones": [
+      "Túmbate boca arriba en un banco con una mancuerna en cada mano, con las palmas enfrentadas entre sí.",
+      "Extiende los brazos rectos hacia arriba sobre el pecho, con una ligera flexión en los codos.",
+      "Manteniendo una ligera flexión en los codos, baja los brazos hacia los lados en un amplio arco hasta sentir un estiramiento en el pecho.",
+      "Haz una pausa por un momento, luego invierte el movimiento y lleva las mancuernas de nuevo hacia arriba hasta la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0308.jpg",
+    "gifAsset": "gifs/gv_0308.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0009",
+    "nombre": "Fondos de pecho asistidos (rodillas)",
+    "grupoMuscular": "Pecho",
+    "equipo": "Máquina de palanca",
+    "musculoObjetivo": "Pectorales",
+    "musculosSecundarios": [
+      "Tríceps",
+      "Hombros"
+    ],
+    "instrucciones": [
+      "Ajusta la máquina a la altura deseada y asegura las rodillas sobre la almohadilla.",
+      "Agarra las agarraderas con las palmas hacia abajo y los brazos completamente extendidos.",
+      "Baja el cuerpo flexionando los codos hasta que los brazos queden paralelos al suelo.",
+      "Haz una pausa por un momento, luego empuja tu cuerpo de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0009.jpg",
+    "gifAsset": "gifs/gv_0009.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0258",
+    "nombre": "Flexión de brazos reloj",
+    "grupoMuscular": "Pecho",
+    "equipo": "Peso corporal",
+    "musculoObjetivo": "Pectorales",
+    "musculosSecundarios": [
+      "Tríceps",
+      "Hombros",
+      "Core"
+    ],
+    "instrucciones": [
+      "Comienza en una posición de plancha alta con las manos justo debajo de los hombros y el cuerpo en línea recta.",
+      "Baja el cuerpo hacia el suelo flexionando los codos, manteniéndolos cerca de los costados.",
+      "Mientras bajas, gira el cuerpo hacia la izquierda, extendiendo el brazo izquierdo recto hacia el lado.",
+      "Empuja de vuelta hacia arriba hasta la posición inicial, mientras giras el cuerpo hacia el centro.",
+      "Repite la flexión de brazos, esta vez girando el cuerpo hacia la derecha y extendiendo el brazo derecho hacia el lado.",
+      "Continúa alternando lados en cada repetición."
+    ],
+    "imgAsset": "img/gv_0258.jpg",
+    "gifAsset": "gifs/gv_0258.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0856",
+    "nombre": "Press Svend con peso",
+    "grupoMuscular": "Pecho",
+    "equipo": "Con peso adicional",
+    "musculoObjetivo": "Pectorales",
+    "musculosSecundarios": [
+      "Hombros",
+      "Tríceps"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros y sostén un disco de peso frente al pecho con ambas manos.",
+      "Mantén los codos ligeramente flexionados y las palmas mirándose entre sí.",
+      "Empuja el disco de peso recto hacia adelante, extendiendo completamente los brazos.",
+      "Haz una pausa de un momento al final del movimiento, luego lleva lentamente el disco de peso de nuevo a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0856.jpg",
+    "gifAsset": "gifs/gv_0856.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_3294",
+    "nombre": "Flexión de brazos arquero",
+    "grupoMuscular": "Pecho",
+    "equipo": "Peso corporal",
+    "musculoObjetivo": "Pectorales",
+    "musculosSecundarios": [
+      "Tríceps",
+      "Hombros",
+      "Core"
+    ],
+    "instrucciones": [
+      "Comienza en posición de flexión de brazos con las manos un poco más separadas que el ancho de los hombros.",
+      "Extiende un brazo hacia el lado, paralelo al suelo.",
+      "Baja el cuerpo flexionando los codos, manteniendo la espalda recta y el core activado.",
+      "Empuja hacia arriba para volver a la posición inicial.",
+      "Repite del otro lado, extendiendo el brazo opuesto hacia el lado.",
+      "Continúa alternando lados durante el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_3294.jpg",
+    "gifAsset": "gifs/gv_3294.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0031",
+    "nombre": "Curl de bíceps con barra recta",
+    "grupoMuscular": "Brazo",
+    "equipo": "Barra",
+    "musculoObjetivo": "Bíceps",
+    "musculosSecundarios": [
+      "Antebrazos"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros y sujeta una barra con un agarre supino, con las palmas mirando hacia delante.",
+      "Mantén los codos cerca del torso y exhala mientras levantas el peso contrayendo los bíceps.",
+      "Continúa levantando la barra hasta que los bíceps estén completamente contraídos y la barra esté a la altura de los hombros.",
+      "Mantén la posición contraída durante una breve pausa mientras aprietas los bíceps.",
+      "Inhala mientras comienzas a bajar lentamente la barra de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0031.jpg",
+    "gifAsset": "gifs/gv_0031.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0165",
+    "nombre": "Curl martillo en polea con cuerda",
+    "grupoMuscular": "Brazo",
+    "equipo": "Polea",
+    "musculoObjetivo": "Bíceps",
+    "musculosSecundarios": [
+      "Antebrazos"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros y una ligera flexión en las rodillas.",
+      "Sujeta el accesorio de cuerda del cable con agarre supino, palmas mirándose entre sí, y los brazos completamente extendidos.",
+      "Manteniendo los brazos superiores fijos, exhala y levanta el peso mientras contraes los bíceps.",
+      "Continúa levantando el accesorio de cuerda del cable hasta que los bíceps estén completamente contraídos y la cuerda esté a la altura de los hombros.",
+      "Mantén la posición contraída durante una breve pausa mientras aprietas los bíceps.",
+      "Inhala y comienza a bajar lentamente el accesorio de cuerda del cable de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0165.jpg",
+    "gifAsset": "gifs/gv_0165.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0059",
+    "nombre": "Curl predicador acostado con barra",
+    "grupoMuscular": "Brazo",
+    "equipo": "Barra",
+    "musculoObjetivo": "Bíceps",
+    "musculosSecundarios": [
+      "Antebrazos"
+    ],
+    "instrucciones": [
+      "Siéntate en un banco predicador con el pecho apoyado en el respaldo y los brazos extendidos sobre el borde, sujetando una barra con un agarre supino.",
+      "Manteniendo los brazos superiores fijos, exhala y levanta el peso mientras contraes los bíceps.",
+      "Continúa levantando la barra hasta que los bíceps estén completamente contraídos y la barra esté a la altura de los hombros.",
+      "Mantén la posición contraída durante una breve pausa mientras aprietas los bíceps.",
+      "Inhala y comienza a bajar lentamente la barra de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0059.jpg",
+    "gifAsset": "gifs/gv_0059.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0089",
+    "nombre": "Curl concentrado agarre cerrado sentado con barra",
+    "grupoMuscular": "Brazo",
+    "equipo": "Barra",
+    "musculoObjetivo": "Bíceps",
+    "musculosSecundarios": [
+      "Antebrazos"
+    ],
+    "instrucciones": [
+      "Siéntate en un banco con los pies planos sobre el suelo y sujeta una barra con un agarre supino, manos separadas a la altura de los hombros.",
+      "Apoya los brazos superiores contra el interior de los muslos, justo por encima de las rodillas, y deja que la barra cuelgue frente a ti.",
+      "Manteniendo los brazos superiores fijos, exhala y levanta la barra hacia los hombros, contrayendo los bíceps.",
+      "Mantén la posición contraída durante una breve pausa, luego inhala y baja lentamente la barra de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0089.jpg",
+    "gifAsset": "gifs/gv_0089.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0056",
+    "nombre": "Extensión de tríceps acostado agarre cerrado con barra",
+    "grupoMuscular": "Brazo",
+    "equipo": "Barra",
+    "musculoObjetivo": "Tríceps",
+    "musculosSecundarios": [
+      "Hombros"
+    ],
+    "instrucciones": [
+      "Túmbate boca arriba en un banco con los pies planos sobre el suelo y la cabeza en el extremo del banco.",
+      "Agarra la barra con un agarre cerrado, manos separadas a la altura de los hombros, con las palmas hacia arriba.",
+      "Extiende completamente los brazos, levantando la barra por encima del pecho.",
+      "Manteniendo los brazos superiores fijos, baja lentamente la barra hacia la frente flexionando los codos.",
+      "Haz una pausa breve en la parte baja y luego extiende los brazos de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0056.jpg",
+    "gifAsset": "gifs/gv_0056.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_2406",
+    "nombre": "Extensión de tríceps en polea agarre invertido (barra SZ)",
+    "grupoMuscular": "Brazo",
+    "equipo": "Polea",
+    "musculoObjetivo": "Tríceps",
+    "musculosSecundarios": [
+      "Antebrazos"
+    ],
+    "instrucciones": [
+      "Sujeta una barra recta a la máquina de cable en el ajuste más alto.",
+      "Ponte de pie frente a la máquina de cable con los pies separados a la altura de los hombros.",
+      "Sujeta la barra con un agarre supino, con las palmas hacia arriba y las manos separadas a la altura de los hombros.",
+      "Mantén los codos cerca de los costados y los brazos superiores quietos durante todo el ejercicio.",
+      "Activa los tríceps y empuja lentamente la barra hacia abajo hasta que los brazos queden completamente extendidos.",
+      "Haz una pausa por un momento en la parte baja y luego regresa lentamente la barra a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_2406.jpg",
+    "gifAsset": "gifs/gv_2406.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0060",
+    "nombre": "Rompecráneos (extensión de tríceps acostado con barra)",
+    "grupoMuscular": "Brazo",
+    "equipo": "Barra",
+    "musculoObjetivo": "Tríceps",
+    "musculosSecundarios": [
+      "Hombros"
+    ],
+    "instrucciones": [
+      "Túmbate boca arriba en un banco con los pies planos sobre el suelo y la cabeza en el extremo del banco.",
+      "Sujeta una barra con un agarre pronado, manos separadas a la altura de los hombros, y extiende los brazos rectos por encima del pecho.",
+      "Manteniendo los brazos superiores fijos, baja lentamente la barra hacia la frente flexionando los codos.",
+      "Haz una pausa breve cuando la barra esté justo encima de la frente y luego extiende los brazos de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0060.jpg",
+    "gifAsset": "gifs/gv_0060.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0030",
+    "nombre": "Press de banca agarre cerrado con barra",
+    "grupoMuscular": "Brazo",
+    "equipo": "Barra",
+    "musculoObjetivo": "Tríceps",
+    "musculosSecundarios": [
+      "Pecho",
+      "Hombros"
+    ],
+    "instrucciones": [
+      "Túmbate sobre un banco con los pies apoyados en el suelo y la espalda presionada contra el banco.",
+      "Agarra la barra con un agarre cerrado, un poco más estrecho que el ancho de los hombros.",
+      "Saca la barra del soporte y bájala lentamente hacia el pecho, manteniendo los codos cerca del cuerpo.",
+      "Haz una pausa breve cuando la barra toque el pecho.",
+      "Empuja la barra de vuelta a la posición inicial, extendiendo completamente los brazos.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0030.jpg",
+    "gifAsset": "gifs/gv_0030.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0019",
+    "nombre": "Fondos de tríceps asistidos (rodillas)",
+    "grupoMuscular": "Brazo",
+    "equipo": "Máquina de palanca",
+    "musculoObjetivo": "Tríceps",
+    "musculosSecundarios": [
+      "Pecho",
+      "Hombros"
+    ],
+    "instrucciones": [
+      "Ajusta la máquina al peso y la altura deseados.",
+      "Arrodíllate sobre la almohadilla frente a la máquina, con las manos sujetando las agarraderas.",
+      "Baja el cuerpo flexionando los codos, manteniendo la espalda recta y cerca de la máquina.",
+      "Haz una pausa por un momento en la parte inferior, luego empuja tu cuerpo de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0019.jpg",
+    "gifAsset": "gifs/gv_0019.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0860",
+    "nombre": "Patada de tríceps en polea",
+    "grupoMuscular": "Brazo",
+    "equipo": "Polea",
+    "musculoObjetivo": "Tríceps",
+    "musculosSecundarios": [
+      "Hombros"
+    ],
+    "instrucciones": [
+      "Ponte de pie frente a una máquina de cable con los pies separados a la altura de los hombros.",
+      "Sujeta la agarradera del cable con la mano derecha y retrocede un paso para crear tensión en el cable.",
+      "Flexiona ligeramente las rodillas e inclínate hacia adelante desde las caderas, manteniendo la espalda recta.",
+      "Mantén la parte superior del brazo cerca del cuerpo y el codo flexionado en un ángulo de 90 grados.",
+      "Extiende el antebrazo hacia atrás, enderezando el brazo por completo.",
+      "Haz una pausa por un momento, luego regresa lentamente a la posición inicial.",
+      "Repite el número de repeticiones deseado, luego cambia de lado."
+    ],
+    "imgAsset": "img/gv_0860.jpg",
+    "gifAsset": "gifs/gv_0860.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0148",
+    "nombre": "Press de hombro alterno en polea",
+    "grupoMuscular": "Hombro",
+    "equipo": "Polea",
+    "musculoObjetivo": "Hombros",
+    "musculosSecundarios": [
+      "Tríceps",
+      "Espalda alta"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros y sujeta las agarraderas de la máquina de cable con agarre prono.",
+      "Coloca las manos a la altura de los hombros, con las palmas mirando hacia adelante.",
+      "Mantén el core activado y la espalda recta.",
+      "Empuja una agarradera hacia arriba y hacia adelante hasta que el brazo quede completamente extendido.",
+      "Haz una pausa breve en la parte más alta, luego baja lentamente la agarradera de vuelta a la posición inicial.",
+      "Repite con el otro brazo.",
+      "Alterna entre los brazos el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0148.jpg",
+    "gifAsset": "gifs/gv_0148.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0086",
+    "nombre": "Press militar tras nuca sentado con barra",
+    "grupoMuscular": "Hombro",
+    "equipo": "Barra",
+    "musculoObjetivo": "Hombros",
+    "musculosSecundarios": [
+      "Tríceps",
+      "Espalda alta"
+    ],
+    "instrucciones": [
+      "Siéntate en un banco con la espalda recta y los pies planos sobre el suelo.",
+      "Sujeta la barra con un agarre pronado, un poco más ancho que la separación de los hombros.",
+      "Levanta la barra del soporte y bájala a la altura de los hombros, detrás de la cabeza.",
+      "Empuja la barra hacia arriba hasta que los brazos queden completamente extendidos.",
+      "Baja la barra de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0086.jpg",
+    "gifAsset": "gifs/gv_0086.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0091",
+    "nombre": "Press militar sentado con barra",
+    "grupoMuscular": "Hombro",
+    "equipo": "Barra",
+    "musculoObjetivo": "Hombros",
+    "musculosSecundarios": [
+      "Tríceps",
+      "Espalda alta"
+    ],
+    "instrucciones": [
+      "Siéntate en un banco con la espalda recta y los pies planos sobre el suelo.",
+      "Sujeta la barra con un agarre pronado, un poco más ancho que la separación de los hombros.",
+      "Levanta la barra del soporte y llévala a la altura de los hombros, con los codos flexionados y las palmas hacia delante.",
+      "Empuja la barra por encima de la cabeza extendiendo completamente los brazos.",
+      "Haz una pausa breve en la parte alta y luego baja lentamente la barra de vuelta a la altura de los hombros.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0091.jpg",
+    "gifAsset": "gifs/gv_0091.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0178",
+    "nombre": "Elevación lateral en polea",
+    "grupoMuscular": "Hombro",
+    "equipo": "Polea",
+    "musculoObjetivo": "Hombros",
+    "musculosSecundarios": [
+      "Trapecios",
+      "Tríceps"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros y sujeta las agarraderas del cable con un agarre prono.",
+      "Mantén los brazos rectos y el core activado.",
+      "Levanta los brazos hacia los lados hasta que queden paralelos al suelo.",
+      "Haz una pausa por un momento en la parte superior, luego baja lentamente los brazos de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0178.jpg",
+    "gifAsset": "gifs/gv_0178.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0041",
+    "nombre": "Elevación frontal con barra",
+    "grupoMuscular": "Hombro",
+    "equipo": "Barra",
+    "musculoObjetivo": "Hombros",
+    "musculosSecundarios": [
+      "Bíceps",
+      "Tríceps"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros y sujeta una barra frente a los muslos con un agarre pronado.",
+      "Mantén los brazos rectos y levanta la barra hacia delante y hacia arriba hasta que alcance la altura de los hombros.",
+      "Haz una pausa breve en la parte alta y luego baja lentamente la barra de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0041.jpg",
+    "gifAsset": "gifs/gv_0041.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0075",
+    "nombre": "Elevación posterior de hombro con barra",
+    "grupoMuscular": "Hombro",
+    "equipo": "Barra",
+    "musculoObjetivo": "Hombros",
+    "musculosSecundarios": [
+      "Trapecios",
+      "Romboides"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros y sujeta una barra con un agarre pronado, con las palmas hacia abajo.",
+      "Flexiona ligeramente las rodillas e inclínate hacia adelante desde las caderas, manteniendo la espalda recta.",
+      "Levanta la barra hacia los lados, manteniendo los brazos rectos, hasta que queden paralelos al suelo.",
+      "Haz una pausa breve en la parte alta y luego baja lentamente la barra de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0075.jpg",
+    "gifAsset": "gifs/gv_0075.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0120",
+    "nombre": "Remo al mentón con barra",
+    "grupoMuscular": "Hombro",
+    "equipo": "Barra",
+    "musculoObjetivo": "Hombros",
+    "musculosSecundarios": [
+      "Trapecios",
+      "Bíceps"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros y sujeta una barra con agarre prono, manos un poco más separadas que el ancho de los hombros.",
+      "Deja que la barra cuelgue frente a los muslos, con los brazos completamente extendidos.",
+      "Manteniendo la espalda recta y el core activado, exhala y levanta la barra en línea recta hacia la barbilla, guiando el movimiento con los codos.",
+      "Haz una pausa breve en la parte más alta, luego inhala y baja lentamente la barra de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0120.jpg",
+    "gifAsset": "gifs/gv_0120.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_2137",
+    "nombre": "Press Arnold con mancuernas",
+    "grupoMuscular": "Hombro",
+    "equipo": "Mancuerna",
+    "musculoObjetivo": "Hombros",
+    "musculosSecundarios": [
+      "Tríceps",
+      "Pecho superior"
+    ],
+    "instrucciones": [
+      "Siéntate en un banco con respaldo y sujeta una mancuerna en cada mano a la altura del hombro, con las palmas hacia tu cuerpo y los codos flexionados.",
+      "Empuja las mancuernas hacia arriba hasta que los brazos estén completamente extendidos y las palmas miren hacia adelante.",
+      "Rota las muñecas mientras levantas, de modo que las palmas miren hacia adelante en la parte alta del movimiento.",
+      "Haz una pausa breve en la parte alta, luego baja lentamente las mancuernas de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_2137.jpg",
+    "gifAsset": "gifs/gv_2137.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_1017",
+    "nombre": "Elevación en Y con banda",
+    "grupoMuscular": "Hombro",
+    "equipo": "Banda elástica",
+    "musculoObjetivo": "Hombros",
+    "musculosSecundarios": [
+      "Trapecios",
+      "Romboides"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros y sujeta la banda frente a los muslos con las palmas mirando hacia adentro.",
+      "Mantén los brazos rectos y levántalos hacia arriba y hacia los lados, formando una 'Y' con el cuerpo.",
+      "Junta los omóplatos en la parte superior del movimiento.",
+      "Baja lentamente los brazos de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_1017.jpg",
+    "gifAsset": "gifs/gv_1017.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0225",
+    "nombre": "Aperturas posteriores cruzadas en polea alta",
+    "grupoMuscular": "Hombro",
+    "equipo": "Polea",
+    "musculoObjetivo": "Hombros",
+    "musculosSecundarios": [
+      "Trapecio",
+      "Romboides",
+      "Deltoides posterior"
+    ],
+    "instrucciones": [
+      "Coloca un mango en D en cada lado de una máquina de cable a la altura de los hombros.",
+      "Ponte de pie en el medio de la máquina de cable con los pies separados a la altura de los hombros.",
+      "Agarra los mangos con un agarre prono y extiende los brazos hacia los lados, con las palmas hacia adelante.",
+      "Mantén una ligera flexión en los codos y conserva la espalda recta durante todo el ejercicio.",
+      "Activa los músculos de los hombros y aprieta los omóplatos entre sí mientras tiras de los mangos hacia la parte delantera de tu cuerpo.",
+      "Haz una pausa breve en el punto máximo del movimiento, luego regresa lentamente a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0225.jpg",
+    "gifAsset": "gifs/gv_0225.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_1411",
+    "nombre": "Curl de muñeca pronado en banco con barra",
+    "grupoMuscular": "Brazo",
+    "equipo": "Barra",
+    "musculoObjetivo": "Antebrazos",
+    "musculosSecundarios": [
+      "Bíceps",
+      "Braquial"
+    ],
+    "instrucciones": [
+      "Siéntate en un banco con los pies planos sobre el suelo y los antebrazos apoyados sobre los muslos, con las palmas hacia abajo.",
+      "Sujeta una barra con un agarre pronado, manos separadas a la altura de los hombros.",
+      "Baja la barra hacia el suelo flexionando las muñecas, manteniendo los antebrazos fijos.",
+      "Haz una pausa breve en la parte baja y luego levanta lentamente la barra extendiendo las muñecas.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_1411.jpg",
+    "gifAsset": "gifs/gv_1411.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0859",
+    "nombre": "Rodillo de muñeca",
+    "grupoMuscular": "Brazo",
+    "equipo": "Con peso adicional",
+    "musculoObjetivo": "Antebrazos",
+    "musculosSecundarios": [
+      "Bíceps",
+      "Tríceps"
+    ],
+    "instrucciones": [
+      "Sujeta un peso a un extremo de una cuerda o barra.",
+      "Sostén el otro extremo de la cuerda o barra con ambas manos, con las palmas hacia abajo.",
+      "Ponte de pie con los pies separados a la altura de los hombros y los brazos completamente extendidos frente a ti.",
+      "Enrolla lentamente el peso hacia las manos flexionando las muñecas.",
+      "Haz una pausa breve en lo alto, luego baja lentamente el peso de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0859.jpg",
+    "gifAsset": "gifs/gv_0859.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_2288",
+    "nombre": "Prensa de agarre en máquina",
+    "grupoMuscular": "Brazo",
+    "equipo": "Máquina de palanca",
+    "musculoObjetivo": "Antebrazos",
+    "musculosSecundarios": [
+      "Bíceps",
+      "Tríceps"
+    ],
+    "instrucciones": [
+      "Ajusta la altura del asiento y sujeta las asas de la máquina de palanca.",
+      "Mantén la espalda recta y los pies planos en el suelo.",
+      "Exhala y aprieta las asas, contrayendo los antebrazos.",
+      "Mantén la contracción durante un segundo, luego suelta lentamente y vuelve a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_2288.jpg",
+    "gifAsset": "gifs/gv_2288.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_1412",
+    "nombre": "Curl de muñeca supinado en banco con barra",
+    "grupoMuscular": "Brazo",
+    "equipo": "Barra",
+    "musculoObjetivo": "Antebrazos",
+    "musculosSecundarios": [
+      "Bíceps",
+      "Hombros"
+    ],
+    "instrucciones": [
+      "Siéntate en un banco con los pies planos sobre el suelo y sujeta una barra con un agarre supino, con las palmas hacia arriba.",
+      "Apoya los antebrazos sobre el banco, dejando que las muñecas cuelguen del borde.",
+      "Manteniendo los antebrazos fijos, exhala y flexiona las muñecas hacia arriba tanto como sea posible.",
+      "Mantén la posición contraída durante una breve pausa, luego inhala y baja lentamente la barra de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_1412.jpg",
+    "gifAsset": "gifs/gv_1412.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0079",
+    "nombre": "Curl de muñeca invertido con barra (variante)",
+    "grupoMuscular": "Brazo",
+    "equipo": "Barra",
+    "musculoObjetivo": "Antebrazos",
+    "musculosSecundarios": [
+      "Bíceps",
+      "Braquial"
+    ],
+    "instrucciones": [
+      "Siéntate en un banco con los pies planos sobre el suelo y las rodillas flexionadas.",
+      "Sujeta una barra con un agarre pronado, palmas hacia abajo, y las manos separadas a la altura de los hombros.",
+      "Apoya los antebrazos sobre los muslos, dejando que las muñecas cuelguen del borde.",
+      "Manteniendo los antebrazos fijos, exhala y flexiona las muñecas hacia arriba tanto como sea posible.",
+      "Mantén la posición contraída durante una breve pausa, luego inhala y baja lentamente la barra de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0079.jpg",
+    "gifAsset": "gifs/gv_0079.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0082",
+    "nombre": "Curl de muñeca invertido con barra",
+    "grupoMuscular": "Brazo",
+    "equipo": "Barra",
+    "musculoObjetivo": "Antebrazos",
+    "musculosSecundarios": [
+      "Bíceps",
+      "Braquial"
+    ],
+    "instrucciones": [
+      "Siéntate en un banco con los pies planos sobre el suelo y sujeta una barra con un agarre pronado, con las palmas hacia abajo.",
+      "Apoya los antebrazos sobre los muslos, dejando que las muñecas cuelguen del borde.",
+      "Flexiona lentamente las muñecas hacia arriba, llevando la barra hacia el cuerpo.",
+      "Haz una pausa breve en la parte alta y luego baja lentamente la barra de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0082.jpg",
+    "gifAsset": "gifs/gv_0082.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0104",
+    "nombre": "Curl de muñeca invertido de pie con barra",
+    "grupoMuscular": "Brazo",
+    "equipo": "Barra",
+    "musculoObjetivo": "Antebrazos",
+    "musculosSecundarios": [
+      "Bíceps",
+      "Hombros"
+    ],
+    "instrucciones": [
+      "Ponte de pie con los pies separados a la altura de los hombros y sujeta una barra con agarre prono.",
+      "Apoya la barra sobre el dorso de las manos con las palmas hacia abajo y los dedos apuntando hacia el cuerpo.",
+      "Manteniendo los brazos superiores quietos, exhala y flexiona las muñecas hacia arriba lo más posible.",
+      "Mantén la posición contraída durante una breve pausa, luego inhala y baja lentamente la barra de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0104.jpg",
+    "gifAsset": "gifs/gv_0104.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0126",
+    "nombre": "Curl de muñeca con barra",
+    "grupoMuscular": "Brazo",
+    "equipo": "Barra",
+    "musculoObjetivo": "Antebrazos",
+    "musculosSecundarios": [
+      "Bíceps",
+      "Braquial"
+    ],
+    "instrucciones": [
+      "Siéntate en un banco con los pies planos en el suelo y los antebrazos apoyados sobre los muslos, sujetando una barra con agarre supino.",
+      "Deja que la barra ruede hacia las puntas de los dedos, manteniendo las muñecas rectas.",
+      "Enrolla lentamente la barra hacia los antebrazos flexionando las muñecas.",
+      "Haz una pausa breve en la parte alta y luego baja lentamente la barra de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0126.jpg",
+    "gifAsset": "gifs/gv_0126.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0210",
+    "nombre": "Curl de muñeca invertido en polea",
+    "grupoMuscular": "Brazo",
+    "equipo": "Polea",
+    "musculoObjetivo": "Antebrazos",
+    "musculosSecundarios": [
+      "Antebrazos",
+      "Muñecas"
+    ],
+    "instrucciones": [
+      "Sujeta un cable a una polea baja y siéntate en un banco frente a la máquina de cable.",
+      "Sujeta la agarradera del cable con un agarre prono, con las palmas hacia abajo.",
+      "Apoya los antebrazos sobre los muslos, con las muñecas colgando del borde.",
+      "Manteniendo los antebrazos fijos, exhala y flexiona las muñecas hacia arriba tanto como sea posible.",
+      "Haz una pausa por un momento en la parte alta, luego inhala y baja lentamente las muñecas de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0210.jpg",
+    "gifAsset": "gifs/gv_0210.gif",
+    "personalizado": false
+  },
+  {
+    "id": "gv_0224",
+    "nombre": "Curl de muñeca invertido de pie en polea",
+    "grupoMuscular": "Brazo",
+    "equipo": "Polea",
+    "musculoObjetivo": "Antebrazos",
+    "musculosSecundarios": [
+      "Bíceps",
+      "Braquial"
+    ],
+    "instrucciones": [
+      "Ponte de pie frente a una máquina de cable con los pies separados a la altura de los hombros.",
+      "Sujeta el mango del cable con un agarre prono, con las palmas hacia abajo.",
+      "Mantén los brazos rectos y los codos cerca de los costados.",
+      "Flexiona lentamente las muñecas hacia arriba, llevando el mango del cable hacia tu cuerpo.",
+      "Haz una pausa breve en la parte más alta, luego baja lentamente la agarradera del cable de vuelta a la posición inicial.",
+      "Repite el número de repeticiones deseado."
+    ],
+    "imgAsset": "img/gv_0224.jpg",
+    "gifAsset": "gifs/gv_0224.gif",
+    "personalizado": false
+  }
+]
