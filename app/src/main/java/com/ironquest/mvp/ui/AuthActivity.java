@@ -202,6 +202,10 @@ public class AuthActivity extends AppCompatActivity {
         authManager.registrar(email, password, new AuthManager.Callback() {
             @Override
             public void onExito(String uid) {
+                Usuario usuarioLocal = dataStore.getUsuario();
+                if (usuarioLocal != null && !uid.equals(usuarioLocal.getFirebaseUid())) {
+                    dataManager.limpiarDatosDeUsuario();
+                }
                 Usuario usuario = new Usuario();
                 usuario.setId(dataManager.newId("user"));
                 usuario.setUsername(username);
@@ -269,9 +273,13 @@ public class AuthActivity extends AppCompatActivity {
         authManager.iniciarSesion(email, password, new AuthManager.Callback() {
             @Override
             public void onExito(String uid) {
-                if (dataStore.getUsuario() != null) {
+                Usuario usuarioLocal = dataStore.getUsuario();
+                if (usuarioLocal != null && uid.equals(usuarioLocal.getFirebaseUid())) {
                     continuarDespuesDeAuth();
                     return;
+                }
+                if (usuarioLocal != null) {
+                    dataManager.limpiarDatosDeUsuario();
                 }
                 PerfilSync.getInstance().pullUnaVez(uid, new PerfilSync.CallbackPull() {
                     @Override

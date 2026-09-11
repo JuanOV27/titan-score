@@ -112,6 +112,23 @@ public class DataManager {
         save();
     }
 
+    /**
+     * Borra todos los datos ligados a la cuenta actual y deja el catálogo semilla listo para
+     * que otra cuenta empiece desde cero. Se llama al cerrar sesión y, defensivamente, al
+     * detectar que la cuenta que inicia sesión no coincide con el usuario que había en local
+     * (por ejemplo si la app se cerró sin logout previo).
+     */
+    public void limpiarDatosDeUsuario() {
+        dataStore.setUsuario(null);
+        dataStore.getHistorialFisico().clear();
+        dataStore.getRutinas().clear();
+        dataStore.getSesiones().clear();
+        dataStore.setSesionEnProgreso(null);
+        dataStore.getEjercicios().clear();
+        dataStore.getEjercicios().addAll(seedEjercicios());
+        save();
+    }
+
     public File exportarRutinaComoArchivo(Rutina rutina) throws IOException {
         File dir = new File(appContext.getCacheDir(), "exportaciones");
         if (!dir.exists() && !dir.mkdirs()) {

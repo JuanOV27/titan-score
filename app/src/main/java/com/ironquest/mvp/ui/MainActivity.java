@@ -226,6 +226,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void cerrarSesion() {
+        dataManager.limpiarDatosDeUsuario();
         AuthManager.getInstance().cerrarSesion();
         Intent intent = new Intent(this, AuthActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
