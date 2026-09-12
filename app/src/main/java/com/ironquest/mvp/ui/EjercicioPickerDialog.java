@@ -26,6 +26,7 @@ import com.ironquest.mvp.model.Ejercicio;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -43,7 +44,10 @@ final class EjercicioPickerDialog extends Dialog {
     private ChipGroup chipGroup;
     private RecyclerView recyclerView;
     private TextView textoVacio;
+    private EditText editBuscar;
     private EjercicioPickerAdapter adapter;
+    private String musculoSeleccionado;
+    private String textoBusqueda = "";
 
     EjercicioPickerDialog(Activity activity, DataManager dataManager, DataStore dataStore,
                            EjercicioPicker.Listener listener) {
@@ -69,6 +73,7 @@ final class EjercicioPickerDialog extends Dialog {
         chipGroup = findViewById(R.id.chip_group_musculos);
         recyclerView = findViewById(R.id.recycler_ejercicios_picker);
         textoVacio = findViewById(R.id.text_picker_vacio);
+        editBuscar = findViewById(R.id.edit_buscar_ejercicio);
 
         adapter = new EjercicioPickerAdapter(getContext(), ejercicio -> {
             listener.onEjercicioElegido(ejercicio);
@@ -77,10 +82,18 @@ final class EjercicioPickerDialog extends Dialog {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
+        editBuscar.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void onChanged(String text) {
+                textoBusqueda = text.trim().toLowerCase(Locale.getDefault());
+                aplicarFiltro();
+            }
+        });
+
         findViewById(R.id.button_ejercicio_personalizado).setOnClickListener(v -> mostrarPersonalizado());
 
         poblarChips();
-        filtrarPor(null);
+        aplicarFiltro();
     }
 
     private void poblarChips() {
@@ -114,14 +127,25 @@ final class EjercicioPickerDialog extends Dialog {
                 return;
             }
             Chip seleccionado = group.findViewById(checkedIds.get(0));
-            filtrarPor((String) seleccionado.getTag());
+            musculoSeleccionado = (String) seleccionado.getTag();
+            aplicarFiltro();
         });
     }
 
-    private void filtrarPor(String musculo) {
+    /**
+     * Filtro combinado: AND entre el chip de músculo y el texto tecleado. Sin folding de acentos
+     * a propósito — los nombres del catálogo curado son texto español bien acentuado y las
+     * búsquedas se teclean en un teclado móvil con autocorrección; el costo de complejidad de
+     * {@code Normalizer.NFD} no se justifica. No "arreglar" sin re-derivar este trade-off.
+     */
+    private void aplicarFiltro() {
         List<Ejercicio> filtrados = new ArrayList<>();
         for (Ejercicio ejercicio : dataStore.getEjercicios()) {
-            if (musculo == null || musculo.equals(ejercicio.getMusculoObjetivo())) {
+            boolean coincideMusculo = musculoSeleccionado == null
+                    || musculoSeleccionado.equals(ejercicio.getMusculoObjetivo());
+            boolean coincideTexto = textoBusqueda.isEmpty()
+                    || ejercicio.getNombre().toLowerCase(Locale.getDefault()).contains(textoBusqueda);
+            if (coincideMusculo && coincideTexto) {
                 filtrados.add(ejercicio);
             }
         }
