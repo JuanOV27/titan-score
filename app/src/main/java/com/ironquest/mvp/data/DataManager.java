@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.ironquest.mvp.model.DataStore;
 import com.ironquest.mvp.model.Ejercicio;
 import com.ironquest.mvp.model.Rutina;
@@ -16,13 +17,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public class DataManager {
 
     private static final String FILE_NAME = "datos.json";
+    private static final int CATALOGO_VERSION_ACTUAL = 1;
+    private static final String ASSET_CATALOGO = "catalogo.json";
     private static DataManager instance;
 
     private final Context appContext;
@@ -35,6 +41,7 @@ public class DataManager {
         file = new File(appContext.getFilesDir(), FILE_NAME);
         dataStore = load();
         migrarEjerciciosPersonalizados();
+        migrarCatalogoDataset();
     }
 
     /**
@@ -54,6 +61,73 @@ public class DataManager {
         if (cambio) {
             save();
         }
+    }
+
+    /**
+     * Los 20 ejercicios sembrados no traían {@code musculoObjetivo} porque ese campo nació con
+     * el catálogo curado del dataset. Se les asigna aquí, desde el mismo vocabulario fijo
+     * ({@link Ejercicio#MUSCULOS_OBJETIVO}), para que compartan taxonomía de chips con los
+     * ejercicios nuevos en vez de quedar huérfanos bajo cualquier filtro específico.
+     */
+    private static Map<String, String> crearRetagSeed() {
+        Map<String, String> m = new HashMap<>();
+        m.put("ex1", "Pectorales");
+        m.put("ex2", "Pectorales");
+        m.put("ex3", "Pectorales");
+        m.put("ex4", "Pectorales");
+        m.put("ex5", "Dorsales");
+        m.put("ex6", "Dorsales");
+        m.put("ex7", "Dorsales");
+        m.put("ex8", "Dorsales");
+        m.put("ex9", "Zona lumbar");
+        m.put("ex10", "Cuádriceps");
+        m.put("ex11", "Cuádriceps");
+        m.put("ex12", "Glúteos");
+        m.put("ex13", "Cuádriceps");
+        m.put("ex14", "Isquiotibiales");
+        m.put("ex15", "Pantorrillas");
+        m.put("ex16", "Bíceps");
+        m.put("ex17", "Bíceps");
+        m.put("ex18", "Tríceps");
+        m.put("ex19", "Hombros");
+        m.put("ex20", "Hombros");
+        return m;
+    }
+
+    private static final Map<String, String> RETAG_SEED = crearRetagSeed();
+
+    /**
+     * Migración aditiva del catálogo curado: nunca se ejecuta más de una vez por versión
+     * (Trampa #5) y nunca toca ejercicios existentes salvo para completar
+     * {@code musculoObjetivo} en los 20 sembrados. Se llama desde el constructor, nunca desde
+     * {@link #load()} (Trampa #4).
+     */
+    private void migrarCatalogoDataset() {
+        if (dataStore.getCatalogoVersion() >= CATALOGO_VERSION_ACTUAL) {
+            return;
+        }
+        for (Map.Entry<String, String> entry : RETAG_SEED.entrySet()) {
+            Ejercicio ejercicio = dataStore.buscarEjercicio(entry.getKey());
+            if (ejercicio != null && ejercicio.getMusculoObjetivo() == null) {
+                ejercicio.setMusculoObjetivo(entry.getValue());
+            }
+        }
+        try (InputStreamReader reader = new InputStreamReader(
+                appContext.getAssets().open(ASSET_CATALOGO), StandardCharsets.UTF_8)) {
+            Type tipoLista = new TypeToken<List<Ejercicio>>() { }.getType();
+            List<Ejercicio> catalogoNuevo = gson.fromJson(reader, tipoLista);
+            if (catalogoNuevo != null) {
+                for (Ejercicio candidato : catalogoNuevo) {
+                    if (dataStore.buscarEjercicio(candidato.getId()) == null) {
+                        dataStore.getEjercicios().add(candidato);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            // No debe tumbar el arranque: el catálogo semilla ex1..ex20 sigue disponible.
+        }
+        dataStore.setCatalogoVersion(CATALOGO_VERSION_ACTUAL);
+        save();
     }
 
     public static synchronized DataManager getInstance(Context context) {
@@ -109,7 +183,10 @@ public class DataManager {
         dataStore.getRutinas().addAll(nuevo.getRutinas());
         dataStore.getSesiones().clear();
         dataStore.getSesiones().addAll(nuevo.getSesiones());
-        save();
+        // Un respaldo importado trae su propio catalogoVersion (a menudo 0): se resetea para
+        // forzar el merge del catálogo curado, si no, un respaldo viejo se queda sin él.
+        dataStore.setCatalogoVersion(0);
+        migrarCatalogoDataset();
     }
 
     /**
@@ -126,7 +203,12 @@ public class DataManager {
         dataStore.setSesionEnProgreso(null);
         dataStore.getEjercicios().clear();
         dataStore.getEjercicios().addAll(seedEjercicios());
-        save();
+        // Sin esto, el catálogo curado (y el retag de ex1..ex20) no se reaplica dentro de la
+        // misma instancia de DataManager — migrarCatalogoDataset() solo corre una vez por
+        // versión, y como es singleton, un logout/cambio de cuenta lo dejaría degradado hasta
+        // reiniciar la app.
+        dataStore.setCatalogoVersion(0);
+        migrarCatalogoDataset();
     }
 
     public File exportarRutinaComoArchivo(Rutina rutina) throws IOException {

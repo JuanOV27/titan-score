@@ -15,6 +15,8 @@ public class DataStore {
     private Sesion sesionEnProgreso;
     private Usuario usuario;
     private List<RegistroFisico> historialFisico = new ArrayList<>();
+    /** Primitivo a propósito: un datos.json viejo lo lee en 0 sin migración (ver Trampa #3). */
+    private int catalogoVersion;
 
     public DataStore() {
     }
@@ -112,5 +114,13 @@ public class DataStore {
 
     public void setHistorialFisico(List<RegistroFisico> historialFisico) {
         this.historialFisico = historialFisico;
+    }
+
+    public int getCatalogoVersion() {
+        return catalogoVersion;
+    }
+
+    public void setCatalogoVersion(int catalogoVersion) {
+        this.catalogoVersion = catalogoVersion;
     }
 }

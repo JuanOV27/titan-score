@@ -1,11 +1,31 @@
 package com.ironquest.mvp.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /** Un ejercicio del catálogo. Los IDs {@code ex1..ex20} son los que se siembran por defecto. */
 public class Ejercicio extends EntidadIdentificable {
+
+    /**
+     * Vocabulario fijo de músculos específicos, usado tanto por los chips de filtro del
+     * selector como por el script de curación del catálogo (para detectar typos: un valor de
+     * {@link #musculoObjetivo} que no esté aquí queda invisible bajo cualquier chip).
+     */
+    public static final String[] MUSCULOS_OBJETIVO = {
+            "Pectorales", "Dorsales", "Trapecios", "Espalda alta", "Zona lumbar",
+            "Cuádriceps", "Isquiotibiales", "Glúteos", "Aductores/Abductores", "Pantorrillas",
+            "Hombros", "Bíceps", "Tríceps", "Antebrazos", "Abdomen"
+    };
 
     private String nombre;
     private String grupoMuscular;
     private boolean personalizado;
+    private String equipo;
+    private String musculoObjetivo;
+    private List<String> musculosSecundarios = new ArrayList<>();
+    private List<String> instrucciones = new ArrayList<>();
+    private String imgAsset;
+    private String gifAsset;
 
     /** Constructor sin argumentos para Gson. Privado: nadie más debe crear un Ejercicio vacío. */
     private Ejercicio() {
@@ -15,6 +35,11 @@ public class Ejercicio extends EntidadIdentificable {
         super(id);
         this.nombre = nombre;
         this.grupoMuscular = grupoMuscular;
+    }
+
+    /** Si tiene GIF de técnica — señal única que usan el picker y "ver técnica" para degradar. */
+    public boolean tieneFichaTecnica() {
+        return gifAsset != null && !gifAsset.isEmpty();
     }
 
     public String getNombre() {
@@ -39,6 +64,54 @@ public class Ejercicio extends EntidadIdentificable {
 
     public void setPersonalizado(boolean personalizado) {
         this.personalizado = personalizado;
+    }
+
+    public String getEquipo() {
+        return equipo;
+    }
+
+    public void setEquipo(String equipo) {
+        this.equipo = equipo;
+    }
+
+    public String getMusculoObjetivo() {
+        return musculoObjetivo;
+    }
+
+    public void setMusculoObjetivo(String musculoObjetivo) {
+        this.musculoObjetivo = musculoObjetivo;
+    }
+
+    public List<String> getMusculosSecundarios() {
+        return musculosSecundarios;
+    }
+
+    public void setMusculosSecundarios(List<String> musculosSecundarios) {
+        this.musculosSecundarios = musculosSecundarios;
+    }
+
+    public List<String> getInstrucciones() {
+        return instrucciones;
+    }
+
+    public void setInstrucciones(List<String> instrucciones) {
+        this.instrucciones = instrucciones;
+    }
+
+    public String getImgAsset() {
+        return imgAsset;
+    }
+
+    public void setImgAsset(String imgAsset) {
+        this.imgAsset = imgAsset;
+    }
+
+    public String getGifAsset() {
+        return gifAsset;
+    }
+
+    public void setGifAsset(String gifAsset) {
+        this.gifAsset = gifAsset;
     }
 
     @Override
