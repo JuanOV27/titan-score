@@ -27,6 +27,15 @@
                 android:textSize="17sp" />
 
             <ImageButton
+                android:id="@+id/button_ver_tecnica"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Ver técnica"
+                android:src="@android:drawable/ic_menu_info_details"
+                android:visibility="gone" />
+
+            <ImageButton
                 android:id="@+id/button_cambiar_ejercicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

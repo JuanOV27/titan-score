@@ -282,11 +282,12 @@ public class ActiveSessionActivity extends BaseActivity {
         View block = inflater.inflate(R.layout.view_ejercicio_sesion_block, containerEjercicios, false);
         TextView nombre = block.findViewById(R.id.text_nombre_ejercicio_sesion);
         TextView explicacion = block.findViewById(R.id.text_explicacion_progresion);
+        ImageButton botonVerTecnica = block.findViewById(R.id.button_ver_tecnica);
         ImageButton botonCambiar = block.findViewById(R.id.button_cambiar_ejercicio);
         ImageButton botonEliminar = block.findViewById(R.id.button_eliminar_ejercicio_sesion);
         LinearLayout containerSeries = block.findViewById(R.id.container_series);
 
-        actualizarNombreBloque(nombre, ejercicioSesion.getEjercicioId());
+        actualizarInfoEjercicio(nombre, botonVerTecnica, ejercicioSesion.getEjercicioId());
         if (sugerencia != null && sugerencia.getExplicacion() != null) {
             explicacion.setText(sugerencia.getExplicacion());
             explicacion.setTextColor(ContextCompat.getColor(this,
@@ -310,7 +311,7 @@ public class ActiveSessionActivity extends BaseActivity {
         botonCambiar.setOnClickListener(v -> EjercicioPicker.mostrar(this, dataManager, dataStore, nuevoEjercicio -> {
             catalogoPorId.putIfAbsent(nuevoEjercicio.getId(), nuevoEjercicio);
             ejercicioSesion.setEjercicioId(nuevoEjercicio.getId());
-            actualizarNombreBloque(nombre, nuevoEjercicio.getId());
+            actualizarInfoEjercicio(nombre, botonVerTecnica, nuevoEjercicio.getId());
             guardarProgreso();
         }));
 
@@ -328,9 +329,21 @@ public class ActiveSessionActivity extends BaseActivity {
         containerEjercicios.addView(block);
     }
 
-    private void actualizarNombreBloque(TextView nombre, String ejercicioId) {
+    /**
+     * Actualiza nombre y visibilidad de "ver técnica" juntos, para no repetir esta llamada por
+     * separado en los dos puntos donde el ejercicio del bloque puede cambiar (setup inicial y
+     * tras un swap) — olvidar uno de los dos dejaría el botón mostrando el ejercicio viejo.
+     */
+    private void actualizarInfoEjercicio(TextView nombre, ImageButton botonVerTecnica, String ejercicioId) {
         Ejercicio ejercicio = catalogoPorId.get(ejercicioId);
         nombre.setText(ejercicio != null ? ejercicio.getNombre() : "Ejercicio");
+
+        if (ejercicio != null && ejercicio.tieneFichaTecnica()) {
+            botonVerTecnica.setVisibility(View.VISIBLE);
+            botonVerTecnica.setOnClickListener(v -> new DetalleEjercicioDialog(this, ejercicio).show());
+        } else {
+            botonVerTecnica.setVisibility(View.GONE);
+        }
     }
 
     private void mostrarTemporizadorDescanso() {

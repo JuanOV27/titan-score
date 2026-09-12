@@ -201,6 +201,10 @@ public class MainActivity extends BaseActivity {
             abrirFormularioFeedback();
             return true;
         }
+        if (id == R.id.action_acerca_de) {
+            startActivity(new Intent(this, AboutActivity.class));
+            return true;
+        }
         if (id == R.id.action_cerrar_sesion) {
             confirmarCerrarSesion();
             return true;
