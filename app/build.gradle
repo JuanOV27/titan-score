@@ -38,6 +38,8 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    // Cards por ejercicio en la sesión activa (Apache 2.0, misma familia que el resto de AndroidX).
+    implementation 'androidx.viewpager2:viewpager2:1.1.0'
     implementation 'com.google.code.gson:gson:2.11.0'
     // Android no decodifica GIF animado de forma nativa antes de API 28; minSdk de la app es 26.
     // MIT, trae com.getkeepsafe.relinker:relinker (también MIT) como transitiva.

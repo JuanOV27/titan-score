@@ -12,14 +12,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,10 +23,10 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.google.android.material.snackbar.Snackbar;
 import com.ironquest.mvp.R;
 import com.ironquest.mvp.data.DataManager;
 import com.ironquest.mvp.model.DataStore;
@@ -50,6 +46,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 public class ActiveSessionActivity extends BaseActivity {
@@ -57,7 +54,6 @@ public class ActiveSessionActivity extends BaseActivity {
     public static final String EXTRA_RUTINA_ID = "extra_rutina_id";
     public static final String EXTRA_RESUMIR = "extra_resumir";
 
-    private static final double PASO_PESO = 2.5;
     private static final long HOLD_FINALIZAR_MS = 3000L;
     private static final DateTimeFormatter FORMATO_HORA = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -70,8 +66,10 @@ public class ActiveSessionActivity extends BaseActivity {
     private boolean sesionFinalizada;
 
     private Map<String, Ejercicio> catalogoPorId;
-    private LinearLayout containerEjercicios;
-    private LayoutInflater inflater;
+    private Map<EjercicioSesion, Sugerencia> sugerencias;
+    private ViewPager2 pagerEjercicios;
+    private EjercicioSesionPagerAdapter pagerAdapter;
+    private TextView textIndicadorPagina;
 
     private ActivityResultLauncher<String> permissionLauncher;
 
@@ -92,8 +90,8 @@ public class ActiveSessionActivity extends BaseActivity {
             catalogoPorId.put(ejercicio.getId(), ejercicio);
         }
 
-        containerEjercicios = findViewById(R.id.container_ejercicios);
-        inflater = LayoutInflater.from(this);
+        pagerEjercicios = findViewById(R.id.pager_ejercicios_sesion);
+        textIndicadorPagina = findViewById(R.id.text_indicador_pagina_sesion);
         TextView textHoraInicio = findViewById(R.id.text_hora_inicio);
 
         boolean resumir = getIntent().getBooleanExtra(EXTRA_RESUMIR, false);
@@ -102,9 +100,8 @@ public class ActiveSessionActivity extends BaseActivity {
             inicioSesion = LocalDateTime.parse(sesionActual.getFechaHoraInicio());
             setTitle(sesionActual.getRutinaNombre());
             textHoraInicio.setText("Inicio: " + inicioSesion.format(FORMATO_HORA));
-            for (EjercicioSesion ejercicioSesion : sesionActual.getEjercicios()) {
-                agregarBloqueEjercicio(ejercicioSesion);
-            }
+            // Resumir nunca muestra explicación de progresión — se preserva ese comportamiento.
+            sugerencias = new IdentityHashMap<>();
         } else {
             String rutinaId = getIntent().getStringExtra(EXTRA_RUTINA_ID);
             Rutina rutina = dataStore.buscarRutina(rutinaId);
@@ -116,6 +113,7 @@ public class ActiveSessionActivity extends BaseActivity {
 
             inicioSesion = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
             sesionActual = new Sesion(dataManager.newId("s"), rutina.getId(), rutina.getNombre(), inicioSesion.toString());
+            sugerencias = new IdentityHashMap<>();
 
             setTitle(rutina.getNombre());
             textHoraInicio.setText("Inicio: " + inicioSesion.format(FORMATO_HORA));
@@ -130,13 +128,40 @@ public class ActiveSessionActivity extends BaseActivity {
                             new SerieSesion(i, sugerencia.getPeso(), sugerencia.getRepeticiones(), true));
                 }
                 sesionActual.agregarEjercicio(ejercicioSesion);
-                agregarBloqueEjercicio(ejercicioSesion, sugerencia);
+                sugerencias.put(ejercicioSesion, sugerencia);
                 // Todas las series nacen marcadas como completadas, así que el volumen del bloque
                 // recién creado es exactamente el plan de este ejercicio.
                 volumenPlaneado += ejercicioSesion.calcularVolumen();
             }
             sesionActual.setVolumenPlaneado(volumenPlaneado);
         }
+
+        pagerAdapter = new EjercicioSesionPagerAdapter(
+                sesionActual.getEjercicios(), catalogoPorId, sugerencias,
+                new EjercicioSesionPagerAdapter.Listener() {
+                    @Override
+                    public void onCambiarEjercicio(int position) {
+                        cambiarEjercicio(position);
+                    }
+
+                    @Override
+                    public void onEliminarEjercicio(int position) {
+                        confirmarEliminarEjercicio(position);
+                    }
+
+                    @Override
+                    public void onProgresoModificado() {
+                        guardarProgreso();
+                    }
+                });
+        pagerEjercicios.setAdapter(pagerAdapter);
+        pagerEjercicios.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                actualizarIndicadorPagina();
+            }
+        });
+        actualizarIndicadorPagina();
 
         guardarProgreso();
         iniciarServicioSeguimiento();
@@ -151,7 +176,10 @@ public class ActiveSessionActivity extends BaseActivity {
                         nuevo.agregarSerie(new SerieSesion(i, 0.0, 10, true));
                     }
                     sesionActual.agregarEjercicio(nuevo);
-                    agregarBloqueEjercicio(nuevo);
+                    int posicion = sesionActual.getEjercicios().size() - 1;
+                    pagerAdapter.notifyItemInserted(posicion);
+                    pagerEjercicios.setCurrentItem(posicion, true);
+                    actualizarIndicadorPagina();
                     guardarProgreso();
                 }));
     }
@@ -274,203 +302,55 @@ public class ActiveSessionActivity extends BaseActivity {
         }
     }
 
-    private void agregarBloqueEjercicio(EjercicioSesion ejercicioSesion) {
-        agregarBloqueEjercicio(ejercicioSesion, null);
-    }
-
-    private void agregarBloqueEjercicio(EjercicioSesion ejercicioSesion, Sugerencia sugerencia) {
-        View block = inflater.inflate(R.layout.view_ejercicio_sesion_block, containerEjercicios, false);
-        TextView nombre = block.findViewById(R.id.text_nombre_ejercicio_sesion);
-        TextView explicacion = block.findViewById(R.id.text_explicacion_progresion);
-        ImageButton botonVerTecnica = block.findViewById(R.id.button_ver_tecnica);
-        ImageButton botonCambiar = block.findViewById(R.id.button_cambiar_ejercicio);
-        ImageButton botonEliminar = block.findViewById(R.id.button_eliminar_ejercicio_sesion);
-        LinearLayout containerSeries = block.findViewById(R.id.container_series);
-
-        actualizarInfoEjercicio(nombre, botonVerTecnica, ejercicioSesion.getEjercicioId());
-        if (sugerencia != null && sugerencia.getExplicacion() != null) {
-            explicacion.setText(sugerencia.getExplicacion());
-            explicacion.setTextColor(ContextCompat.getColor(this,
-                    sugerencia.isEstancado() ? R.color.cumplimiento_bajo : R.color.cumplimiento_medio));
-            explicacion.setVisibility(View.VISIBLE);
+    private void cambiarEjercicio(int position) {
+        if (position < 0 || position >= sesionActual.getEjercicios().size()) {
+            return;
         }
-
-        redibujarSeries(ejercicioSesion, containerSeries);
-
-        MaterialButton botonAgregarSerie = block.findViewById(R.id.button_agregar_serie);
-        botonAgregarSerie.setOnClickListener(v -> {
-            SerieSesion ultima = ejercicioSesion.getSeries().isEmpty()
-                    ? new SerieSesion(0, 0.0, 10, true)
-                    : ejercicioSesion.getSeries().get(ejercicioSesion.getSeries().size() - 1);
-            SerieSesion nueva = new SerieSesion(ejercicioSesion.getSeries().size() + 1, ultima.getPeso(), ultima.getRepeticiones(), true);
-            ejercicioSesion.agregarSerie(nueva);
-            containerSeries.addView(crearFilaSerie(inflater, containerSeries, ejercicioSesion, nueva));
-            guardarProgreso();
-        });
-
-        botonCambiar.setOnClickListener(v -> EjercicioPicker.mostrar(this, dataManager, dataStore, nuevoEjercicio -> {
+        EjercicioSesion ejercicioSesion = sesionActual.getEjercicios().get(position);
+        EjercicioPicker.mostrar(this, dataManager, dataStore, nuevoEjercicio -> {
             catalogoPorId.putIfAbsent(nuevoEjercicio.getId(), nuevoEjercicio);
             ejercicioSesion.setEjercicioId(nuevoEjercicio.getId());
-            actualizarInfoEjercicio(nombre, botonVerTecnica, nuevoEjercicio.getId());
+            // La explicación de progresión pertenecía al ejercicio planeado; tras un swap se
+            // descarta para no mostrar una sugerencia de otro ejercicio.
+            sugerencias.remove(ejercicioSesion);
+            pagerAdapter.notifyItemChanged(position);
             guardarProgreso();
-        }));
+        });
+    }
 
-        botonEliminar.setOnClickListener(v -> new AlertDialog.Builder(this)
+    private void confirmarEliminarEjercicio(int position) {
+        if (position < 0 || position >= sesionActual.getEjercicios().size()) {
+            return;
+        }
+        EjercicioSesion ejercicioSesion = sesionActual.getEjercicios().get(position);
+        new AlertDialog.Builder(this)
                 .setTitle("Eliminar ejercicio")
                 .setMessage("¿Quitar este ejercicio de la sesión?")
                 .setPositiveButton("Eliminar", (dialog, which) -> {
                     sesionActual.getEjercicios().remove(ejercicioSesion);
-                    containerEjercicios.removeView(block);
+                    sugerencias.remove(ejercicioSesion);
+                    pagerAdapter.notifyItemRemoved(position);
+                    actualizarIndicadorPagina();
                     guardarProgreso();
                 })
                 .setNegativeButton("Cancelar", null)
-                .show());
-
-        containerEjercicios.addView(block);
+                .show();
     }
 
-    /**
-     * Actualiza nombre y visibilidad de "ver técnica" juntos, para no repetir esta llamada por
-     * separado en los dos puntos donde el ejercicio del bloque puede cambiar (setup inicial y
-     * tras un swap) — olvidar uno de los dos dejaría el botón mostrando el ejercicio viejo.
-     */
-    private void actualizarInfoEjercicio(TextView nombre, ImageButton botonVerTecnica, String ejercicioId) {
-        Ejercicio ejercicio = catalogoPorId.get(ejercicioId);
-        nombre.setText(ejercicio != null ? ejercicio.getNombre() : "Ejercicio");
-
-        if (ejercicio != null && ejercicio.tieneFichaTecnica()) {
-            botonVerTecnica.setVisibility(View.VISIBLE);
-            botonVerTecnica.setOnClickListener(v -> new DetalleEjercicioDialog(this, ejercicio).show());
-        } else {
-            botonVerTecnica.setVisibility(View.GONE);
+    private void actualizarIndicadorPagina() {
+        int total = sesionActual.getEjercicios().size();
+        if (total == 0) {
+            textIndicadorPagina.setText("Sin ejercicios");
+            return;
         }
+        int actual = Math.min(pagerEjercicios.getCurrentItem(), total - 1);
+        textIndicadorPagina.setText("Ejercicio " + (actual + 1) + " de " + total);
     }
 
     private void mostrarTemporizadorDescanso() {
         dialogDescansoActivo = new RestTimerDialog(this, duracionDescansoMillis, millis -> duracionDescansoMillis = millis);
         dialogDescansoActivo.setOnDismissListener(d -> dialogDescansoActivo = null);
         dialogDescansoActivo.show();
-    }
-
-    private void redibujarSeries(EjercicioSesion ejercicioSesion, LinearLayout containerSeries) {
-        containerSeries.removeAllViews();
-        for (SerieSesion serie : ejercicioSesion.getSeries()) {
-            containerSeries.addView(crearFilaSerie(inflater, containerSeries, ejercicioSesion, serie));
-        }
-    }
-
-    private void eliminarSerieConDeshacer(EjercicioSesion ejercicioSesion, LinearLayout containerSeries, SerieSesion serie) {
-        int posicion = ejercicioSesion.getSeries().indexOf(serie);
-        ejercicioSesion.quitarSerie(serie);
-        redibujarSeries(ejercicioSesion, containerSeries);
-        guardarProgreso();
-        vibrarConfirmacion();
-
-        Snackbar.make(containerSeries, "Serie eliminada", Snackbar.LENGTH_LONG)
-                .setAction("Deshacer", v -> {
-                    ejercicioSesion.insertarSerie(posicion, serie);
-                    redibujarSeries(ejercicioSesion, containerSeries);
-                    guardarProgreso();
-                })
-                .show();
-    }
-
-    private View crearFilaSerie(LayoutInflater inflater, LinearLayout containerSeries, EjercicioSesion ejercicioSesion, SerieSesion serie) {
-        View row = inflater.inflate(R.layout.view_serie_sesion_row, containerSeries, false);
-
-        TextView textNumero = row.findViewById(R.id.text_numero_serie);
-        EditText textPeso = row.findViewById(R.id.text_peso);
-        EditText textReps = row.findViewById(R.id.text_reps);
-        ImageButton botonPesoMenos = row.findViewById(R.id.button_peso_menos);
-        ImageButton botonPesoMas = row.findViewById(R.id.button_peso_mas);
-        ImageButton botonRepsMenos = row.findViewById(R.id.button_reps_menos);
-        ImageButton botonRepsMas = row.findViewById(R.id.button_reps_mas);
-        ImageButton botonCompletada = row.findViewById(R.id.button_completada);
-
-        textNumero.setText("Serie " + serie.getNumero());
-        textPeso.setText(formatearPeso(serie.getPeso()));
-        textReps.setText(String.valueOf(serie.getRepeticiones()));
-        actualizarIconoCompletada(botonCompletada, serie.isCompletada());
-
-        textNumero.setOnLongClickListener(v -> {
-            eliminarSerieConDeshacer(ejercicioSesion, containerSeries, serie);
-            return true;
-        });
-
-        botonPesoMenos.setOnClickListener(v -> {
-            serie.setPeso(Math.max(0, serie.getPeso() - PASO_PESO));
-            textPeso.setText(formatearPeso(serie.getPeso()));
-            guardarProgreso();
-        });
-        botonPesoMas.setOnClickListener(v -> {
-            serie.setPeso(serie.getPeso() + PASO_PESO);
-            textPeso.setText(formatearPeso(serie.getPeso()));
-            guardarProgreso();
-        });
-        botonRepsMenos.setOnClickListener(v -> {
-            serie.setRepeticiones(Math.max(0, serie.getRepeticiones() - 1));
-            textReps.setText(String.valueOf(serie.getRepeticiones()));
-            guardarProgreso();
-        });
-        botonRepsMas.setOnClickListener(v -> {
-            serie.setRepeticiones(serie.getRepeticiones() + 1);
-            textReps.setText(String.valueOf(serie.getRepeticiones()));
-            guardarProgreso();
-        });
-        botonCompletada.setOnClickListener(v -> {
-            serie.setCompletada(!serie.isCompletada());
-            actualizarIconoCompletada(botonCompletada, serie.isCompletada());
-            guardarProgreso();
-        });
-
-        textPeso.addTextChangedListener(new SimpleTextWatcher() {
-            @Override
-            public void onChanged(String text) {
-                serie.setPeso(parseDoubleOrZero(text));
-                guardarProgreso();
-            }
-        });
-        textReps.addTextChangedListener(new SimpleTextWatcher() {
-            @Override
-            public void onChanged(String text) {
-                serie.setRepeticiones(parseIntOrZero(text));
-                guardarProgreso();
-            }
-        });
-
-        return row;
-    }
-
-    private static double parseDoubleOrZero(String text) {
-        try {
-            return Double.parseDouble(text.trim());
-        } catch (NumberFormatException e) {
-            return 0;
-        }
-    }
-
-    private static int parseIntOrZero(String text) {
-        try {
-            return Integer.parseInt(text.trim());
-        } catch (NumberFormatException e) {
-            return 0;
-        }
-    }
-
-    private void actualizarIconoCompletada(ImageButton boton, boolean completada) {
-        boton.setImageResource(completada
-                ? android.R.drawable.checkbox_on_background
-                : android.R.drawable.checkbox_off_background);
-        boton.setContentDescription(completada
-                ? "Marcar que no hiciste esta serie"
-                : "Marcar que sí hiciste esta serie");
-    }
-
-    private String formatearPeso(double peso) {
-        if (peso == Math.floor(peso)) {
-            return String.valueOf((long) peso);
-        }
-        return String.valueOf(peso);
     }
 
     private void finalizarSesion() {
