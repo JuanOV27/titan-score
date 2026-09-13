@@ -27,7 +27,7 @@ import java.util.UUID;
 public class DataManager {
 
     private static final String FILE_NAME = "datos.json";
-    private static final int CATALOGO_VERSION_ACTUAL = 1;
+    private static final int CATALOGO_VERSION_ACTUAL = 2;
     private static final String ASSET_CATALOGO = "catalogo.json";
     private static DataManager instance;
 
