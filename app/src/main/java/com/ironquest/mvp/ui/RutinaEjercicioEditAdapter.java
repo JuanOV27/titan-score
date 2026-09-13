@@ -116,6 +116,7 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
         private final TextView manija;
         private final TextView nombre;
         private final ImageButton botonEditarNombre;
+        private final TextView textAvisoMigracion;
         private final EditText series;
         private final EditText repeticiones;
         private final EditText peso;
@@ -138,6 +139,7 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
             manija = itemView.findViewById(R.id.icon_arrastrar_ejercicio);
             nombre = itemView.findViewById(R.id.text_nombre_ejercicio);
             botonEditarNombre = itemView.findViewById(R.id.button_editar_nombre_ejercicio);
+            textAvisoMigracion = itemView.findViewById(R.id.text_aviso_migracion);
             series = itemView.findViewById(R.id.edit_series);
             repeticiones = itemView.findViewById(R.id.edit_repeticiones);
             peso = itemView.findViewById(R.id.edit_peso);
@@ -208,6 +210,12 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
             nombre.setText(ejercicio != null ? ejercicio.getNombre() : "Ejercicio");
             botonEditarNombre.setVisibility(ejercicio != null && ejercicio.isPersonalizado()
                     ? View.VISIBLE : View.GONE);
+            // Ejercicio pendiente de migración: viene de una versión anterior y no tiene ficha
+            // técnica/GIF ni está marcado como creado por el usuario. Los personalizados y los
+            // curados nunca muestran el aviso.
+            boolean pendienteMigracion = ejercicio == null
+                    || (!ejercicio.isPersonalizado() && !ejercicio.tieneFichaTecnica());
+            textAvisoMigracion.setVisibility(pendienteMigracion ? View.VISIBLE : View.GONE);
             series.setText(String.valueOf(item.getSeries()));
             repeticiones.setText(String.valueOf(item.getRepeticiones()));
             peso.setText(String.valueOf(item.getPeso()));

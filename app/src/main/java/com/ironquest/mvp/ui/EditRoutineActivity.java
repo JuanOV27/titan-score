@@ -3,6 +3,9 @@ package com.ironquest.mvp.ui;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,7 +22,9 @@ import com.ironquest.mvp.model.Ejercicio;
 import com.ironquest.mvp.model.Rutina;
 import com.ironquest.mvp.model.RutinaEjercicio;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EditRoutineActivity extends BaseActivity {
@@ -35,6 +40,9 @@ public class EditRoutineActivity extends BaseActivity {
     private RutinaEjercicioEditAdapter adapter;
     private ItemTouchHelper itemTouchHelper;
     private Map<String, Ejercicio> catalogoPorId;
+
+    private View cardMigracion;
+    private TextView textMigracionDescripcion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +80,7 @@ public class EditRoutineActivity extends BaseActivity {
             public void onQuitar(int position) {
                 rutina.quitarEjercicio(position);
                 adapter.notifyItemRemoved(position);
+                actualizarBannerMigracion();
             }
 
             @Override
@@ -117,6 +126,51 @@ public class EditRoutineActivity extends BaseActivity {
                 EjercicioPicker.mostrar(this, dataManager, dataStore, this::agregarEjercicioARutina));
         findViewById(R.id.button_guardar_rutina).setOnClickListener(v -> guardarRutina());
         findViewById(R.id.button_cancelar_rutina).setOnClickListener(v -> finish());
+
+        cardMigracion = findViewById(R.id.card_migracion_ejercicios);
+        textMigracionDescripcion = findViewById(R.id.text_migracion_descripcion);
+        findViewById(R.id.button_migrar_ejercicios).setOnClickListener(v -> abrirMigracion());
+        actualizarBannerMigracion();
+    }
+
+    /**
+     * Fila pendiente de migración: su ejercicio viene de una versión anterior — no tiene ficha
+     * técnica/GIF y no está marcado como creado por el usuario. Los personalizados y los curados
+     * no se cuentan; reemplazarlos o marcarlos deja de "obligar" el guardado.
+     */
+    private int contarPendientesMigracion() {
+        int pendientes = 0;
+        for (RutinaEjercicio item : rutina.getEjercicios()) {
+            Ejercicio ejercicio = catalogoPorId.get(item.getEjercicioId());
+            if (ejercicio == null || (!ejercicio.isPersonalizado() && !ejercicio.tieneFichaTecnica())) {
+                pendientes++;
+            }
+        }
+        return pendientes;
+    }
+
+    private void actualizarBannerMigracion() {
+        int pendientes = contarPendientesMigracion();
+        if (!esNueva && pendientes > 0) {
+            textMigracionDescripcion.setText(pendientes + " ejercicios provienen de versiones "
+                    + "anteriores y no tienen técnica. Reemplázalos o márcalos como tuyos para guardar.");
+            cardMigracion.setVisibility(View.VISIBLE);
+        } else {
+            cardMigracion.setVisibility(View.GONE);
+        }
+    }
+
+    private void abrirMigracion() {
+        MigracionEjerciciosDialog dialog = new MigracionEjerciciosDialog(this, dataManager,
+                dataStore, catalogoPorId, rutina, this::refrescarTrasMigracion);
+        // "Ahora no" / back también dejan resoluciones aplicadas en memoria: refrescar siempre.
+        dialog.setOnDismissListener(d -> refrescarTrasMigracion());
+        dialog.show();
+    }
+
+    private void refrescarTrasMigracion() {
+        adapter.notifyDataSetChanged();
+        actualizarBannerMigracion();
     }
 
     private void agregarEjercicioARutina(Ejercicio ejercicio) {
@@ -128,9 +182,20 @@ public class EditRoutineActivity extends BaseActivity {
     private void mostrarDialogoEditarEjercicio(Ejercicio ejercicio, int position) {
         View view = getLayoutInflater().inflate(R.layout.dialog_custom_exercise, null);
         TextInputEditText editNombreEjercicio = view.findViewById(R.id.edit_nombre_ejercicio_personalizado);
-        TextInputEditText editGrupo = view.findViewById(R.id.edit_grupo_ejercicio_personalizado);
+        Spinner spinnerGrupo = view.findViewById(R.id.spinner_grupo_ejercicio_personalizado);
+        List<String> opcionesGrupo = new ArrayList<>(Ejercicio.gruposMusculares(dataStore.getEjercicios()));
+        String grupoActual = ejercicio.getGrupoMuscular();
+        if (grupoActual != null && !grupoActual.trim().isEmpty()
+                && Ejercicio.indiceGrupoMuscular(opcionesGrupo, grupoActual) == 0
+                && !"Personalizado".equalsIgnoreCase(grupoActual.trim())) {
+            opcionesGrupo.add(0, grupoActual.trim());
+        }
+        ArrayAdapter<String> adapterGrupo = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, opcionesGrupo);
+        adapterGrupo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerGrupo.setAdapter(adapterGrupo);
+        spinnerGrupo.setSelection(Ejercicio.indiceGrupoMuscular(opcionesGrupo, grupoActual));
         editNombreEjercicio.setText(ejercicio.getNombre());
-        editGrupo.setText(ejercicio.getGrupoMuscular());
 
         new AlertDialog.Builder(this)
                 .setTitle("Editar ejercicio personalizado")
@@ -143,9 +208,8 @@ public class EditRoutineActivity extends BaseActivity {
                         Toast.makeText(this, "Escribe un nombre", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    String grupoNuevo = editGrupo.getText() != null
-                            ? editGrupo.getText().toString().trim() : "";
-                    if (TextUtils.isEmpty(grupoNuevo)) {
+                    String grupoNuevo = (String) spinnerGrupo.getSelectedItem();
+                    if (grupoNuevo == null) {
                         grupoNuevo = "Personalizado";
                     }
                     ejercicio.setNombre(nombreNuevo);
@@ -164,6 +228,13 @@ public class EditRoutineActivity extends BaseActivity {
         }
         if (rutina.getEjercicios().isEmpty()) {
             Toast.makeText(this, "Agrega al menos un ejercicio", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        int pendientes = contarPendientesMigracion();
+        if (pendientes > 0) {
+            Toast.makeText(this, "Resuelve " + pendientes + " ejercicios sin técnica antes de guardar",
+                    Toast.LENGTH_LONG).show();
+            abrirMigracion();
             return;
         }
         rutina.setNombre(nombre);

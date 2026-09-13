@@ -8,7 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,15 +33,19 @@ import java.util.Set;
 
 /**
  * Selector de ejercicios: chips de filtro por músculo específico (vocabulario fijo de
- * {@link Ejercicio#MUSCULOS_OBJETIVO}) sobre una lista con miniatura, nombre y equipo. Un
- * ejercicio personalizado nunca tiene {@code musculoObjetivo} de la lista fija, así que solo
- * aparece bajo "Todas" — limitación aceptada, fuera de alcance de esta slice.
+ * {@link Ejercicio#MUSCULOS_OBJETIVO}) sobre una lista con miniatura, nombre y equipo. Solo
+ * ofrece los ejercicios curados con ficha técnica/GIF ({@code tieneFichaTecnica()}); las
+ * semillas legacy y los personalizados quedan fuera. Puede abrirse con pre-filtro (chip de
+ * músculo + texto) para el reemplazo guiado de ejercicios sin técnica.
  */
 final class EjercicioPickerDialog extends Dialog {
 
+    private final Activity activity;
     private final DataManager dataManager;
     private final DataStore dataStore;
     private final EjercicioPicker.Listener listener;
+    private final String musculoInicial;
+    private final String textoInicial;
 
     private ChipGroup chipGroup;
     private RecyclerView recyclerView;
@@ -51,9 +57,17 @@ final class EjercicioPickerDialog extends Dialog {
 
     EjercicioPickerDialog(Activity activity, DataManager dataManager, DataStore dataStore,
                            EjercicioPicker.Listener listener) {
+        this(activity, dataManager, dataStore, null, null, listener);
+    }
+
+    EjercicioPickerDialog(Activity activity, DataManager dataManager, DataStore dataStore,
+                          String musculoInicial, String textoInicial, EjercicioPicker.Listener listener) {
         super(activity);
+        this.activity = activity;
         this.dataManager = dataManager;
         this.dataStore = dataStore;
+        this.musculoInicial = musculoInicial;
+        this.textoInicial = textoInicial;
         this.listener = listener;
     }
 
@@ -93,13 +107,19 @@ final class EjercicioPickerDialog extends Dialog {
         findViewById(R.id.button_ejercicio_personalizado).setOnClickListener(v -> mostrarPersonalizado());
 
         poblarChips();
+        if (textoInicial != null && !textoInicial.isEmpty()) {
+            editBuscar.setText(textoInicial);
+        }
         aplicarFiltro();
     }
 
     private void poblarChips() {
+        // La lista solo ofrece ejercicios curados con ficha técnica/GIF: las semillas legacy
+        // (ex1..ex20) y los personalizados quedan fuera del selector. Los chips se derivan del
+        // mismo conjunto para no dejar un chip huérfano bajo el cual todo esté vacío.
         Set<String> presentes = new LinkedHashSet<>();
         for (Ejercicio ejercicio : dataStore.getEjercicios()) {
-            if (ejercicio.getMusculoObjetivo() != null) {
+            if (ejercicio.tieneFichaTecnica() && ejercicio.getMusculoObjetivo() != null) {
                 presentes.add(ejercicio.getMusculoObjetivo());
             }
         }
@@ -130,6 +150,17 @@ final class EjercicioPickerDialog extends Dialog {
             musculoSeleccionado = (String) seleccionado.getTag();
             aplicarFiltro();
         });
+
+        if (musculoInicial != null) {
+            for (int i = 0; i < chipGroup.getChildCount(); i++) {
+                Chip chip = (Chip) chipGroup.getChildAt(i);
+                if (musculoInicial.equals(chip.getTag())) {
+                    chipTodas.setChecked(false);
+                    chip.setChecked(true);
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -141,6 +172,9 @@ final class EjercicioPickerDialog extends Dialog {
     private void aplicarFiltro() {
         List<Ejercicio> filtrados = new ArrayList<>();
         for (Ejercicio ejercicio : dataStore.getEjercicios()) {
+            if (!ejercicio.tieneFichaTecnica()) {
+                continue;
+            }
             boolean coincideMusculo = musculoSeleccionado == null
                     || musculoSeleccionado.equals(ejercicio.getMusculoObjetivo());
             boolean coincideTexto = textoBusqueda.isEmpty()
@@ -156,10 +190,14 @@ final class EjercicioPickerDialog extends Dialog {
     }
 
     private void mostrarPersonalizado() {
-        Activity activity = (Activity) getContext();
         View view = LayoutInflater.from(activity).inflate(R.layout.dialog_custom_exercise, null);
         EditText editNombre = view.findViewById(R.id.edit_nombre_ejercicio_personalizado);
-        EditText editGrupo = view.findViewById(R.id.edit_grupo_ejercicio_personalizado);
+        Spinner spinnerGrupo = view.findViewById(R.id.spinner_grupo_ejercicio_personalizado);
+        List<String> opcionesGrupo = Ejercicio.gruposMusculares(dataStore.getEjercicios());
+        ArrayAdapter<String> adapterGrupo = new ArrayAdapter<>(activity,
+                android.R.layout.simple_spinner_item, opcionesGrupo);
+        adapterGrupo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerGrupo.setAdapter(adapterGrupo);
 
         new AlertDialog.Builder(activity)
                 .setTitle("Ejercicio personalizado")
@@ -170,8 +208,8 @@ final class EjercicioPickerDialog extends Dialog {
                         Toast.makeText(activity, "Escribe un nombre", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    String grupo = editGrupo.getText().toString().trim();
-                    if (TextUtils.isEmpty(grupo)) {
+                    String grupo = (String) spinnerGrupo.getSelectedItem();
+                    if (grupo == null) {
                         grupo = "Personalizado";
                     }
                     Ejercicio nuevo = new Ejercicio(dataManager.newId("ex"), nombre, grupo);

@@ -17,6 +17,12 @@ public final class EjercicioPicker {
     }
 
     public static void mostrar(Activity activity, DataManager dataManager, DataStore dataStore, Listener listener) {
-        new EjercicioPickerDialog(activity, dataManager, dataStore, listener).show();
+        mostrar(activity, dataManager, dataStore, null, null, listener);
+    }
+
+    /** Abre el selector pre-filtrado: chip de músculo y buscador prefill, o {@code null} para dejarlos en "Todas". */
+    public static void mostrar(Activity activity, DataManager dataManager, DataStore dataStore,
+                               String musculoInicial, String textoInicial, Listener listener) {
+        new EjercicioPickerDialog(activity, dataManager, dataStore, musculoInicial, textoInicial, listener).show();
     }
 }

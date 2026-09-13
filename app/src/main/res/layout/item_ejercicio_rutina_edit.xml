@@ -53,6 +53,16 @@
                 android:src="@android:drawable/ic_menu_delete" />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/text_aviso_migracion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Sin técnica — reemplázalo en la migración o márcalo como tuyo"
+            android:textSize="12sp"
+            android:textColor="@color/cumplimiento_bajo"
+            android:visibility="gone" />
+
         <LinearLayout
             android:id="@+id/row_badge_info_ejercicio_rutina"
             android:layout_width="match_parent"
