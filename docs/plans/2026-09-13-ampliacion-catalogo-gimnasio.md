@@ -72,7 +72,7 @@ Gradle/ADB para la verificación en dispositivo.
 - Produces: `shortlist.md` — lista de ~197 candidatos agrupados por estación, con `id` (formato
   `gv_XXXX`), `name` en inglés, `equipment`, `body_part/target`. Task 2 consume esta lista.
 
-- [ ] **Paso 1: Descargar el dataset completo**
+- [x] **Paso 1: Descargar el dataset completo**
 
 ```bash
 mkdir -p /tmp/titan-score-catalogo && cd /tmp/titan-score-catalogo
@@ -83,7 +83,7 @@ python3 -c "import json; print(len(json.load(open('exercises.json'))))"
 
 Expected: `1324`
 
-- [ ] **Paso 2: Guardar el script de recorte**
+- [x] **Paso 2: Guardar el script de recorte**
 
 Guardar como `/tmp/titan-score-catalogo/recortar_shortlist.py` (ya verificado en esta sesión,
 produce 197 candidatos):
@@ -166,7 +166,7 @@ for key, items in shortlist.items():
     print(' ', key, len(items))
 ```
 
-- [ ] **Paso 3: Correr el script**
+- [x] **Paso 3: Correr el script**
 
 ```bash
 cd /tmp/titan-score-catalogo && python3 recortar_shortlist.py
@@ -194,7 +194,11 @@ TOTAL 197
   19_pesos_libres_otros 40
 ```
 
-- [ ] **Paso 4: Checkpoint de aprobación (manual, no scriptable)**
+> **Resultado real:** tras el checkpoint de aprobación (Paso 4) el usuario tachó 9 candidatos
+> y la shortlist final aprobada quedó en **188** (verificado: `shortlist.md` termina en
+> `TOTAL: 188`).
+
+- [x] **Paso 4: Checkpoint de aprobación (manual, no scriptable)**
 
 Mostrar `shortlist.md` al usuario agrupado por estación. Es el punto de control acordado en el
 spec — el usuario puede tachar ejercicios individuales antes de que se descarguen assets. No
@@ -288,13 +292,13 @@ ya traducidos para calibrar el criterio:
 | barbell romanian deadlift | Peso muerto rumano con barra |
 | dumbbell walking lunge | Zancada caminando con mancuerna |
 
-- [ ] **Paso 1: Traducir cada `nombre` de la shortlist aprobada**
+- [x] **Paso 1: Traducir cada `nombre` de la shortlist aprobada**
 
 Ejecutor (Claude): recorrer `shortlist.md` línea por línea, escribir el `nombre` en español
 siguiendo el estilo de la tabla de ejemplos. Guardar como diccionario `{id: nombre_es}` en
 `traducciones.py` dentro del mismo directorio scratch.
 
-- [ ] **Paso 2: Construir `delta_catalogo.json`**
+- [x] **Paso 2: Construir `delta_catalogo.json`**
 
 ```python
 import json
@@ -337,7 +341,7 @@ Fallar rápido (`raise`) ante cualquier valor sin mapear es intencional — un `
 silencioso dejaría un ejercicio con `musculoObjetivo=None` invisible en los chips sin que nadie
 lo note (mismo bug silencioso que ya advierte el spec).
 
-- [ ] **Paso 3: Verificar el delta**
+- [x] **Paso 3: Verificar el delta**
 
 ```bash
 python3 -c "
@@ -356,8 +360,8 @@ print('OK,', len(delta), 'ejercicios validados')
 "
 ```
 
-Expected: `OK, 197 ejercicios validados` (o el número que haya quedado tras el checkpoint de
-Task 1 si el usuario tachó alguno).
+Expected: `OK, 188 ejercicios validados` (197 del script menos los 9 tachados en el checkpoint
+de Task 1).
 
 ---
 
@@ -370,7 +374,7 @@ Task 1 si el usuario tachó alguno).
 **Interfaces:**
 - Consumes: `delta_catalogo.json` (Task 2), `exercises.json` (Task 1, para las rutas `image`/`gif_url` originales)
 
-- [ ] **Paso 1: Descargar**
+- [x] **Paso 1: Descargar**
 
 ```python
 import json, subprocess, os
@@ -393,7 +397,7 @@ for e in delta:
 print('descarga completa')
 ```
 
-- [ ] **Paso 2: Verificar conteo e integridad**
+- [x] **Paso 2: Verificar conteo e integridad**
 
 ```bash
 cd "/home/jdov/Documentos/titan score/IronQuestApp/app/src/main/assets"
@@ -420,7 +424,7 @@ ejercicios × ~104 KB promedio, ver spec).
 **Interfaces:**
 - Consumes: `catalogo.json` actual (80 entradas) + `delta_catalogo.json` (Task 2, ~197 entradas)
 
-- [ ] **Paso 1: Fusionar preservando formato exacto**
+- [x] **Paso 1: Fusionar preservando formato exacto**
 
 ```python
 import json
@@ -443,7 +447,7 @@ de diseño que ese formato exacto reproduce el `catalogo.json` actual sin difere
 `git diff` de este paso muestra **solo** las líneas agregadas, ninguna de las 80 existentes se
 reformatea.
 
-- [ ] **Paso 2: Verificar el diff**
+- [x] **Paso 2: Verificar el diff**
 
 ```bash
 cd "/home/jdov/Documentos/titan score/IronQuestApp" && git diff --stat app/src/main/assets/catalogo.json
@@ -453,7 +457,7 @@ Expected: solo líneas `+` (inserciones), cero líneas `-` sobre las 80 entradas
 aparece alguna `-` en una entrada vieja, algo en el formato no calzó — no seguir, corregir el
 script de fusión primero.
 
-- [ ] **Paso 3: Validación final de conteo**
+- [x] **Paso 3: Validación final de conteo**
 
 ```bash
 python3 -c "
@@ -463,7 +467,8 @@ print('total ejercicios en catalogo.json:', len(d))
 "
 ```
 
-Expected: `277` (80 + 197, o el número final tras el checkpoint de Task 1).
+Expected: `268` (80 + 188, tras el checkpoint de Task 1). Verificado: `268 ejercicios` en
+`catalogo.json`.
 
 ---
 
@@ -471,7 +476,8 @@ Expected: `277` (80 + 197, o el número final tras el checkpoint de Task 1).
 
 **Files:** ninguno nuevo — commitea lo generado en Tasks 2-4.
 
-- [ ] **Paso 1: Commit**
+- [x] **Paso 1: Commit**
+Commit realizado: `7344c67 Ampliar catálogo de ejercicios con 188 curados por equipo del gimnasio`.
 
 ```bash
 cd "/home/jdov/Documentos/titan score/IronQuestApp"
@@ -492,7 +498,7 @@ etc.) — no tocarlos, no stagearlos.
 **Interfaces:**
 - Consumes: `catalogo.json` ya extendido (Task 5, ya commiteado)
 
-- [ ] **Paso 1: Bump de versión**
+- [x] **Paso 1: Bump de versión**
 
 Buscar en `DataManager.java`:
 ```java
@@ -509,7 +515,7 @@ e idempotente (código de Slice 5, no se toca) — compara cada entrada de `cata
 hace que la función corra una vez más: en instalaciones existentes los 80 ids viejos se saltan,
 los ~197 nuevos se agregan.
 
-- [ ] **Paso 2: Compilar**
+- [x] **Paso 2: Compilar**
 
 ```bash
 export JAVA_HOME=/home/jdov/Documentos/android-studio-quail3-patch1-linux/android-studio/jbr
@@ -520,7 +526,7 @@ echo "exit: ${PIPESTATUS[0]}"
 
 Expected: `BUILD SUCCESSFUL`, `exit: 0`.
 
-- [ ] **Paso 3: Verificar tamaño de APK**
+- [x] **Paso 3: Verificar tamaño de APK**
 
 ```bash
 ls -la app/build/outputs/apk/debug/app-debug.apk
@@ -529,7 +535,7 @@ ls -la app/build/outputs/apk/debug/app-debug.apk
 Expected: sube ~15-20 MB respecto al APK anterior a esta ampliación. Si sube mucho más, algo
 salió mal en Task 3 (assets duplicados o sin comprimir) — detener y revisar antes de instalar.
 
-- [ ] **Paso 4: Respaldar `datos.json` del dispositivo antes de instalar**
+- [x] **Paso 4: Respaldar `datos.json` del dispositivo antes de instalar**
 
 ```bash
 adb shell run-as com.ironquest.mvp cat files/datos.json > /tmp/titan-score-catalogo/datos_respaldo_pre_v2.json
@@ -539,7 +545,7 @@ wc -c /tmp/titan-score-catalogo/datos_respaldo_pre_v2.json
 Expected: archivo no vacío (regla no negociable de `CLAUDE.md` — nunca instalar sobre datos
 reales sin respaldo previo).
 
-- [ ] **Paso 5: Instalar y verificar en dispositivo**
+- [x] **Paso 5: Instalar y verificar en dispositivo**
 
 ```bash
 adb install -r app/build/outputs/apk/debug/app-debug.apk
@@ -552,7 +558,7 @@ Abrir la app → selector de ejercicios (picker):
 - Elegir un ejercicio nuevo de cada estación (ej. uno de "Máquina Smith", uno de "Banco
   predicador") → su GIF carga bajo "ver técnica" o inline.
 
-- [ ] **Paso 6: Verificar `datos.json` post-instalación**
+- [x] **Paso 6: Verificar `datos.json` post-instalación**
 
 ```bash
 adb shell run-as com.ironquest.mvp cat files/datos.json | python3 -c "
@@ -569,11 +575,19 @@ investigar antes de seguir, no commitear).
 
 - [ ] **Paso 7: Logout/login y verificación de rutinas previas**
 
+> **Omitido por decisión del usuario (2026-09-13):** `limpiarDatosDeUsuario()` borra de forma
+> irreversible rutinas y sesiones locales (7 rutinas, 13 sesiones, sin backend para
+> restaurarlas). La verificación estática del código + el respaldo pre-v2 conservado en
+> `/tmp/titan-score-catalogo/datos_respaldo_pre_v2.json` cubren el comportamiento esperado sin
+> tocar datos reales.
+
 Cerrar sesión → entrar con otra cuenta (o la misma) → confirmar que el catálogo sigue completo
 (cubre el fix ya existente de `limpiarDatosDeUsuario()` de Slice 5). Confirmar que rutinas y
 sesiones previas del respaldo siguen intactas.
 
-- [ ] **Paso 8: Commit Checkpoint B**
+- [x] **Paso 8: Commit Checkpoint B**
+
+Commit realizado: `d330984 Subir catalogoVersion a 2 para incorporar los ejercicios del gimnasio`.
 
 ```bash
 cd "/home/jdov/Documentos/titan score/IronQuestApp"
