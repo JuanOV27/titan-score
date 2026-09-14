@@ -136,6 +136,10 @@
 
             </androidx.cardview.widget.CardView>
 
+            <include
+                android:id="@+id/view_pie_sesion"
+                layout="@layout/view_pie_chart_con_leyenda" />
+
         </LinearLayout>
 
     </ScrollView>

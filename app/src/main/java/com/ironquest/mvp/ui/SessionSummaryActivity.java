@@ -13,10 +13,15 @@ import com.ironquest.mvp.R;
 import com.ironquest.mvp.data.DataManager;
 import com.ironquest.mvp.model.DataStore;
 import com.ironquest.mvp.model.Ejercicio;
+import com.ironquest.mvp.model.Sesion;
 import com.ironquest.mvp.model.SugerenciaPendiente;
+import com.ironquest.mvp.util.AnalisisMuscular;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SessionSummaryActivity extends BaseActivity {
 
@@ -66,6 +71,25 @@ public class SessionSummaryActivity extends BaseActivity {
 
         View cardSugerencias = findViewById(R.id.card_sugerencias);
         renderSugerencias(cardSugerencias, dataManager, dataStore, rutinaId, sesionId);
+
+        Sesion sesion = null;
+        if (sesionId != null) {
+            for (Sesion s : dataStore.getSesiones()) {
+                if (sesionId.equals(s.getId())) {
+                    sesion = s;
+                    break;
+                }
+            }
+        }
+        if (sesion != null) {
+            Map<String, Ejercicio> catalogoPorId = new HashMap<>();
+            for (Ejercicio ej : dataStore.getEjercicios()) {
+                catalogoPorId.put(ej.getId(), ej);
+            }
+            LinkedHashMap<String, Double> datos =
+                    AnalisisMuscular.calcularVolumenPorGrupo(sesion, catalogoPorId);
+            PieChartRender.render(findViewById(R.id.view_pie_sesion), datos);
+        }
 
         findViewById(R.id.button_volver_inicio).setOnClickListener(v -> volverInicio());
     }
