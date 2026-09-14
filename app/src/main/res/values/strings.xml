@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">TitanScore</string>
+    <string name="esquema_nombre_ninguno">Ninguno</string>
+    <string name="esquema_nombre_lineal">Progresión lineal</string>
+    <string name="esquema_nombre_greyskull">Greyskull</string>
+    <string name="esquema_nombre_doble">Doble progresión</string>
+    <string name="esquema_nombre_automatico">Automática</string>
+    <string name="esquema_desc_ninguno">Sin sugerencias. El plan queda fijo tal como lo configuras.</string>
+    <string name="esquema_desc_lineal">Si completas todas las series del peso anterior, la app sugiere sumar el incremento configurado.</string>
+    <string name="esquema_desc_greyskull">La última serie es un AMRAP: al alcanzar las repeticiones objetivo, la app sugiere subir el peso en la sesión siguiente.</string>
+    <string name="esquema_desc_doble">Sirve para bajar a rango más temprano en el mismo rango de volumen.</string>
+    <string name="esquema_desc_automatico">La app espera a juntar 3 sesiones y decide por ti: subir peso si cumpliste con holgura, subir repeticiones si cumpliste justo, mantener si fallaste una, o bajar el 10% si fallaste 2 o 3 seguidas.</string>
 </resources>
