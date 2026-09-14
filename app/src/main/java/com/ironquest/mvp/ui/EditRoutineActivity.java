@@ -289,6 +289,7 @@ public class EditRoutineActivity extends BaseActivity {
         catalogoPorId.putIfAbsent(ejercicio.getId(), ejercicio);
         RutinaEjercicio nuevo = new RutinaEjercicio(ejercicio.getId(), 3, 10, 0.0);
         nuevo.setEsquemaProgresion(RutinaEjercicio.ESQUEMA_AUTOMATICO);
+        nuevo.setRepeticionesMax(nuevo.getRepeticiones() + 4);
         rutina.agregarEjercicio(nuevo);
         adapter.notifyItemInserted(rutina.getCantidadEjercicios() - 1);
     }

@@ -230,7 +230,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
-                android:hint="Reps máx (doble prog.)">
+                android:hint="Reps máx (doble prog.)"
+                app:helperText="0 = mismo que Reps">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edit_repeticiones_max"

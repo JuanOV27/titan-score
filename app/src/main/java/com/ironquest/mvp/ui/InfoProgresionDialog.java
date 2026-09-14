@@ -71,10 +71,14 @@ public class InfoProgresionDialog {
             TextView bodyDeload = vista.findViewById(R.id.body_deload);
             TextView headerSilenciar = vista.findViewById(R.id.header_silenciar);
             TextView bodySilenciar = vista.findViewById(R.id.body_silenciar);
+            TextView headerRepsMax = vista.findViewById(R.id.header_reps_max);
+            TextView bodyRepsMax = vista.findViewById(R.id.body_reps_max);
             headerDeload.setOnClickListener(v -> alternarCuerpo(bodyDeload, headerDeload));
             headerSilenciar.setOnClickListener(v -> alternarCuerpo(bodySilenciar, headerSilenciar));
+            headerRepsMax.setOnClickListener(v -> alternarCuerpo(bodyRepsMax, headerRepsMax));
             asignarTextosDeload(headerDeload, bodyDeload);
             asignarTextosSilenciar(headerSilenciar, bodySilenciar);
+            asignarTextosRepsMax(headerRepsMax, bodyRepsMax);
         });
 
         dialog.show();
@@ -92,6 +96,17 @@ public class InfoProgresionDialog {
         body.setText("Cuando fallas 2 o 3 sesiones seguidas, la app propone reducir un 10% "
                 + "el peso antes de volver a subir. Es una pausa estratégica para recuperar "
                 + "fuerza y evitar estancarte.");
+    }
+
+    private static void asignarTextosRepsMax(TextView header, TextView body) {
+        header.setText("▸ Reps máx (doble prog.): qué significa el campo");
+        body.setText("En el esquema Doble progresión te mueves en un rango de reps: de \"Reps\" "
+                + "(el piso) hasta \"Reps máx\" (el techo). Subes reps sesión a sesión y solo "
+                + "subes el peso cuando llegas al techo con todas las series.\n"
+                + "Si dejas el campo en 0 (o vacío), el techo pasa a ser el mismo de \"Reps\": "
+                + "equivaldría a subir el peso apenas alcanzas tus reps objetivo.\n"
+                + "Al crear un ejercicio nuevo te lo dejamos sugerido con +4 reps sobre el piso "
+                + "(8 → 12, por ejemplo). Cámbialo libremente.");
     }
 
     private static void alternarCuerpo(TextView cuerpo, TextView header) {
