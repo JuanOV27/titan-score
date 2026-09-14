@@ -25,7 +25,10 @@
         </activity>
 
         <activity android:name=".ui.AuthActivity" android:exported="false" />
-        <activity android:name=".ui.EditRoutineActivity" android:exported="false" />
+        <activity
+            android:name=".ui.EditRoutineActivity"
+            android:exported="false"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
         <activity
             android:name=".ui.ActiveSessionActivity"
             android:exported="false"
