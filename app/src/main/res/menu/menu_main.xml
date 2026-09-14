@@ -28,6 +28,10 @@
         android:title="Acerca de"
         android:showAsAction="never" />
     <item
+        android:id="@+id/menu_ajustes"
+        android:title="Ajustes"
+        android:showAsAction="never" />
+    <item
         android:id="@+id/action_cerrar_sesion"
         android:title="Cerrar sesión"
         android:showAsAction="never" />

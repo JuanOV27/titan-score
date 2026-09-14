@@ -205,6 +205,10 @@ public class MainActivity extends BaseActivity {
             startActivity(new Intent(this, AboutActivity.class));
             return true;
         }
+        if (id == R.id.menu_ajustes) {
+            startActivity(new Intent(this, AjustesActivity.class));
+            return true;
+        }
         if (id == R.id.action_cerrar_sesion) {
             confirmarCerrarSesion();
             return true;

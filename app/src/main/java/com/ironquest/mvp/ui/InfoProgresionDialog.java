@@ -1,10 +1,11 @@
 package com.ironquest.mvp.ui;
 
-import android.app.Dialog;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -46,10 +47,10 @@ public class InfoProgresionDialog {
     private InfoProgresionDialog() {
     }
 
-    public static void mostrar(android.content.Context contexto) {
-        LinearLayout container = (LinearLayout) LayoutInflater.from(contexto)
-                .inflate(R.layout.dialog_info_progresion, null)
-                .findViewById(R.id.container_esquemas);
+    public static void mostrar(Context contexto) {
+        ScrollView vista = (ScrollView) LayoutInflater.from(contexto)
+                .inflate(R.layout.dialog_info_progresion, null);
+        LinearLayout container = vista.findViewById(R.id.container_esquemas);
 
         for (int i = 0; i < ESQUEMA_DRAWABLES.length; i++) {
             View item = LayoutInflater.from(contexto).inflate(R.layout.item_esquema_info, container, false);
@@ -61,16 +62,15 @@ public class InfoProgresionDialog {
 
         AlertDialog dialog = new AlertDialog.Builder(contexto)
                 .setTitle("¿Cómo funcionan las progresiones?")
-                .setView(container)
+                .setView(vista)
                 .setPositiveButton("Entendido", null)
                 .create();
 
         dialog.setOnShowListener(d -> {
-            View raiz = container.getRootView();
-            TextView headerDeload = raiz.findViewById(R.id.header_deload);
-            TextView bodyDeload = raiz.findViewById(R.id.body_deload);
-            TextView headerSilenciar = raiz.findViewById(R.id.header_silenciar);
-            TextView bodySilenciar = raiz.findViewById(R.id.body_silenciar);
+            TextView headerDeload = vista.findViewById(R.id.header_deload);
+            TextView bodyDeload = vista.findViewById(R.id.body_deload);
+            TextView headerSilenciar = vista.findViewById(R.id.header_silenciar);
+            TextView bodySilenciar = vista.findViewById(R.id.body_silenciar);
             headerDeload.setOnClickListener(v -> alternarCuerpo(bodyDeload, headerDeload));
             headerSilenciar.setOnClickListener(v -> alternarCuerpo(bodySilenciar, headerSilenciar));
             asignarTextosDeload(headerDeload, bodyDeload);
