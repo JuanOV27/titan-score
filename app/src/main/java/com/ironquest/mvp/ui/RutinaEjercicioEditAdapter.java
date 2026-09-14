@@ -39,6 +39,8 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
         void onQuitar(int position);
         void onEditarPersonalizado(int position);
         void onIniciarArrastre(RecyclerView.ViewHolder viewHolder);
+        /** Alguna mutación al catálogo (p. ej. override de incremento por ejercicio) fue aplicada. */
+        void onCatalogoModificado();
     }
 
     private static final String[] OPCIONES_ESQUEMA =
@@ -237,6 +239,7 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
                     nuevo = 0.0;
                 }
                 ejercicioActual.setIncrementoPeso(nuevo);
+                listener.onCatalogoModificado();
             });
         }
 

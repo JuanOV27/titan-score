@@ -148,6 +148,9 @@ final class MigracionEjerciciosDialog extends Dialog {
         private void avanzar() {
         indice++;
         if (indice >= pendientes.length) {
+            // Marcar como personalizado y reemplazar ejercicioId son mutaciones al catálogo/
+            // a rutinas — persistir ambos al terminar la migración.
+            dataManager.saveCatalogo();
             if (listener != null) {
                 listener.onTerminada();
             }

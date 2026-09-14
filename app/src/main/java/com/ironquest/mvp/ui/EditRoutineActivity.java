@@ -112,6 +112,14 @@ public class EditRoutineActivity extends BaseActivity {
             public void onIniciarArrastre(RecyclerView.ViewHolder viewHolder) {
                 itemTouchHelper.startDrag(viewHolder);
             }
+
+            @Override
+            public void onCatalogoModificado() {
+                // El chip de override de incremento por ejercicio muta el Ejercicio del
+                // catálogo, no la Rutina; hay que persistir el catálogo, no basta con el
+                // save() del guardado de rutina.
+                dataManager.saveCatalogo();
+            }
         });
         recycler.setAdapter(adapter);
 
@@ -365,6 +373,9 @@ public class EditRoutineActivity extends BaseActivity {
                     }
                     ejercicio.setNombre(nombreNuevo);
                     ejercicio.setGrupoMuscular(grupoNuevo);
+                    // Renombrar toca el catálogo directamente; sin este saveCatalogo el nombre
+                    // volvería al anterior en el próximo arranque.
+                    dataManager.saveCatalogo();
                     adapter.notifyItemChanged(position);
                 })
                 .setNegativeButton("Cancelar", null)
@@ -392,7 +403,9 @@ public class EditRoutineActivity extends BaseActivity {
         if (esNueva) {
             dataStore.getRutinas().add(rutina);
         }
-        dataManager.save();
+        // Guardar rutina cierra la Activity: forzar el flush garantiza que la lista de rutinas
+        // ya refleje el cambio cuando el usuario vuelva a la pantalla anterior.
+        dataManager.saveSync();
         finish();
     }
 }

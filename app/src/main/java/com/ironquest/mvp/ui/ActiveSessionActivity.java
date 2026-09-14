@@ -190,7 +190,10 @@ public class ActiveSessionActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         if (!sesionFinalizada) {
-            guardarProgreso();
+            // Ir a background es el momento donde el sistema puede matar el proceso: forzar
+            // que el snapshot pendiente termine de escribirse antes de ceder el hilo.
+            dataStore.setSesionEnProgreso(sesionActual);
+            dataManager.saveSync();
         }
     }
 
@@ -232,7 +235,9 @@ public class ActiveSessionActivity extends BaseActivity {
             dialogDescansoActivo.dismiss();
         }
         dataStore.setSesionEnProgreso(null);
-        dataManager.save();
+        // Descartar es una acción destructiva y la Activity va a finish() enseguida: sync
+        // garantiza que al reabrir la app no reaparezca la sesión "descartada".
+        dataManager.saveSync();
         SesionTrackingService.detener(this);
         Toast.makeText(this, "Sesión descartada", Toast.LENGTH_SHORT).show();
         finish();
@@ -341,7 +346,9 @@ public class ActiveSessionActivity extends BaseActivity {
 
         dataStore.getSesiones().add(sesionActual);
         dataStore.setSesionEnProgreso(null);
-        dataManager.save();
+        // Finalizar es el punto de no retorno: el resumen que abrimos a continuación lee de
+        // disco, así que el estado debe estar persistido antes.
+        dataManager.saveSync();
 
         generarSugerenciasPendientes();
 

@@ -215,6 +215,9 @@ final class EjercicioPickerDialog extends Dialog {
                     Ejercicio nuevo = new Ejercicio(dataManager.newId("ex"), nombre, grupo);
                     nuevo.setPersonalizado(true);
                     dataStore.getEjercicios().add(nuevo);
+                    // Persistir el catálogo antes de dismiss para que el ejercicio nuevo
+                    // sobreviva un cierre inmediato de la app.
+                    dataManager.saveCatalogo();
                     listener.onEjercicioElegido(nuevo);
                     dismiss();
                 })
