@@ -120,8 +120,9 @@ public class ActiveSessionActivity extends BaseActivity {
 
             double volumenPlaneado = 0;
             for (RutinaEjercicio re : rutina.getEjercicios()) {
+                Ejercicio ejercicio = catalogoPorId.get(re.getEjercicioId());
                 Sugerencia sugerencia = EstrategiaProgresion.para(re.getEsquemaProgresion())
-                        .sugerir(re, dataStore.getSesiones());
+                        .sugerir(re, ejercicio, dataStore.getUsuario(), dataStore.getSesiones());
                 EjercicioSesion ejercicioSesion = new EjercicioSesion(re.getEjercicioId());
                 for (int i = 1; i <= re.getSeries(); i++) {
                     ejercicioSesion.agregarSerie(

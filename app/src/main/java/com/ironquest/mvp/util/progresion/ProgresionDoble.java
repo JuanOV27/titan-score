@@ -16,7 +16,7 @@ final class ProgresionDoble extends EstrategiaProgresion {
     }
 
     @Override
-    protected Sugerencia calcular(RutinaEjercicio config, EjercicioSesion ultima, double pesoBase) {
+    protected Sugerencia calcular(RutinaEjercicio config, EjercicioSesion ultima, double pesoBase, double incremento) {
         int techo = config.getTechoRepeticiones();
         int repsLogradas = repeticionesMinimasCompletadas(ultima);
 
@@ -27,7 +27,7 @@ final class ProgresionDoble extends EstrategiaProgresion {
                     false);
         }
         if (repsLogradas >= techo) {
-            double nuevoPeso = pesoBase + INCREMENTO_KG;
+            double nuevoPeso = pesoBase + incremento;
             return new Sugerencia(nuevoPeso, config.getRepeticiones(),
                     "Llegaste a " + techo + " reps en todas las series con " + formatearPeso(pesoBase)
                             + "kg — tope del rango. Sugerencia: sube a " + formatearPeso(nuevoPeso) + "kg y vuelve a "

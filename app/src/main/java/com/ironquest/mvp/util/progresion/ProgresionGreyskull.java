@@ -17,14 +17,14 @@ final class ProgresionGreyskull extends EstrategiaProgresion {
     }
 
     @Override
-    protected Sugerencia calcular(RutinaEjercicio config, EjercicioSesion ultima, double pesoBase) {
+    protected Sugerencia calcular(RutinaEjercicio config, EjercicioSesion ultima, double pesoBase, double incremento) {
         SerieSesion amrap = ultima.getUltimaSerieCompletada();
         if (amrap == null) {
             return new Sugerencia(config.getPeso(), config.getRepeticiones(),
                     "Repite " + formatearPeso(config.getPeso()) + "kg.", false);
         }
         if (amrap.getRepeticiones() >= config.getRepeticiones()) {
-            double nuevoPeso = amrap.getPeso() + INCREMENTO_KG;
+            double nuevoPeso = amrap.getPeso() + incremento;
             return new Sugerencia(nuevoPeso, config.getRepeticiones(),
                     "Tu última serie (AMRAP) fue de " + amrap.getRepeticiones() + " reps con "
                             + formatearPeso(amrap.getPeso()) + "kg, cumpliendo el objetivo de "

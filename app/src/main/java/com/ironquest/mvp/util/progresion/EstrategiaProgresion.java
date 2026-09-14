@@ -1,9 +1,11 @@
 package com.ironquest.mvp.util.progresion;
 
+import com.ironquest.mvp.model.Ejercicio;
 import com.ironquest.mvp.model.EjercicioSesion;
 import com.ironquest.mvp.model.RutinaEjercicio;
 import com.ironquest.mvp.model.Sesion;
 import com.ironquest.mvp.model.SerieSesion;
+import com.ironquest.mvp.model.Usuario;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,12 +28,15 @@ import java.util.List;
  */
 public abstract class EstrategiaProgresion {
 
-    static final double INCREMENTO_KG = 2.5;
+    /** Fallback si el usuario no está seteado (edge case en tests o boot). */
+    private static final double INCREMENTO_KG_DEFAULT = 2.5;
     private static final int SESIONES_PARA_ESTANCAMIENTO = 3;
 
     /** Traduce el esquema guardado en la rutina a la estrategia que lo implementa. */
     public static EstrategiaProgresion para(int esquemaProgresion) {
         switch (esquemaProgresion) {
+            case RutinaEjercicio.ESQUEMA_AUTOMATICO:
+                return new ProgresionAutomatica();
             case RutinaEjercicio.ESQUEMA_LINEAL:
                 return new ProgresionLineal();
             case RutinaEjercicio.ESQUEMA_GREYSKULL:
@@ -46,11 +51,14 @@ public abstract class EstrategiaProgresion {
 
     /**
      * Método plantilla: fija el flujo común a las cuatro estrategias y delega en
-     * {@link #calcular} el único paso que varía entre ellas.
+     * {@link #calcular} el único paso que varía entre ellas. No es {@code final} porque
+     * {@link ProgresionAutomatica} lo reimplementa para trabajar sobre las últimas 3 sesiones
+     * en vez de la última.
      */
-    public final Sugerencia sugerir(RutinaEjercicio config, List<Sesion> historial) {
+    public Sugerencia sugerir(RutinaEjercicio config, Ejercicio ejercicio, Usuario usuario, List<Sesion> historial) {
+        double incremento = getIncrementoEfectivo(ejercicio, usuario);
         if (!requiereHistorial()) {
-            return calcular(config, null, config.getPeso());
+            return calcular(config, null, config.getPeso(), incremento);
         }
 
         List<EjercicioSesion> pasadas = historialDelEjercicio(config.getEjercicioId(), historial);
@@ -64,14 +72,28 @@ public abstract class EstrategiaProgresion {
 
         int fallosSeguidos = contarFallosSeguidos(config, pasadas);
         if (fallosSeguidos >= SESIONES_PARA_ESTANCAMIENTO) {
-            double pesoDeload = redondearA(pesoBase * 0.9, INCREMENTO_KG);
+            double pesoDeload = redondearA(pesoBase * 0.9, incremento);
             return new Sugerencia(pesoDeload, config.getRepeticiones(),
                     "Llevas " + fallosSeguidos + " sesiones seguidas sin cumplir el objetivo. Posible "
                             + "estancamiento: baja a " + formatearPeso(pesoDeload) + "kg y retoma la progresión.",
                     true);
         }
 
-        return calcular(config, ultima, pesoBase);
+        return calcular(config, ultima, pesoBase, incremento);
+    }
+
+    /**
+     * Incremento de peso a usar para este ejercicio: override del ejercicio si > 0, si no el
+     * global del usuario. Fallback 2.5 kg si no hay usuario (no debería pasar en runtime).
+     */
+    protected static double getIncrementoEfectivo(Ejercicio ejercicio, Usuario usuario) {
+        if (ejercicio != null && ejercicio.getIncrementoPeso() > 0) {
+            return ejercicio.getIncrementoPeso();
+        }
+        if (usuario != null && usuario.getIncrementoPeso() > 0) {
+            return usuario.getIncrementoPeso();
+        }
+        return INCREMENTO_KG_DEFAULT;
     }
 
     /**
@@ -82,7 +104,7 @@ public abstract class EstrategiaProgresion {
     protected abstract boolean requiereHistorial();
 
     /** El único paso que varía por esquema: qué sugerir a partir de la última sesión real. */
-    protected abstract Sugerencia calcular(RutinaEjercicio config, EjercicioSesion ultima, double pesoBase);
+    protected abstract Sugerencia calcular(RutinaEjercicio config, EjercicioSesion ultima, double pesoBase, double incremento);
 
     /** Si esa sesión pasada cumplió el objetivo según esta estrategia. Alimenta el conteo de estancamiento. */
     protected abstract boolean fueExitosa(RutinaEjercicio config, EjercicioSesion sesionPasada);

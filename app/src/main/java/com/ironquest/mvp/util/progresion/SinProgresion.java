@@ -15,7 +15,7 @@ final class SinProgresion extends EstrategiaProgresion {
     }
 
     @Override
-    protected Sugerencia calcular(RutinaEjercicio config, EjercicioSesion ultima, double pesoBase) {
+    protected Sugerencia calcular(RutinaEjercicio config, EjercicioSesion ultima, double pesoBase, double incremento) {
         return new Sugerencia(config.getPeso(), config.getRepeticiones(), null, false);
     }
 

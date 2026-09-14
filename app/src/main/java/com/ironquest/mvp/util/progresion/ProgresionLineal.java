@@ -12,10 +12,10 @@ final class ProgresionLineal extends EstrategiaProgresion {
     }
 
     @Override
-    protected Sugerencia calcular(RutinaEjercicio config, EjercicioSesion ultima, double pesoBase) {
+    protected Sugerencia calcular(RutinaEjercicio config, EjercicioSesion ultima, double pesoBase, double incremento) {
         boolean exito = fueExitosa(config, ultima);
         if (exito) {
-            double nuevoPeso = pesoBase + INCREMENTO_KG;
+            double nuevoPeso = pesoBase + incremento;
             return new Sugerencia(nuevoPeso, config.getRepeticiones(),
                     "Cumpliste el objetivo de " + config.getRepeticiones() + " reps en todas las series con "
                             + formatearPeso(pesoBase) + "kg. Sugerencia: sube a " + formatearPeso(nuevoPeso) + "kg.",
