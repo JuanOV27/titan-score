@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ import com.ironquest.mvp.model.SugerenciaPendiente;
 import com.ironquest.mvp.model.Usuario;
 import com.ironquest.mvp.service.SesionTrackingService;
 import com.ironquest.mvp.util.EstadisticasUtil;
+import com.ironquest.mvp.util.AnalisisMuscular;
 import com.ironquest.mvp.util.progresion.EstrategiaProgresion;
 import com.ironquest.mvp.util.progresion.Sugerencia;
 
@@ -39,6 +41,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ActiveSessionActivity extends BaseActivity {
@@ -160,6 +163,8 @@ public class ActiveSessionActivity extends BaseActivity {
             }
         });
         actualizarIndicadorPagina();
+
+        mostrarAvisoFatigaSiAplica();
 
         guardarProgreso();
         iniciarServicioSeguimiento();
@@ -296,6 +301,29 @@ public class ActiveSessionActivity extends BaseActivity {
         } else {
             textIndicadorPagina.setText("Ejercicio " + (actual + 1) + " de " + totalEjercicios);
         }
+    }
+
+    private void mostrarAvisoFatigaSiAplica() {
+        View cardAvisoFatiga = findViewById(R.id.card_aviso_fatiga);
+        TextView textAvisoFatiga = findViewById(R.id.text_aviso_fatiga);
+        Rutina rutinaActual = dataStore.buscarRutina(sesionActual.getRutinaId());
+        if (rutinaActual != null) {
+            LinkedHashMap<String, Integer> excedidos =
+                    AnalisisMuscular.gruposSobreLimite(rutinaActual, catalogoPorId);
+            if (!excedidos.isEmpty()) {
+                StringBuilder sb = new StringBuilder("Cuidado con la fatiga:\n");
+                for (Map.Entry<String, Integer> e : excedidos.entrySet()) {
+                    sb.append("• ").append(e.getValue()).append(" ejercicios de \"")
+                            .append(e.getKey()).append("\"\n");
+                }
+                sb.append("Se recomienda máximo ")
+                        .append(AnalisisMuscular.LIMITE_POR_GRUPO).append(" por sesión.");
+                textAvisoFatiga.setText(sb.toString());
+                cardAvisoFatiga.setVisibility(View.VISIBLE);
+            }
+        }
+        findViewById(R.id.button_arrancar_igual).setOnClickListener(v ->
+                cardAvisoFatiga.setVisibility(View.GONE));
     }
 
     private void mostrarTemporizadorDescanso() {
