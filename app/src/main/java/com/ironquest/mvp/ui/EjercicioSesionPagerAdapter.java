@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,12 +21,15 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 import com.ironquest.mvp.R;
+import com.ironquest.mvp.data.DataManager;
 import com.ironquest.mvp.model.Ejercicio;
 import com.ironquest.mvp.model.EjercicioSesion;
 import com.ironquest.mvp.model.SerieSesion;
+import com.ironquest.mvp.model.Usuario;
 import com.ironquest.mvp.util.progresion.Sugerencia;
 
 import java.io.IOException;
@@ -61,6 +65,7 @@ public class EjercicioSesionPagerAdapter extends RecyclerView.Adapter<RecyclerVi
     private static final int VIEW_TYPE_EJERCICIO = 0;
     private static final int VIEW_TYPE_FINALIZAR = 1;
     private static final double PASO_PESO = 2.5;
+    private static final int RACHA_AL_FALLO = 3;
 
     private final List<EjercicioSesion> items;
     private final Map<String, Ejercicio> catalogoPorId;
@@ -353,7 +358,106 @@ public class EjercicioSesionPagerAdapter extends RecyclerView.Adapter<RecyclerVi
                 }
             });
 
+            vincularFatiga(ejercicioSesion, serie, row);
+
             return row;
+        }
+
+        private void vincularFatiga(EjercicioSesion ejercicioSesion, SerieSesion serie, View row) {
+            View container = row.findViewById(R.id.container_fatiga);
+            Usuario usuario = DataManager.getInstance(row.getContext()).getDataStore().getUsuario();
+            boolean fatigaActiva = usuario != null && usuario.isSeguimientoFatiga();
+            if (!fatigaActiva || !serie.isCompletada()) {
+                container.setVisibility(View.GONE);
+                return;
+            }
+            container.setVisibility(View.VISIBLE);
+
+            ChipGroup chips = row.findViewById(R.id.chip_group_fatiga);
+            chips.setOnCheckedStateChangeListener(null); // limpiar por reciclaje
+            int rir = serie.getRir();
+            if (rir == 4 || rir == 5) {
+                chips.check(R.id.chip_facil);
+            } else if (rir == 2 || rir == 3) {
+                chips.check(R.id.chip_justo);
+            } else if (rir == 1) {
+                chips.check(R.id.chip_duro);
+            } else if (rir == 0) {
+                chips.check(R.id.chip_al_fallo);
+            } else {
+                chips.clearCheck();
+            }
+
+            chips.setOnCheckedStateChangeListener((group, ids) -> {
+                if (ids.isEmpty()) {
+                    return;
+                }
+                int id = ids.get(0);
+                int nuevoRir;
+                if (id == R.id.chip_facil) {
+                    nuevoRir = 4;
+                } else if (id == R.id.chip_justo) {
+                    nuevoRir = 2;
+                } else if (id == R.id.chip_duro) {
+                    nuevoRir = 1;
+                } else {
+                    nuevoRir = 0;
+                }
+                if (nuevoRir != serie.getRir()) {
+                    serie.setRir(nuevoRir);
+                    listener.onProgresoModificado();
+                }
+                detectarFatigaAcumulada(ejercicioSesion, row);
+            });
+
+            TextView toggleRir = row.findViewById(R.id.button_toggle_rir);
+            NumberPicker pickerRir = row.findViewById(R.id.picker_rir);
+            pickerRir.setMinValue(0);
+            pickerRir.setMaxValue(5);
+            if (rir >= 0 && rir <= 5) {
+                pickerRir.setValue(rir);
+            }
+            toggleRir.setOnClickListener(v ->
+                    pickerRir.setVisibility(pickerRir.getVisibility() == View.VISIBLE
+                            ? View.GONE : View.VISIBLE));
+            pickerRir.setOnValueChangedListener((picker, oldVal, newVal) -> {
+                if (newVal != serie.getRir()) {
+                    serie.setRir(newVal);
+                    chips.clearCheck();
+                    if (newVal >= 4) {
+                        chips.check(R.id.chip_facil);
+                    } else if (newVal >= 2) {
+                        chips.check(R.id.chip_justo);
+                    } else if (newVal == 1) {
+                        chips.check(R.id.chip_duro);
+                    } else {
+                        chips.check(R.id.chip_al_fallo);
+                    }
+                    listener.onProgresoModificado();
+                    detectarFatigaAcumulada(ejercicioSesion, row);
+                }
+            });
+        }
+
+        private void detectarFatigaAcumulada(EjercicioSesion ejercicioSesion, View row) {
+            // Cuenta hacia atrás desde la última serie completada; si las últimas 3 tienen rir == 0, avisa.
+            int racha = 0;
+            List<SerieSesion> series = ejercicioSesion.getSeries();
+            for (int i = series.size() - 1; i >= 0 && racha < RACHA_AL_FALLO; i--) {
+                SerieSesion s = series.get(i);
+                if (!s.isCompletada()) {
+                    continue;
+                }
+                if (s.getRir() == 0) {
+                    racha++;
+                } else {
+                    break;
+                }
+            }
+            if (racha >= RACHA_AL_FALLO) {
+                Snackbar.make(row, "Llevas 3 series al fallo — considera parar aquí.", Snackbar.LENGTH_LONG)
+                        .show();
+            }
         }
 
         private void actualizarIconoCompletada(ImageButton boton, boolean completada) {

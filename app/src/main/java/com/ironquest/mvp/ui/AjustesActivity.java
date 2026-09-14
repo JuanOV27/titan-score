@@ -48,6 +48,15 @@ public class AjustesActivity extends BaseActivity {
             dataManager.save();
         });
 
+        com.google.android.material.materialswitch.MaterialSwitch switchFatiga =
+                findViewById(R.id.switch_seguimiento_fatiga);
+        switchFatiga.setChecked(usuario != null && usuario.isSeguimientoFatiga());
+        switchFatiga.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (usuario == null) return;
+            usuario.setSeguimientoFatiga(isChecked);
+            dataManager.save();
+        });
+
         TextView headerConvencion = findViewById(R.id.header_convencion);
         View bodyConvencion = findViewById(R.id.body_convencion);
         headerConvencion.setOnClickListener(v -> {

@@ -2,112 +2,120 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:layout_marginBottom="6dp"
-    android:orientation="horizontal"
-    android:gravity="center_vertical"
     android:background="@drawable/bg_fila_serie"
     android:paddingStart="8dp"
     android:paddingEnd="8dp"
     android:paddingTop="6dp"
     android:paddingBottom="6dp">
 
-    <TextView
-        android:id="@+id/text_numero_serie"
-        android:layout_width="56dp"
-        android:layout_height="wrap_content"
-        android:minHeight="36dp"
-        android:gravity="center_vertical"
-        android:contentDescription="Mantén presionado para eliminar esta serie"
-        android:textStyle="bold" />
-
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical">
 
-        <ImageButton
-            android:id="@+id/button_peso_menos"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Menos peso"
-            android:src="@android:drawable/ic_media_previous" />
-
-        <EditText
-            android:id="@+id/text_peso"
+        <TextView
+            android:id="@+id/text_numero_serie"
             android:layout_width="56dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="14sp"
-            android:inputType="numberDecimal"
-            android:imeOptions="actionDone"
-            android:maxLines="1"
-            android:selectAllOnFocus="true"
-            android:background="@null"
-            android:minHeight="0dp"
-            android:paddingTop="0dp"
-            android:paddingBottom="0dp" />
+            android:minHeight="36dp"
+            android:gravity="center_vertical"
+            android:contentDescription="Mantén presionado para eliminar esta serie"
+            android:textStyle="bold" />
 
-        <ImageButton
-            android:id="@+id/button_peso_mas"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Más peso"
-            android:src="@android:drawable/ic_media_next" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
-
-        <ImageButton
-            android:id="@+id/button_reps_menos"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Menos repeticiones"
-            android:src="@android:drawable/ic_media_previous" />
-
-        <EditText
-            android:id="@+id/text_reps"
-            android:layout_width="40dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="14sp"
-            android:inputType="number"
-            android:imeOptions="actionDone"
-            android:maxLines="1"
-            android:selectAllOnFocus="true"
-            android:background="@null"
-            android:minHeight="0dp"
-            android:paddingTop="0dp"
-            android:paddingBottom="0dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageButton
+                android:id="@+id/button_peso_menos"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Menos peso"
+                android:src="@android:drawable/ic_media_previous" />
+
+            <EditText
+                android:id="@+id/text_peso"
+                android:layout_width="56dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:inputType="numberDecimal"
+                android:imeOptions="actionDone"
+                android:maxLines="1"
+                android:selectAllOnFocus="true"
+                android:background="@null"
+                android:minHeight="0dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp" />
+
+            <ImageButton
+                android:id="@+id/button_peso_mas"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Más peso"
+                android:src="@android:drawable/ic_media_next" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageButton
+                android:id="@+id/button_reps_menos"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Menos repeticiones"
+                android:src="@android:drawable/ic_media_previous" />
+
+            <EditText
+                android:id="@+id/text_reps"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:inputType="number"
+                android:imeOptions="actionDone"
+                android:maxLines="1"
+                android:selectAllOnFocus="true"
+                android:background="@null"
+                android:minHeight="0dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp" />
+
+            <ImageButton
+                android:id="@+id/button_reps_mas"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Más repeticiones"
+                android:src="@android:drawable/ic_media_next" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
 
         <ImageButton
-            android:id="@+id/button_reps_mas"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:id="@+id/button_completada"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Más repeticiones"
-            android:src="@android:drawable/ic_media_next" />
+            android:contentDescription="Marcar que no hiciste esta serie"
+            android:src="@android:drawable/checkbox_on_background" />
     </LinearLayout>
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_weight="1" />
-
-    <ImageButton
-        android:id="@+id/button_completada"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Marcar que no hiciste esta serie"
-        android:src="@android:drawable/checkbox_on_background" />
+    <include layout="@layout/view_fatiga_chips" />
 
 </LinearLayout>
