@@ -10,6 +10,8 @@ public class Usuario extends EntidadIdentificable {
     private String firebaseUid;
     private boolean aceptoTerminos;
     private String fechaAceptacionTerminos;
+    /** Incremento por defecto que aplica el motor de progresión. Valor default: 2.5 kg. */
+    private double incrementoPeso = 2.5;
 
     /** Público: el registro construye el usuario vacío y lo va llenando campo a campo. */
     public Usuario() {
@@ -69,6 +71,14 @@ public class Usuario extends EntidadIdentificable {
 
     public void setFechaAceptacionTerminos(String fechaAceptacionTerminos) {
         this.fechaAceptacionTerminos = fechaAceptacionTerminos;
+    }
+
+    public double getIncrementoPeso() {
+        return incrementoPeso;
+    }
+
+    public void setIncrementoPeso(double incrementoPeso) {
+        this.incrementoPeso = incrementoPeso;
     }
 
     @Override

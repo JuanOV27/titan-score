@@ -27,6 +27,8 @@ public class Ejercicio extends EntidadIdentificable {
     private List<String> instrucciones = new ArrayList<>();
     private String imgAsset;
     private String gifAsset;
+    /** Override del incremento del usuario. {@code 0} = usar el del {@link Usuario}. */
+    private double incrementoPeso;
 
     /** Constructor sin argumentos para Gson. Privado: nadie más debe crear un Ejercicio vacío. */
     private Ejercicio() {
@@ -148,6 +150,14 @@ public class Ejercicio extends EntidadIdentificable {
 
     public void setGifAsset(String gifAsset) {
         this.gifAsset = gifAsset;
+    }
+
+    public double getIncrementoPeso() {
+        return incrementoPeso;
+    }
+
+    public void setIncrementoPeso(double incrementoPeso) {
+        this.incrementoPeso = incrementoPeso;
     }
 
     @Override

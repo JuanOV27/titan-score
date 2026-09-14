@@ -10,6 +10,7 @@ public class RutinaEjercicio {
     public static final int ESQUEMA_LINEAL = 1;
     public static final int ESQUEMA_GREYSKULL = 2;
     public static final int ESQUEMA_DOBLE_PROGRESION = 3;
+    public static final int ESQUEMA_AUTOMATICO = 4;
 
     private String ejercicioId;
     private int series;
@@ -19,6 +20,8 @@ public class RutinaEjercicio {
     private int esquemaProgresion;
     /** Techo del rango para ESQUEMA_DOBLE_PROGRESION; repeticiones (arriba) es el piso. */
     private int repeticionesMax;
+    /** Si es {@code true}, el motor no genera SugerenciaPendiente para este ejercicio. */
+    private boolean silenciarSugerencia;
 
     /** Constructor sin argumentos para Gson. */
     private RutinaEjercicio() {
@@ -82,5 +85,13 @@ public class RutinaEjercicio {
 
     public void setRepeticionesMax(int repeticionesMax) {
         this.repeticionesMax = repeticionesMax;
+    }
+
+    public boolean isSilenciarSugerencia() {
+        return silenciarSugerencia;
+    }
+
+    public void setSilenciarSugerencia(boolean silenciarSugerencia) {
+        this.silenciarSugerencia = silenciarSugerencia;
     }
 }

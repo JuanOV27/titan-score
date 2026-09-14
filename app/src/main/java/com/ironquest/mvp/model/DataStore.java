@@ -15,6 +15,7 @@ public class DataStore {
     private Sesion sesionEnProgreso;
     private Usuario usuario;
     private List<RegistroFisico> historialFisico = new ArrayList<>();
+    private List<SugerenciaPendiente> sugerenciasPendientes = new ArrayList<>();
     /** Primitivo a propósito: un datos.json viejo lo lee en 0 sin migración (ver Trampa #3). */
     private int catalogoVersion;
 
@@ -65,6 +66,9 @@ public class DataStore {
         if (historialFisico == null) {
             historialFisico = new ArrayList<>();
         }
+        if (sugerenciasPendientes == null) {
+            sugerenciasPendientes = new ArrayList<>();
+        }
     }
 
     /** Listas vivas: el resto de la app agrega y quita elementos directamente. */
@@ -114,6 +118,14 @@ public class DataStore {
 
     public void setHistorialFisico(List<RegistroFisico> historialFisico) {
         this.historialFisico = historialFisico;
+    }
+
+    public List<SugerenciaPendiente> getSugerenciasPendientes() {
+        return sugerenciasPendientes;
+    }
+
+    public void setSugerenciasPendientes(List<SugerenciaPendiente> sugerenciasPendientes) {
+        this.sugerenciasPendientes = sugerenciasPendientes;
     }
 
     public int getCatalogoVersion() {
