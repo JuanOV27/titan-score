@@ -2,11 +2,21 @@ package com.ironquest.mvp.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
 import com.ironquest.mvp.R;
-import android.widget.TextView;
+import com.ironquest.mvp.data.DataManager;
+import com.ironquest.mvp.model.DataStore;
+import com.ironquest.mvp.model.Ejercicio;
+import com.ironquest.mvp.model.SugerenciaPendiente;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SessionSummaryActivity extends BaseActivity {
 
@@ -49,7 +59,72 @@ public class SessionSummaryActivity extends BaseActivity {
                 : R.color.cumplimiento_bajo;
         textCumplimiento.setTextColor(ContextCompat.getColor(this, colorRes));
 
+        DataManager dataManager = DataManager.getInstance(this);
+        DataStore dataStore = dataManager.getDataStore();
+        String rutinaId = getIntent().getStringExtra(EXTRA_RUTINA_ID);
+        String sesionId = getIntent().getStringExtra(EXTRA_SESION_ID);
+
+        View cardSugerencias = findViewById(R.id.card_sugerencias);
+        renderSugerencias(cardSugerencias, dataManager, dataStore, rutinaId, sesionId);
+
         findViewById(R.id.button_volver_inicio).setOnClickListener(v -> volverInicio());
+    }
+
+    private void renderSugerencias(View card, DataManager dataManager, DataStore dataStore,
+                                   String rutinaId, String sesionId) {
+        List<SugerenciaPendiente> todas = dataManager.getSugerenciasPendientesDeRutina(rutinaId);
+        List<SugerenciaPendiente> deEstaSesion = new ArrayList<>();
+        for (SugerenciaPendiente sp : todas) {
+            if (sesionId != null && sesionId.equals(sp.getSesionOrigenId())) {
+                deEstaSesion.add(sp);
+            }
+        }
+        if (deEstaSesion.isEmpty()) {
+            card.setVisibility(View.GONE);
+            return;
+        }
+        card.setVisibility(View.VISIBLE);
+        LinearLayout container = card.findViewById(R.id.container_sugerencias);
+        container.removeAllViews();
+        LayoutInflater inflater = LayoutInflater.from(this);
+        for (SugerenciaPendiente sp : deEstaSesion) {
+            View item = inflater.inflate(R.layout.item_sugerencia_pendiente, container, false);
+            Ejercicio ej = dataStore.buscarEjercicio(sp.getEjercicioId());
+            String nombre = ej != null ? ej.getNombre() : "Ejercicio";
+            ((TextView) item.findViewById(R.id.text_nombre_ejercicio)).setText(nombre);
+            ((TextView) item.findViewById(R.id.text_cambio)).setText(formatearCambio(sp));
+            ((TextView) item.findViewById(R.id.text_explicacion)).setText(sp.getExplicacion());
+            item.findViewById(R.id.button_aceptar).setOnClickListener(v -> {
+                dataManager.aplicarSugerencia(sp.getId());
+                renderSugerencias(card, dataManager, dataStore, rutinaId, sesionId);
+            });
+            item.findViewById(R.id.button_ignorar).setOnClickListener(v -> {
+                dataManager.eliminarSugerencia(sp.getId());
+                renderSugerencias(card, dataManager, dataStore, rutinaId, sesionId);
+            });
+            container.addView(item);
+        }
+        card.findViewById(R.id.button_aceptar_todas).setOnClickListener(v -> {
+            for (SugerenciaPendiente sp : new ArrayList<>(deEstaSesion)) {
+                dataManager.aplicarSugerencia(sp.getId());
+            }
+            renderSugerencias(card, dataManager, dataStore, rutinaId, sesionId);
+        });
+    }
+
+    private static String formatearCambio(SugerenciaPendiente sp) {
+        return formatearPeso(sp.getPesoActual()) + " kg × " + sp.getRepeticionesActuales()
+                + " → " + formatearPeso(sp.getPesoSugerido()) + " kg × " + sp.getRepeticionesSugeridas();
+    }
+
+    private static String formatearPeso(double p) {
+        if (p == 0) {
+            return "0";
+        }
+        if (p == Math.floor(p)) {
+            return String.valueOf((long) p);
+        }
+        return String.valueOf(p);
     }
 
     @Override

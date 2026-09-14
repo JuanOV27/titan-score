@@ -39,6 +39,10 @@
                 android:gravity="center"
                 android:textSize="15sp" />
 
+            <include
+                android:id="@+id/card_sugerencias"
+                layout="@layout/card_sugerencias" />
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
