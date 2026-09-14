@@ -10,6 +10,7 @@ import com.ironquest.mvp.model.Ejercicio;
 import com.ironquest.mvp.model.Rutina;
 import com.ironquest.mvp.model.RutinaCompartida;
 import com.ironquest.mvp.model.RutinaEjercicio;
+import com.ironquest.mvp.model.SugerenciaPendiente;
 
 import java.io.File;
 import java.io.FileReader;
@@ -275,6 +276,92 @@ public class DataManager {
         dataStore.getRutinas().add(nueva);
         save();
         return nueva;
+    }
+
+    public List<SugerenciaPendiente> getSugerenciasPendientes() {
+        return dataStore.getSugerenciasPendientes();
+    }
+
+    public List<SugerenciaPendiente> getSugerenciasPendientesDeRutina(String rutinaId) {
+        List<SugerenciaPendiente> resultado = new java.util.ArrayList<>();
+        if (rutinaId == null) {
+            return resultado;
+        }
+        for (SugerenciaPendiente sp : dataStore.getSugerenciasPendientes()) {
+            if (rutinaId.equals(sp.getRutinaId())) {
+                resultado.add(sp);
+            }
+        }
+        return resultado;
+    }
+
+    public void agregarSugerencia(SugerenciaPendiente sugerencia) {
+        dataStore.getSugerenciasPendientes().add(sugerencia);
+        save();
+    }
+
+    public void eliminarSugerencia(String sugerenciaId) {
+        if (sugerenciaId == null) {
+            return;
+        }
+        java.util.Iterator<SugerenciaPendiente> it = dataStore.getSugerenciasPendientes().iterator();
+        while (it.hasNext()) {
+            if (sugerenciaId.equals(it.next().getId())) {
+                it.remove();
+                save();
+                return;
+            }
+        }
+    }
+
+    public void eliminarSugerenciasDeRutina(String rutinaId) {
+        if (rutinaId == null) {
+            return;
+        }
+        java.util.Iterator<SugerenciaPendiente> it = dataStore.getSugerenciasPendientes().iterator();
+        boolean cambio = false;
+        while (it.hasNext()) {
+            if (rutinaId.equals(it.next().getRutinaId())) {
+                it.remove();
+                cambio = true;
+            }
+        }
+        if (cambio) {
+            save();
+        }
+    }
+
+    /**
+     * Aplica la sugerencia al {@link RutinaEjercicio} correspondiente y la elimina de la lista.
+     * Un solo {@code save()} al final. Si la rutina o el ejercicio ya no existen, la sugerencia
+     * se elimina igual (huérfana).
+     */
+    public void aplicarSugerencia(String sugerenciaId) {
+        if (sugerenciaId == null) {
+            return;
+        }
+        SugerenciaPendiente objetivo = null;
+        for (SugerenciaPendiente sp : dataStore.getSugerenciasPendientes()) {
+            if (sugerenciaId.equals(sp.getId())) {
+                objetivo = sp;
+                break;
+            }
+        }
+        if (objetivo == null) {
+            return;
+        }
+        Rutina rutina = dataStore.buscarRutina(objetivo.getRutinaId());
+        if (rutina != null) {
+            for (RutinaEjercicio re : rutina.getEjercicios()) {
+                if (objetivo.getEjercicioId().equals(re.getEjercicioId())) {
+                    re.setPeso(objetivo.getPesoSugerido());
+                    re.setRepeticiones(objetivo.getRepeticionesSugeridas());
+                    break;
+                }
+            }
+        }
+        dataStore.getSugerenciasPendientes().remove(objetivo);
+        save();
     }
 
     private DataStore load() {
