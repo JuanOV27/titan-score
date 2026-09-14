@@ -130,6 +130,21 @@ final class ProgresionAutomatica extends EstrategiaProgresion {
         if (completadas == 0) {
             return ESTADO_FALLIDO;
         }
+
+        // Override por RIR de la última serie completada, cuando esté disponible.
+        SerieSesion ultima = pasada.getUltimaSerieCompletada();
+        int rir = ultima != null ? ultima.getRir() : -1;
+
+        if (rir >= 3 && minCompleto >= objetivo) {
+            // Fácil o con mucho margen → tratar como MARGEN aunque las reps no lleguen a objetivo+2.
+            return ESTADO_MARGEN;
+        }
+        if (rir == 0 && minCompleto >= objetivo && minCompleto < objetivo + 2) {
+            // Al fallo cumpliendo justo → tratar como FALLIDO (no subir, ya está al límite).
+            return ESTADO_FALLIDO;
+        }
+
+        // Sin RIR o RIR intermedio: fallback a la regla del Slice 1 (solo señal de reps).
         if (minCompleto < objetivo) {
             return ESTADO_FALLIDO;
         }
