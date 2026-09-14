@@ -14,6 +14,8 @@ public class SessionSummaryActivity extends BaseActivity {
     public static final String EXTRA_DURACION_MINUTOS = "extra_duracion_minutos";
     public static final String EXTRA_RACHA_DIAS = "extra_racha_dias";
     public static final String EXTRA_PORCENTAJE = "extra_porcentaje";
+    public static final String EXTRA_SESION_ID = "extra_sesion_id";
+    public static final String EXTRA_RUTINA_ID = "extra_rutina_id";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

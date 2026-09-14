@@ -36,6 +36,8 @@ import com.ironquest.mvp.model.Rutina;
 import com.ironquest.mvp.model.RutinaEjercicio;
 import com.ironquest.mvp.model.Sesion;
 import com.ironquest.mvp.model.SerieSesion;
+import com.ironquest.mvp.model.SugerenciaPendiente;
+import com.ironquest.mvp.model.Usuario;
 import com.ironquest.mvp.service.SesionTrackingService;
 import com.ironquest.mvp.util.EstadisticasUtil;
 import com.ironquest.mvp.util.progresion.EstrategiaProgresion;
@@ -365,6 +367,8 @@ public class ActiveSessionActivity extends BaseActivity {
         dataStore.setSesionEnProgreso(null);
         dataManager.save();
 
+        generarSugerenciasPendientes();
+
         int racha = EstadisticasUtil.calcularRachaDias(dataStore.getSesiones());
 
         SesionTrackingService.detener(this);
@@ -374,7 +378,69 @@ public class ActiveSessionActivity extends BaseActivity {
         intent.putExtra(SessionSummaryActivity.EXTRA_DURACION_MINUTOS, duracionMinutos);
         intent.putExtra(SessionSummaryActivity.EXTRA_RACHA_DIAS, racha);
         intent.putExtra(SessionSummaryActivity.EXTRA_PORCENTAJE, sesionActual.getPorcentajeCumplimiento());
+        intent.putExtra(SessionSummaryActivity.EXTRA_SESION_ID, sesionActual.getId());
+        intent.putExtra(SessionSummaryActivity.EXTRA_RUTINA_ID, sesionActual.getRutinaId());
         startActivity(intent);
         finish();
+    }
+
+    /**
+     * Genera SugerenciaPendiente para cada ejercicio de la rutina origen que tenga esquema
+     * distinto de Ninguno, no silenciado, y cuya sugerencia efectivamente cambie el plan actual.
+     * Se llama después de que la sesión quede persistida — así el propio historial nuevo ya
+     * está disponible para el motor.
+     */
+    private void generarSugerenciasPendientes() {
+        Rutina rutina = dataStore.buscarRutina(sesionActual.getRutinaId());
+        if (rutina == null) {
+            return;
+        }
+        Usuario usuario = dataStore.getUsuario();
+        for (RutinaEjercicio re : rutina.getEjercicios()) {
+            if (re.getEsquemaProgresion() == RutinaEjercicio.ESQUEMA_NINGUNO) {
+                continue;
+            }
+            if (re.isSilenciarSugerencia()) {
+                continue;
+            }
+            Ejercicio ejercicio = catalogoPorId.get(re.getEjercicioId());
+            if (ejercicio == null) {
+                continue;
+            }
+            Sugerencia s = EstrategiaProgresion.para(re.getEsquemaProgresion())
+                    .sugerir(re, ejercicio, usuario, dataStore.getSesiones());
+            boolean pesoDiferente = s.getPeso() != re.getPeso();
+            boolean repsDiferente = s.getRepeticiones() != re.getRepeticiones();
+            if (!pesoDiferente && !repsDiferente) {
+                continue;
+            }
+            int tipo = clasificarTipoSugerencia(re, s);
+            SugerenciaPendiente sp = new SugerenciaPendiente(
+                    dataManager.newId("sp"),
+                    rutina.getId(),
+                    re.getEjercicioId(),
+                    sesionActual.getId(),
+                    re.getPeso(),
+                    s.getPeso(),
+                    re.getRepeticiones(),
+                    s.getRepeticiones(),
+                    s.getExplicacion(),
+                    tipo,
+                    LocalDateTime.now().toString());
+            dataManager.agregarSugerencia(sp);
+        }
+    }
+
+    private int clasificarTipoSugerencia(RutinaEjercicio re, Sugerencia s) {
+        if (s.getPeso() > re.getPeso()) {
+            return SugerenciaPendiente.TIPO_SUBIR_PESO;
+        }
+        if (s.getPeso() < re.getPeso()) {
+            return SugerenciaPendiente.TIPO_DELOAD;
+        }
+        if (s.getRepeticiones() > re.getRepeticiones()) {
+            return SugerenciaPendiente.TIPO_SUBIR_REPS;
+        }
+        return SugerenciaPendiente.TIPO_MANTENER;
     }
 }
