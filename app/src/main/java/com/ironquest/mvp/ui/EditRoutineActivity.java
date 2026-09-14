@@ -25,9 +25,11 @@ import com.ironquest.mvp.model.Ejercicio;
 import com.ironquest.mvp.model.Rutina;
 import com.ironquest.mvp.model.RutinaEjercicio;
 import com.ironquest.mvp.model.SugerenciaPendiente;
+import com.ironquest.mvp.util.AnalisisMuscular;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +52,9 @@ public class EditRoutineActivity extends BaseActivity {
 
     private View cardBannerSugerencias;
     private TextView textBannerSugerencias;
+    private View cardBannerLimite;
+    private TextView textBannerLimite;
+    private boolean bannerLimiteOculto = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +96,7 @@ public class EditRoutineActivity extends BaseActivity {
                 rutina.quitarEjercicio(position);
                 adapter.notifyItemRemoved(position);
                 actualizarBannerMigracion();
+                actualizarBannerLimite();
             }
 
             @Override
@@ -150,12 +156,41 @@ public class EditRoutineActivity extends BaseActivity {
             actualizarBannerSugerencias();
         });
         actualizarBannerSugerencias();
+
+        cardBannerLimite = findViewById(R.id.card_banner_limite_grupo);
+        textBannerLimite = findViewById(R.id.text_banner_limite_grupo);
+        findViewById(R.id.button_ocultar_banner_limite).setOnClickListener(v -> {
+            bannerLimiteOculto = true;
+            cardBannerLimite.setVisibility(View.GONE);
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         actualizarBannerSugerencias();
+        actualizarBannerLimite();
+    }
+
+    private void actualizarBannerLimite() {
+        if (bannerLimiteOculto) {
+            return;
+        }
+        LinkedHashMap<String, Integer> excedidos =
+                AnalisisMuscular.gruposSobreLimite(rutina, catalogoPorId);
+        if (excedidos.isEmpty()) {
+            cardBannerLimite.setVisibility(View.GONE);
+            return;
+        }
+        StringBuilder sb = new StringBuilder("Aviso:\n");
+        for (Map.Entry<String, Integer> e : excedidos.entrySet()) {
+            sb.append("• ").append(e.getValue()).append(" ejercicios de \"")
+                    .append(e.getKey()).append("\"\n");
+        }
+        sb.append("Se recomienda máximo ")
+                .append(AnalisisMuscular.LIMITE_POR_GRUPO).append(" por sesión.");
+        textBannerLimite.setText(sb.toString());
+        cardBannerLimite.setVisibility(View.VISIBLE);
     }
 
     private void actualizarBannerSugerencias() {
@@ -292,6 +327,7 @@ public class EditRoutineActivity extends BaseActivity {
         nuevo.setRepeticionesMax(nuevo.getRepeticiones() + 4);
         rutina.agregarEjercicio(nuevo);
         adapter.notifyItemInserted(rutina.getCantidadEjercicios() - 1);
+        actualizarBannerLimite();
     }
 
     private void mostrarDialogoEditarEjercicio(Ejercicio ejercicio, int position) {
