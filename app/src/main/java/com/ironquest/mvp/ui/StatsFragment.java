@@ -11,9 +11,13 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.chip.ChipGroup;
 import com.ironquest.mvp.R;
 import com.ironquest.mvp.data.DataManager;
+import com.ironquest.mvp.model.DataStore;
+import com.ironquest.mvp.model.Ejercicio;
 import com.ironquest.mvp.model.Sesion;
+import com.ironquest.mvp.util.AnalisisMuscular;
 import com.ironquest.mvp.util.EstadisticasUtil;
 
 import java.time.DayOfWeek;
@@ -23,7 +27,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /** Pestaña "Estadísticas": resumen acumulado y gráficas de duración, cumplimiento y frecuencia. */
 public class StatsFragment extends Fragment {
@@ -35,6 +42,45 @@ public class StatsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_stats, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ChipGroup chipsPeriodo = view.findViewById(R.id.chip_group_periodo);
+        View pieView = view.findViewById(R.id.view_pie_stats);
+        chipsPeriodo.check(R.id.chip_periodo_semana);
+        actualizarPieStats(view, pieView, R.id.chip_periodo_semana);
+        chipsPeriodo.setOnCheckedStateChangeListener((group, ids) -> {
+            if (!ids.isEmpty()) {
+                actualizarPieStats(view, pieView, ids.get(0));
+            }
+        });
+    }
+
+    private void actualizarPieStats(View root, View pieView, int chipId) {
+        DataManager dm = DataManager.getInstance(requireContext());
+        DataStore ds = dm.getDataStore();
+        LocalDate hoy = LocalDate.now();
+        LocalDate desde;
+        LocalDate hasta;
+        if (chipId == R.id.chip_periodo_semana) {
+            desde = hoy.minusDays(7);
+            hasta = hoy;
+        } else if (chipId == R.id.chip_periodo_mes) {
+            desde = hoy.minusDays(30);
+            hasta = hoy;
+        } else {
+            desde = null;
+            hasta = null;
+        }
+        Map<String, Ejercicio> catalogoPorId = new HashMap<>();
+        for (Ejercicio ej : ds.getEjercicios()) {
+            catalogoPorId.put(ej.getId(), ej);
+        }
+        LinkedHashMap<String, Double> datos = AnalisisMuscular.calcularVolumenPorGrupo(
+                ds.getSesiones(), desde, hasta, catalogoPorId);
+        PieChartRender.render(pieView, datos);
     }
 
     @Override
