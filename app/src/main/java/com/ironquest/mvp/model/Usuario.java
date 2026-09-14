@@ -13,6 +13,9 @@ public class Usuario extends EntidadIdentificable {
     /** Incremento por defecto que aplica el motor de progresión. Valor default: 2.5 kg. */
     private double incrementoPeso = 2.5;
 
+    /** Toggle global opcional. Activa chips de fatiga por serie y detección dinámica. */
+    private boolean seguimientoFatiga;
+
     /** Público: el registro construye el usuario vacío y lo va llenando campo a campo. */
     public Usuario() {
     }
@@ -79,6 +82,14 @@ public class Usuario extends EntidadIdentificable {
 
     public void setIncrementoPeso(double incrementoPeso) {
         this.incrementoPeso = incrementoPeso;
+    }
+
+    public boolean isSeguimientoFatiga() {
+        return seguimientoFatiga;
+    }
+
+    public void setSeguimientoFatiga(boolean seguimientoFatiga) {
+        this.seguimientoFatiga = seguimientoFatiga;
     }
 
     @Override

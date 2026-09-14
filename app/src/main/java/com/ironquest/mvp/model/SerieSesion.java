@@ -8,6 +8,14 @@ public class SerieSesion {
     private int repeticiones;
     private boolean completada;
 
+    /**
+     * Reps-in-reserve capturado por el usuario tras la serie. {@code -1} = no capturado.
+     * Escala 0-5: 0 = al fallo o con ayuda, 5 = con mucho margen. Solo se muestra si
+     * {@link Usuario#isSeguimientoFatiga()} está activo. Primitivo por Trampa #3: sesiones
+     * viejas leen -1 sin migración.
+     */
+    private int rir = -1;
+
     /** Constructor sin argumentos para Gson. */
     private SerieSesion() {
     }
@@ -57,5 +65,13 @@ public class SerieSesion {
 
     public void setCompletada(boolean completada) {
         this.completada = completada;
+    }
+
+    public int getRir() {
+        return rir;
+    }
+
+    public void setRir(int rir) {
+        this.rir = rir;
     }
 }
