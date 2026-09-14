@@ -214,6 +214,17 @@
                 android:layout_weight="1"
                 android:layout_marginEnd="4dp" />
 
+            <ImageView
+                android:id="@+id/button_info_progresion"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:clickable="true"
+                android:contentDescription="Ver info sobre esquemas de progresión"
+                android:focusable="true"
+                android:src="@android:drawable/ic_menu_info_details" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -229,6 +240,59 @@
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/check_silenciar_sugerencia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Silenciar sugerencias de progresión"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Incremento de peso sugerido"
+            android:textAppearance="?attr/textAppearanceLabelLarge" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_incremento_ejercicio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_incremento_global"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Global" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_incremento_1"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1 kg" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_incremento_2_5"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2.5 kg" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_incremento_5"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5 kg" />
+
+        </com.google.android.material.chip.ChipGroup>
 
     </LinearLayout>
 

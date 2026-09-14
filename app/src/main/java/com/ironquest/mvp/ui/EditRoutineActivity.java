@@ -75,7 +75,10 @@ public class EditRoutineActivity extends BaseActivity {
 
         RecyclerView recycler = findViewById(R.id.recycler_ejercicios_rutina);
         recycler.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new RutinaEjercicioEditAdapter(rutina.getEjercicios(), catalogoPorId, new RutinaEjercicioEditAdapter.Listener() {
+        double incrementoGlobal = dataStore.getUsuario() != null
+                ? dataStore.getUsuario().getIncrementoPeso() : 2.5;
+        adapter = new RutinaEjercicioEditAdapter(rutina.getEjercicios(), catalogoPorId, incrementoGlobal,
+                new RutinaEjercicioEditAdapter.Listener() {
             @Override
             public void onQuitar(int position) {
                 rutina.quitarEjercicio(position);
@@ -175,7 +178,9 @@ public class EditRoutineActivity extends BaseActivity {
 
     private void agregarEjercicioARutina(Ejercicio ejercicio) {
         catalogoPorId.putIfAbsent(ejercicio.getId(), ejercicio);
-        rutina.agregarEjercicio(new RutinaEjercicio(ejercicio.getId(), 3, 10, 0.0));
+        RutinaEjercicio nuevo = new RutinaEjercicio(ejercicio.getId(), 3, 10, 0.0);
+        nuevo.setEsquemaProgresion(RutinaEjercicio.ESQUEMA_AUTOMATICO);
+        rutina.agregarEjercicio(nuevo);
         adapter.notifyItemInserted(rutina.getCantidadEjercicios() - 1);
     }
 
