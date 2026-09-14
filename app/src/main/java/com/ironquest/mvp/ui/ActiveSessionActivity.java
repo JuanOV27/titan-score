@@ -1,21 +1,13 @@
 package com.ironquest.mvp.ui;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,8 +17,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.ironquest.mvp.R;
 import com.ironquest.mvp.data.DataManager;
 import com.ironquest.mvp.model.DataStore;
@@ -56,7 +46,6 @@ public class ActiveSessionActivity extends BaseActivity {
     public static final String EXTRA_RUTINA_ID = "extra_rutina_id";
     public static final String EXTRA_RESUMIR = "extra_resumir";
 
-    private static final long HOLD_FINALIZAR_MS = 3000L;
     private static final DateTimeFormatter FORMATO_HORA = DateTimeFormatter.ofPattern("HH:mm");
 
     private DataManager dataManager;
@@ -155,6 +144,12 @@ public class ActiveSessionActivity extends BaseActivity {
                     @Override
                     public void onProgresoModificado() {
                         guardarProgreso();
+                        pagerAdapter.refrescarCardFinal();
+                    }
+
+                    @Override
+                    public void onFinalizarSesion() {
+                        finalizarSesion();
                     }
                 });
         pagerEjercicios.setAdapter(pagerAdapter);
@@ -169,9 +164,8 @@ public class ActiveSessionActivity extends BaseActivity {
         guardarProgreso();
         iniciarServicioSeguimiento();
 
-        configurarBotonFinalizar();
         findViewById(R.id.button_iniciar_descanso).setOnClickListener(v -> mostrarTemporizadorDescanso());
-        findViewById(R.id.button_agregar_ejercicio_sesion).setOnClickListener(v ->
+        findViewById(R.id.fab_agregar_ejercicio_sesion).setOnClickListener(v ->
                 EjercicioPicker.mostrar(this, dataManager, dataStore, ejercicio -> {
                     catalogoPorId.putIfAbsent(ejercicio.getId(), ejercicio);
                     EjercicioSesion nuevo = new EjercicioSesion(ejercicio.getId());
@@ -253,58 +247,6 @@ public class ActiveSessionActivity extends BaseActivity {
         SesionTrackingService.iniciar(this, sesionActual.getRutinaNombre(), sesionActual.getFechaHoraInicio());
     }
 
-    private void configurarBotonFinalizar() {
-        MaterialButton botonFinalizar = findViewById(R.id.button_finalizar_sesion);
-        LinearProgressIndicator progreso = findViewById(R.id.progress_finalizar_sesion);
-
-        ValueAnimator animator = ValueAnimator.ofInt(0, 100);
-        animator.setDuration(HOLD_FINALIZAR_MS);
-        animator.addUpdateListener(a -> progreso.setProgress((int) a.getAnimatedValue()));
-        animator.addListener(new AnimatorListenerAdapter() {
-            private boolean cancelado;
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                cancelado = true;
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                boolean seCompleto = !cancelado;
-                cancelado = false;
-                if (seCompleto) {
-                    vibrarConfirmacion();
-                    finalizarSesion();
-                }
-            }
-        });
-
-        botonFinalizar.setOnTouchListener((v, event) -> {
-            switch (event.getActionMasked()) {
-                case MotionEvent.ACTION_DOWN:
-                    progreso.setProgress(0);
-                    progreso.setVisibility(View.VISIBLE);
-                    animator.start();
-                    return true;
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    animator.cancel();
-                    progreso.setProgress(0);
-                    progreso.setVisibility(View.INVISIBLE);
-                    return true;
-                default:
-                    return false;
-            }
-        });
-    }
-
-    private void vibrarConfirmacion() {
-        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        if (vibrator != null && vibrator.hasVibrator()) {
-            vibrator.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
-        }
-    }
-
     private void cambiarEjercicio(int position) {
         if (position < 0 || position >= sesionActual.getEjercicios().size()) {
             return;
@@ -335,19 +277,25 @@ public class ActiveSessionActivity extends BaseActivity {
                     pagerAdapter.notifyItemRemoved(position);
                     actualizarIndicadorPagina();
                     guardarProgreso();
+                    pagerAdapter.refrescarCardFinal();
                 })
                 .setNegativeButton("Cancelar", null)
                 .show();
     }
 
     private void actualizarIndicadorPagina() {
-        int total = sesionActual.getEjercicios().size();
-        if (total == 0) {
+        int totalEjercicios = sesionActual.getEjercicios().size();
+        if (totalEjercicios == 0) {
             textIndicadorPagina.setText("Sin ejercicios");
             return;
         }
-        int actual = Math.min(pagerEjercicios.getCurrentItem(), total - 1);
-        textIndicadorPagina.setText("Ejercicio " + (actual + 1) + " de " + total);
+        int ultimaPagina = totalEjercicios;
+        int actual = pagerEjercicios.getCurrentItem();
+        if (actual == ultimaPagina) {
+            textIndicadorPagina.setText("Finalizar entrenamiento");
+        } else {
+            textIndicadorPagina.setText("Ejercicio " + (actual + 1) + " de " + totalEjercicios);
+        }
     }
 
     private void mostrarTemporizadorDescanso() {

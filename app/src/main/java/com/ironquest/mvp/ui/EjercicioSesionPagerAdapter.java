@@ -1,9 +1,13 @@
 package com.ironquest.mvp.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -16,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 import com.ironquest.mvp.R;
 import com.ironquest.mvp.model.Ejercicio;
@@ -43,14 +48,18 @@ import pl.droidsonroids.gif.GifImageView;
  * instancia de {@link EjercicioSesion}: el mismo ejercicio puede aparecer dos veces en la sesión
  * y con un {@code Set<String>} las dos páginas quedarían acopladas.
  */
-public class EjercicioSesionPagerAdapter extends RecyclerView.Adapter<EjercicioSesionPagerAdapter.ViewHolder> {
+public class EjercicioSesionPagerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public interface Listener {
         void onCambiarEjercicio(int position);
         void onEliminarEjercicio(int position);
         void onProgresoModificado();
+        void onFinalizarSesion();
     }
 
+    private static final long HOLD_FINALIZAR_MS = 3000L;
+    private static final int VIEW_TYPE_EJERCICIO = 0;
+    private static final int VIEW_TYPE_FINALIZAR = 1;
     private static final double PASO_PESO = 2.5;
 
     private final List<EjercicioSesion> items;
@@ -72,22 +81,41 @@ public class EjercicioSesionPagerAdapter extends RecyclerView.Adapter<EjercicioS
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == VIEW_TYPE_FINALIZAR) {
+            return new FinalizarViewHolder(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.view_finalizar_sesion_block, parent, false));
+        }
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.view_ejercicio_sesion_block, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof FinalizarViewHolder) {
+            ((FinalizarViewHolder) holder).bind();
+            return;
+        }
+        ViewHolder viewHolder = (ViewHolder) holder;
         EjercicioSesion ejercicioSesion = items.get(position);
-        holder.bind(ejercicioSesion, catalogoPorId.get(ejercicioSesion.getEjercicioId()),
+        viewHolder.bind(ejercicioSesion, catalogoPorId.get(ejercicioSesion.getEjercicioId()),
                 sugerenciasPorItem.get(ejercicioSesion));
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return position == items.size() ? VIEW_TYPE_FINALIZAR : VIEW_TYPE_EJERCICIO;
+    }
+
+    @Override
     public int getItemCount() {
-        return items.size();
+        return items.size() + 1;
+    }
+
+    /** Refresca la card de finalizar (resumen de series) tras tocar el progreso de la sesión. */
+    public void refrescarCardFinal() {
+        notifyItemChanged(getItemCount() - 1);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -335,6 +363,81 @@ public class EjercicioSesionPagerAdapter extends RecyclerView.Adapter<EjercicioS
             boton.setContentDescription(completada
                     ? "Marcar que no hiciste esta serie"
                     : "Marcar que sí hiciste esta serie");
+        }
+
+        private void vibrarConfirmacion() {
+            Context context = itemView.getContext();
+            Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            if (vibrator != null && vibrator.hasVibrator()) {
+                vibrator.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
+            }
+        }
+    }
+
+    class FinalizarViewHolder extends RecyclerView.ViewHolder {
+
+        private final TextView textResumen;
+
+        private FinalizarViewHolder(@NonNull View itemView) {
+            super(itemView);
+            textResumen = itemView.findViewById(R.id.text_resumen_card_final);
+            MaterialButton botonFinalizar = itemView.findViewById(R.id.button_finalizar_sesion_card);
+            LinearProgressIndicator progreso = itemView.findViewById(R.id.progress_finalizar_sesion_card);
+
+            ValueAnimator animator = ValueAnimator.ofInt(0, 100);
+            animator.setDuration(HOLD_FINALIZAR_MS);
+            animator.addUpdateListener(a -> progreso.setProgress((int) a.getAnimatedValue()));
+            animator.addListener(new AnimatorListenerAdapter() {
+                private boolean cancelado;
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    cancelado = true;
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    boolean seCompleto = !cancelado;
+                    cancelado = false;
+                    if (seCompleto) {
+                        vibrarConfirmacion();
+                        listener.onFinalizarSesion();
+                    }
+                }
+            });
+
+            botonFinalizar.setOnTouchListener((v, event) -> {
+                switch (event.getActionMasked()) {
+                    case MotionEvent.ACTION_DOWN:
+                        progreso.setProgress(0);
+                        progreso.setVisibility(View.VISIBLE);
+                        animator.start();
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        animator.cancel();
+                        progreso.setProgress(0);
+                        progreso.setVisibility(View.INVISIBLE);
+                        return true;
+                    default:
+                        return false;
+                }
+            });
+        }
+
+        private void bind() {
+            int series = 0;
+            int completadas = 0;
+            for (EjercicioSesion ejercicioSesion : items) {
+                for (SerieSesion serie : ejercicioSesion.getSeries()) {
+                    series++;
+                    if (serie.isCompletada()) {
+                        completadas++;
+                    }
+                }
+            }
+            textResumen.setText("Ejercicios: " + items.size()
+                    + " · Series completadas: " + completadas + " de " + series);
         }
 
         private void vibrarConfirmacion() {
