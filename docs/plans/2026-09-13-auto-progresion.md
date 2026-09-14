@@ -2325,3 +2325,26 @@ restauró después; estado en disco idéntico al respaldo `/tmp/titan-score-resp
 
 **Sigue:** después del release, arrancar el Slice 2 (fatiga/analítica) en
 `docs/plans/2026-09-13-fatiga-analitica.md`.
+
+**Fix post-slice (commit `cfefe76`) — pérdida de cambios al rotar en el editor de rutinas:**
+- Bug reportado: al crear una rutina nueva y rotar la pantalla, desaparecían los ejercicios ya
+  agregados. Causa: `EditRoutineActivity` se recreaba en la rotación sin preservar la `Rutina`
+  en memoria (los cambios solo se persisten al pulsar "Guardar rutina").
+- Fix: declarar `android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"`
+  en el mani­festo para `EditRoutineActivity` (misma convención que
+  `ActiveSessionActivity`/`PhysicalProfileActivity`). Verificado en el teléfono: tras girar a
+  landscape y volver a portrait, los ejercicios seguían en la rutina en memoria.
+- Observación pendiente (no bloqueante): en landscape la fila de un ejercicio del editor se
+  muestra colapsada (altura ~27px, contenido oculto) en el dump de UI. No implica pérdida de
+  datos; es un tema de layout estético a revisar si se quiere.
+
+**Incidente de datos — rutina "piernas":**
+- Durante la verificación se detectó que el `datos.json` del teléfono tenía 7 rutinas (faltaba
+  "piernas", `r_7da52eae`) frente al respaldo `/sdcard/restore_pre_task89.json` (352718 bytes,
+  13/09 21:36). El diff era exactamente esa rutina: sesiones (13), catálogo (320), sugerencias
+  (0) e incremento global (2.5) coincidían.
+- Se presentó el cambio al usuario; **decisión: dejarla eliminada** (estado actual intocable).
+- Los respaldos en `/tmp/` (respaldo_pre_v0.9.0, datos_antes_task89) se perdieron por una purga
+  del sistema durante la sesión. El respaldo vivo que queda es
+  `/sdcard/restore_pre_task89.json` (o `crear copia persistente`) — considerar respaldar el
+  `datos.json` completo en un lugar fuera de `/tmp` y del teléfono.
