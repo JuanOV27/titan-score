@@ -69,5 +69,36 @@ public class AjustesActivity extends BaseActivity {
 
         findViewById(R.id.link_info_progresion).setOnClickListener(v ->
                 InfoProgresionDialog.mostrar(AjustesActivity.this));
+
+        com.google.android.material.chip.ChipGroup chipsDias = findViewById(R.id.chip_group_dias_entreno);
+        int diasActual = usuario != null ? usuario.getDiasEntrenoSemana() : 3;
+        int idInicial;
+        switch (diasActual) {
+            case 1: idInicial = R.id.chip_dias_1; break;
+            case 2: idInicial = R.id.chip_dias_2; break;
+            case 4: idInicial = R.id.chip_dias_4; break;
+            case 5: idInicial = R.id.chip_dias_5; break;
+            case 6: idInicial = R.id.chip_dias_6; break;
+            case 7: idInicial = R.id.chip_dias_7; break;
+            case 3:
+            default: idInicial = R.id.chip_dias_3; break;
+        }
+        chipsDias.check(idInicial);
+        chipsDias.setOnCheckedStateChangeListener((group, checkedIds) -> {
+            if (checkedIds.isEmpty() || usuario == null) return;
+            int id = checkedIds.get(0);
+            int nuevo;
+            if (id == R.id.chip_dias_1) nuevo = 1;
+            else if (id == R.id.chip_dias_2) nuevo = 2;
+            else if (id == R.id.chip_dias_4) nuevo = 4;
+            else if (id == R.id.chip_dias_5) nuevo = 5;
+            else if (id == R.id.chip_dias_6) nuevo = 6;
+            else if (id == R.id.chip_dias_7) nuevo = 7;
+            else nuevo = 3;
+            if (nuevo != usuario.getDiasEntrenoSemana()) {
+                usuario.setDiasEntrenoSemana(nuevo);
+                dataManager.save();
+            }
+        });
     }
 }
