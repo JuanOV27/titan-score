@@ -550,6 +550,61 @@ public class DataManager {
         save();
     }
 
+    public java.util.List<com.ironquest.mvp.model.Meta> getMetasActivas() {
+        java.util.List<com.ironquest.mvp.model.Meta> resultado = new java.util.ArrayList<>();
+        for (com.ironquest.mvp.model.Meta m : dataStore.getMetas()) {
+            if (m.getEstado() == com.ironquest.mvp.model.Meta.ESTADO_ACTIVA) {
+                resultado.add(m);
+            }
+        }
+        return resultado;
+    }
+
+    public java.util.List<com.ironquest.mvp.model.Meta> getMetasHistorial() {
+        java.util.List<com.ironquest.mvp.model.Meta> resultado = new java.util.ArrayList<>();
+        for (com.ironquest.mvp.model.Meta m : dataStore.getMetas()) {
+            if (m.getEstado() == com.ironquest.mvp.model.Meta.ESTADO_CUMPLIDA || m.getEstado() == com.ironquest.mvp.model.Meta.ESTADO_DESCARTADA) {
+                resultado.add(m);
+            }
+        }
+        // Ordenar por fecha de cierre descendente (más reciente arriba). Fallback: fecha creación.
+        resultado.sort((a, b) -> {
+            String fechaA = a.getFechaCumplida() != null ? a.getFechaCumplida()
+                    : a.getFechaDescartada() != null ? a.getFechaDescartada()
+                    : a.getFechaCreacion();
+            String fechaB = b.getFechaCumplida() != null ? b.getFechaCumplida()
+                    : b.getFechaDescartada() != null ? b.getFechaDescartada()
+                    : b.getFechaCreacion();
+            if (fechaA == null && fechaB == null) return 0;
+            if (fechaA == null) return 1;
+            if (fechaB == null) return -1;
+            return fechaB.compareTo(fechaA);
+        });
+        return resultado;
+    }
+
+    /** Agrega una meta si no se supera el límite de 3 activas. Devuelve false si se rechaza. */
+    public boolean agregarMeta(com.ironquest.mvp.model.Meta meta) {
+        if (getMetasActivas().size() >= 3) {
+            return false;
+        }
+        dataStore.getMetas().add(meta);
+        save();
+        return true;
+    }
+
+    public void descartarMeta(String metaId) {
+        if (metaId == null) return;
+        for (com.ironquest.mvp.model.Meta m : dataStore.getMetas()) {
+            if (metaId.equals(m.getId()) && m.getEstado() == com.ironquest.mvp.model.Meta.ESTADO_ACTIVA) {
+                m.setEstado(com.ironquest.mvp.model.Meta.ESTADO_DESCARTADA);
+                m.setFechaDescartada(java.time.LocalDateTime.now().toString());
+                save();
+                return;
+            }
+        }
+    }
+
     /**
      * Carga el DataStore desde disco. Lee {@link #FILE_NAME} para todo lo que no es catálogo
      * (rutinas, sesiones, usuario, historial físico, sugerencias, catalogoVersion), y
