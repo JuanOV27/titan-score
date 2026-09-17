@@ -130,8 +130,7 @@ public class MetasFragment extends Fragment {
     }
 
     private void abrirEditar(Meta meta) {
-        // Se reemplaza en Task 10.
-        Toast.makeText(getContext(), "Editar meta (próximamente)", Toast.LENGTH_SHORT).show();
+        EditarMetaDialog.mostrar(requireActivity(), dataManager, meta, this::refrescar);
     }
 
     private void confirmarDescartar(Meta meta) {
