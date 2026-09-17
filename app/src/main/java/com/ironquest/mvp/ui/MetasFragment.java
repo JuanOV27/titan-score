@@ -122,8 +122,7 @@ public class MetasFragment extends Fragment {
     // ---- placeholders para las Tasks 8-10 ----
 
     private void abrirCrearMeta() {
-        // Se reemplaza en Task 8 por: CrearMetaDialog.mostrar(requireActivity(), dataManager, this::refrescar);
-        Toast.makeText(getContext(), "Crear meta (próximamente)", Toast.LENGTH_SHORT).show();
+        CrearMetaDialog.mostrar(requireActivity(), dataManager, this::refrescar);
     }
 
     private void abrirPlanSugerido(Meta meta) {
