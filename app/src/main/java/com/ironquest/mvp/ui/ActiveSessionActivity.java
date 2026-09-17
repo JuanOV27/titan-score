@@ -352,6 +352,8 @@ public class ActiveSessionActivity extends BaseActivity {
 
         generarSugerenciasPendientes();
 
+        java.util.List<com.ironquest.mvp.model.Meta> cumplidas = dataManager.evaluarMetas();
+
         int racha = EstadisticasUtil.calcularRachaDias(dataStore.getSesiones());
 
         SesionTrackingService.detener(this);
@@ -363,6 +365,11 @@ public class ActiveSessionActivity extends BaseActivity {
         intent.putExtra(SessionSummaryActivity.EXTRA_PORCENTAJE, sesionActual.getPorcentajeCumplimiento());
         intent.putExtra(SessionSummaryActivity.EXTRA_SESION_ID, sesionActual.getId());
         intent.putExtra(SessionSummaryActivity.EXTRA_RUTINA_ID, sesionActual.getRutinaId());
+        if (!cumplidas.isEmpty()) {
+            java.util.ArrayList<String> ids = new java.util.ArrayList<>();
+            for (com.ironquest.mvp.model.Meta m : cumplidas) ids.add(m.getId());
+            intent.putStringArrayListExtra(SessionSummaryActivity.EXTRA_METAS_CUMPLIDAS_IDS, ids);
+        }
         startActivity(intent);
         finish();
     }

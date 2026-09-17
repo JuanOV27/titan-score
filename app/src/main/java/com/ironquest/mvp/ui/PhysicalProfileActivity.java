@@ -154,6 +154,11 @@ public class PhysicalProfileActivity extends BaseActivity {
         dataStore.getHistorialFisico().add(registro);
         dataManager.save();
 
+        java.util.List<com.ironquest.mvp.model.Meta> cumplidas = dataManager.evaluarMetas();
+        if (!cumplidas.isEmpty()) {
+            CelebracionMetaDialog.mostrar(this, cumplidas);
+        }
+
         Usuario usuarioActivo = dataStore.getUsuario();
         if (usuarioActivo != null && usuarioActivo.getFirebaseUid() != null) {
             PerfilSync.getInstance().pushCompleto(

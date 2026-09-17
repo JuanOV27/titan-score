@@ -31,6 +31,7 @@ public class SessionSummaryActivity extends BaseActivity {
     public static final String EXTRA_PORCENTAJE = "extra_porcentaje";
     public static final String EXTRA_SESION_ID = "extra_sesion_id";
     public static final String EXTRA_RUTINA_ID = "extra_rutina_id";
+    public static final String EXTRA_METAS_CUMPLIDAS_IDS = "extra_metas_cumplidas_ids";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +93,17 @@ public class SessionSummaryActivity extends BaseActivity {
         }
 
         findViewById(R.id.button_volver_inicio).setOnClickListener(v -> volverInicio());
+
+        java.util.ArrayList<String> metasIds = getIntent().getStringArrayListExtra(EXTRA_METAS_CUMPLIDAS_IDS);
+        if (metasIds != null && !metasIds.isEmpty()) {
+            java.util.List<com.ironquest.mvp.model.Meta> metas = new java.util.ArrayList<>();
+            for (String id : metasIds) {
+                for (com.ironquest.mvp.model.Meta m : dataManager.getDataStore().getMetas()) {
+                    if (id.equals(m.getId())) { metas.add(m); break; }
+                }
+            }
+            CelebracionMetaDialog.mostrar(this, metas);
+        }
     }
 
     private void renderSugerencias(View card, DataManager dataManager, DataStore dataStore,
