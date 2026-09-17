@@ -126,8 +126,7 @@ public class MetasFragment extends Fragment {
     }
 
     private void abrirPlanSugerido(Meta meta) {
-        // Se reemplaza en Task 9 por: PlanSugeridoDialog.mostrar(requireActivity(), dataManager, meta, this::refrescar);
-        Toast.makeText(getContext(), "Plan sugerido (próximamente)", Toast.LENGTH_SHORT).show();
+        PlanSugeridoDialog.mostrar(requireActivity(), dataManager, meta, this::refrescar);
     }
 
     private void abrirEditar(Meta meta) {
