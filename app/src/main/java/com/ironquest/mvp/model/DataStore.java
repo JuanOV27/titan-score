@@ -16,6 +16,7 @@ public class DataStore {
     private Usuario usuario;
     private List<RegistroFisico> historialFisico = new ArrayList<>();
     private List<SugerenciaPendiente> sugerenciasPendientes = new ArrayList<>();
+    private List<Meta> metas = new ArrayList<>();
     /** Primitivo a propósito: un datos.json viejo lo lee en 0 sin migración (ver Trampa #3). */
     private int catalogoVersion;
 
@@ -68,6 +69,9 @@ public class DataStore {
         }
         if (sugerenciasPendientes == null) {
             sugerenciasPendientes = new ArrayList<>();
+        }
+        if (metas == null) {
+            metas = new ArrayList<>();
         }
     }
 
@@ -126,6 +130,14 @@ public class DataStore {
 
     public void setSugerenciasPendientes(List<SugerenciaPendiente> sugerenciasPendientes) {
         this.sugerenciasPendientes = sugerenciasPendientes;
+    }
+
+    public List<Meta> getMetas() {
+        return metas;
+    }
+
+    public void setMetas(List<Meta> metas) {
+        this.metas = metas;
     }
 
     public int getCatalogoVersion() {

@@ -16,6 +16,10 @@ public class Usuario extends EntidadIdentificable {
     /** Toggle global opcional. Activa chips de fatiga por serie y detección dinámica. */
     private boolean seguimientoFatiga;
 
+    /** Cuántos días a la semana entrena. Alimenta al recomendador para calcular
+     *  volumen semanal esperado. Editable en Ajustes. Default 3. */
+    private int diasEntrenoSemana = 3;
+
     /** Público: el registro construye el usuario vacío y lo va llenando campo a campo. */
     public Usuario() {
     }
@@ -90,6 +94,14 @@ public class Usuario extends EntidadIdentificable {
 
     public void setSeguimientoFatiga(boolean seguimientoFatiga) {
         this.seguimientoFatiga = seguimientoFatiga;
+    }
+
+    public int getDiasEntrenoSemana() {
+        return diasEntrenoSemana;
+    }
+
+    public void setDiasEntrenoSemana(int diasEntrenoSemana) {
+        this.diasEntrenoSemana = diasEntrenoSemana;
     }
 
     @Override
