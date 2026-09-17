@@ -624,8 +624,7 @@ public class DataManager {
                 cambio = true;
             } else if (!m.isNotificadaCerca() && ev.calcularProgreso(m, dataStore) >= 0.80) {
                 m.setNotificadaCerca(true);
-                // NotificacionMetasHelper se crea en Task 12 - descomentar entonces:
-                // com.ironquest.mvp.service.NotificacionMetasHelper.notificarCerca(appContext, m);
+                com.ironquest.mvp.service.NotificacionMetasHelper.notificarCerca(appContext, m);
                 cambio = true;
             }
         }

@@ -53,6 +53,7 @@ public class MainActivity extends BaseActivity {
     private ActivityResultLauncher<String[]> importLauncher;
     private ActivityResultLauncher<String[]> importRutinaLauncher;
     private int tabActual = TAB_POR_DEFECTO;
+    private String metaDestacadaId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +90,10 @@ public class MainActivity extends BaseActivity {
             return true;
         });
 
-        if (savedInstanceState != null) {
+        metaDestacadaId = getIntent().getStringExtra(MetasFragment.EXTRA_META_DESTACADA_ID);
+        if (metaDestacadaId != null) {
+            tabActual = R.id.tab_metas;
+        } else if (savedInstanceState != null) {
             tabActual = savedInstanceState.getInt(ESTADO_TAB, TAB_POR_DEFECTO);
         } else {
             tabActual = getIntent().getIntExtra(EXTRA_TAB_INICIAL, TAB_POR_DEFECTO);
@@ -132,6 +136,18 @@ public class MainActivity extends BaseActivity {
         bottomNav.setSelectedItemId(itemId);
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        String nuevoMetaId = intent.getStringExtra(MetasFragment.EXTRA_META_DESTACADA_ID);
+        if (nuevoMetaId != null) {
+            metaDestacadaId = nuevoMetaId;
+            bottomNav.setSelectedItemId(R.id.tab_metas);
+            mostrarTab(R.id.tab_metas);
+        }
+    }
+
     private void mostrarTab(int itemId) {
         tabActual = itemId;
 
@@ -145,6 +161,12 @@ public class MainActivity extends BaseActivity {
             titulo = "Estadísticas";
         } else if (itemId == R.id.tab_metas) {
             fragment = MetasFragment.crear("Metas — próximamente");
+            if (metaDestacadaId != null) {
+                Bundle args = new Bundle();
+                args.putString(MetasFragment.EXTRA_META_DESTACADA_ID, metaDestacadaId);
+                fragment.setArguments(args);
+                metaDestacadaId = null;
+            }
             titulo = "Metas";
         } else {
             fragment = new HomeFragment();
