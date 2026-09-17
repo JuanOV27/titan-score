@@ -606,6 +606,34 @@ public class DataManager {
     }
 
     /**
+     * Recorre metas activas: marca cumplidas y devuelve las recién cumplidas (para que la UI
+     * muestre celebración). También dispara notificación push si alguna cruzó el 80% de progreso
+     * por primera vez. Un solo save() al final si hubo cambios.
+     */
+    public java.util.List<com.ironquest.mvp.model.Meta> evaluarMetas() {
+        java.util.List<com.ironquest.mvp.model.Meta> recienCumplidas = new java.util.ArrayList<>();
+        boolean cambio = false;
+        for (com.ironquest.mvp.model.Meta m : dataStore.getMetas()) {
+            if (m.getEstado() != com.ironquest.mvp.model.Meta.ESTADO_ACTIVA) continue;
+            com.ironquest.mvp.util.metas.EvaluadorMeta ev =
+                    com.ironquest.mvp.util.metas.EvaluadorMeta.para(m);
+            if (ev.cumplida(m, dataStore)) {
+                m.setEstado(com.ironquest.mvp.model.Meta.ESTADO_CUMPLIDA);
+                m.setFechaCumplida(java.time.LocalDateTime.now().toString());
+                recienCumplidas.add(m);
+                cambio = true;
+            } else if (!m.isNotificadaCerca() && ev.calcularProgreso(m, dataStore) >= 0.80) {
+                m.setNotificadaCerca(true);
+                // NotificacionMetasHelper se crea en Task 12 - descomentar entonces:
+                // com.ironquest.mvp.service.NotificacionMetasHelper.notificarCerca(appContext, m);
+                cambio = true;
+            }
+        }
+        if (cambio) save();
+        return recienCumplidas;
+    }
+
+    /**
      * Carga el DataStore desde disco. Lee {@link #FILE_NAME} para todo lo que no es catálogo
      * (rutinas, sesiones, usuario, historial físico, sugerencias, catalogoVersion), y
      * {@link #FILE_CATALOGO} para los ejercicios. Si {@link #FILE_CATALOGO} no existe todavía
