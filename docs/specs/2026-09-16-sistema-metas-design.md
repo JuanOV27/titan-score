@@ -324,58 +324,114 @@ public class Recomendacion {
 
 Mapa `Map<String, List<String>>` estático en `RecomendadorEjercicios`. Las claves son
 estables (no dependen de UI ni traducción) y las listas usan nombres exactos como aparecen
-en `Ejercicio.nombre` del catálogo curado. **Claude verifica cada nombre contra
-`catalogo.json` antes de aterrizar el plan de ejecución.**
+en `Ejercicio.nombre` del catálogo curado. **Los 60 nombres de esta tabla ya fueron
+verificados contra `app/src/main/assets/catalogo.json` — todos existen literalmente.**
 
 ```java
 private static final Map<String, List<String>> CURADOS = new LinkedHashMap<>();
 static {
     CURADOS.put("aumentar_brazoCm", Arrays.asList(
-        "Curl con barra", "Curl martillo", "Curl predicador con barra Z",
-        "Extensión de tríceps en polea", "Press francés con barra Z",
-        "Fondos entre bancos"));
+        "Curl de bíceps con barra recta",
+        "Curl predicador con barra",
+        "Curl martillo en polea con cuerda",
+        "Extensión de tríceps acostado agarre cerrado con barra",
+        "Patada de tríceps en polea",
+        "Fondos de codo"));
     CURADOS.put("aumentar_piernaCm", Arrays.asList(
-        "Sentadilla con barra", "Prensa de piernas 45°", "Zancadas con mancuernas",
-        "Extensión de cuádriceps en máquina", "Curl femoral acostado",
-        "Peso muerto rumano"));
+        "Sentadilla completa con barra",
+        "Prensa de piernas a 45°",
+        "Extensión de cuádriceps en máquina",
+        "Curl femoral acostado en máquina",
+        "Peso muerto rumano con barra",
+        "Zancada con barra"));
     CURADOS.put("aumentar_pechoCm", Arrays.asList(
-        "Press de banca con barra", "Press inclinado con mancuerna",
-        "Aperturas con mancuernas", "Fondos en paralelas",
-        "Press declinado con mancuerna"));
+        "Press de banca con barra",
+        "Press inclinado con barra",
+        "Press banca inclinado con mancuerna",
+        "Aperturas con mancuernas en banco plano",
+        "Fondos de pecho"));
     CURADOS.put("reducir_cinturaCm", Arrays.asList(
-        "Plancha abdominal", "Escaladores", "Elevación de piernas colgado",
-        "Rueda abdominal", "Sentadilla con barra", "Peso muerto convencional",
-        "Fondos en paralelas"));
+        "Plancha lateral inclinada",
+        "Elevación de piernas colgado",
+        "Abdominal con press y barra",
+        "Crunch bicicleta con banda",
+        "Sentadilla completa con barra",
+        "Peso muerto con barra",
+        "Fondos de pecho"));
     CURADOS.put("reducir_caderaCm", Arrays.asList(
-        "Sentadilla con barra", "Zancadas con mancuernas", "Peso muerto rumano",
-        "Hip thrust con barra", "Escaladores"));
+        "Sentadilla completa con barra",
+        "Zancada con barra",
+        "Peso muerto rumano con barra",
+        "Puente de glúteos con barra",
+        "Elevación de cadera acostado con barra"));
     CURADOS.put("peso_bajar", Arrays.asList(
-        "Sentadilla con barra", "Peso muerto convencional", "Press de banca con barra",
-        "Dominadas", "Remo con barra", "Escaladores", "Burpees"));
+        "Sentadilla completa con barra",
+        "Peso muerto con barra",
+        "Press de banca con barra",
+        "Remo con barra inclinado",
+        "Jalón al pecho en polea",
+        "Fondos de pecho"));
     CURADOS.put("peso_subir", Arrays.asList(
-        "Sentadilla con barra", "Peso muerto convencional", "Press de banca con barra",
-        "Press militar con barra", "Remo con barra", "Dominadas"));
-    // PR: mapeado por normalización del nombre del ejercicio principal
+        "Sentadilla completa con barra",
+        "Peso muerto con barra",
+        "Press de banca con barra",
+        "Press militar sentado con barra",
+        "Remo con barra inclinado",
+        "Jalón al pecho en polea"));
     CURADOS.put("pr_press_banca", Arrays.asList(
-        "Press cerrado con barra", "Extensión de tríceps en polea",
-        "Press francés con barra Z", "Press inclinado con mancuerna",
-        "Aperturas con mancuernas"));
+        "Press de banca agarre cerrado con barra",
+        "Extensión de tríceps acostado agarre cerrado con barra",
+        "Press JM con barra",
+        "Press inclinado con barra",
+        "Aperturas con mancuernas en banco plano"));
     CURADOS.put("pr_sentadilla", Arrays.asList(
-        "Sentadilla frontal con barra", "Prensa de piernas 45°",
-        "Extensión de cuádriceps en máquina", "Zancadas con mancuernas",
-        "Peso muerto rumano"));
+        "Sentadilla frontal con barra",
+        "Prensa de piernas a 45°",
+        "Extensión de cuádriceps en máquina",
+        "Zancada con barra",
+        "Peso muerto rumano con barra"));
     CURADOS.put("pr_peso_muerto", Arrays.asList(
-        "Peso muerto rumano", "Buenos días con barra", "Hip thrust con barra",
-        "Remo con barra", "Encogimientos con mancuerna"));
+        "Peso muerto rumano con barra",
+        "Buenos días con barra",
+        "Puente de glúteos con barra",
+        "Remo con barra inclinado",
+        "Hiperextensión lumbar"));
     CURADOS.put("pr_dominadas", Arrays.asList(
-        "Remo con barra", "Jalón al pecho", "Curl con barra", "Face pull"));
+        "Remo con barra inclinado",
+        "Jalón al pecho en polea",
+        "Curl de bíceps con barra recta",
+        "Pullover con barra"));
 }
 ```
 
-Para PR, la clave se construye normalizando `Ejercicio.nombre` del ejercicio principal:
-lowercase, sin acentos, guiones bajos por espacios. Si el resultado no matchea ninguna
-clave, fallback: 5 ejercicios del catálogo curado con mismo `musculoObjetivo`, ordenados
-por menos-usado-en-rutinas.
+### Cómo se elige la clave para meta de PR
+
+Se normaliza el nombre del ejercicio principal de la meta (lowercase, sin acentos) y se
+busca por **substring** de palabras clave (más robusto que match exacto porque el catálogo
+tiene múltiples variantes de cada lift):
+
+```java
+private static String construirClavePr(Ejercicio ej) {
+    String n = normalizar(ej.getNombre());  // lowercase + sin acentos
+    if (n.contains("press") && n.contains("banca")) return "pr_press_banca";
+    if (n.contains("peso muerto"))                   return "pr_peso_muerto";
+    if (n.contains("sentadilla"))                    return "pr_sentadilla";
+    if (n.contains("dominada"))                      return "pr_dominadas";
+    return null;  // dispara el fallback
+}
+```
+
+Ejemplos de match:
+- "Press de banca con barra" → `pr_press_banca`
+- "Press banca inclinado con mancuerna" → `pr_press_banca`
+- "Sentadilla completa con barra" → `pr_sentadilla`
+- "Sentadilla frontal con barra" → `pr_sentadilla`
+- "Peso muerto rumano con barra" → `pr_peso_muerto`
+- "Dominada arquero" → `pr_dominadas`
+
+Si el resultado es `null` (ej. PR de "Elevaciones laterales"), fallback: 5 ejercicios del
+catálogo con mismo `musculoObjetivo` que el ejercicio de la meta, ordenados por
+menos-usado-en-rutinas.
 
 ### Tabla de rango de volumen semanal (`RANGO_VOLUMEN`)
 
