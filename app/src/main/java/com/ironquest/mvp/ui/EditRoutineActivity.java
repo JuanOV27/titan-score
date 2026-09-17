@@ -56,6 +56,8 @@ public class EditRoutineActivity extends BaseActivity {
     private TextView textBannerLimite;
     private boolean bannerLimiteOculto = false;
 
+    private View buttonToggleCompactarTodo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,8 +97,12 @@ public class EditRoutineActivity extends BaseActivity {
             public void onQuitar(int position) {
                 rutina.quitarEjercicio(position);
                 adapter.notifyItemRemoved(position);
+                if (position < rutina.getCantidadEjercicios()) {
+                    adapter.notifyItemRangeChanged(position, rutina.getCantidadEjercicios() - position);
+                }
                 actualizarBannerMigracion();
                 actualizarBannerLimite();
+                actualizarBotonCompactarTodo();
             }
 
             @Override
@@ -120,6 +126,11 @@ public class EditRoutineActivity extends BaseActivity {
                 // save() del guardado de rutina.
                 dataManager.saveCatalogo();
             }
+
+            @Override
+            public void onCompactadoCambiado() {
+                actualizarBotonCompactarTodo();
+            }
         });
         recycler.setAdapter(adapter);
 
@@ -135,6 +146,7 @@ public class EditRoutineActivity extends BaseActivity {
                 }
                 rutina.moverEjercicio(desde, hasta);
                 adapter.notifyItemMoved(desde, hasta);
+                adapter.notificarNumeroSecuenciaCambiado(desde, hasta);
                 return true;
             }
 
@@ -171,6 +183,16 @@ public class EditRoutineActivity extends BaseActivity {
             bannerLimiteOculto = true;
             cardBannerLimite.setVisibility(View.GONE);
         });
+
+        buttonToggleCompactarTodo = findViewById(R.id.button_toggle_compactar_todo);
+        buttonToggleCompactarTodo.setOnClickListener(v -> {
+            if (adapter.isTodoColapsado()) {
+                adapter.expandirTodo();
+            } else {
+                adapter.colapsarTodo();
+            }
+        });
+        actualizarBotonCompactarTodo();
     }
 
     @Override
@@ -326,6 +348,22 @@ public class EditRoutineActivity extends BaseActivity {
     private void refrescarTrasMigracion() {
         adapter.notifyDataSetChanged();
         actualizarBannerMigracion();
+        actualizarBotonCompactarTodo();
+    }
+
+    private void actualizarBotonCompactarTodo() {
+        if (buttonToggleCompactarTodo == null) return;
+        int cantidad = rutina.getCantidadEjercicios();
+        if (cantidad < 2) {
+            buttonToggleCompactarTodo.setVisibility(View.GONE);
+            return;
+        }
+        buttonToggleCompactarTodo.setVisibility(View.VISIBLE);
+        if (adapter != null && adapter.isTodoColapsado()) {
+            ((TextView) buttonToggleCompactarTodo).setText("Expandir todo");
+        } else {
+            ((TextView) buttonToggleCompactarTodo).setText("Compactar todo");
+        }
     }
 
     private void agregarEjercicioARutina(Ejercicio ejercicio) {
@@ -336,6 +374,7 @@ public class EditRoutineActivity extends BaseActivity {
         rutina.agregarEjercicio(nuevo);
         adapter.notifyItemInserted(rutina.getCantidadEjercicios() - 1);
         actualizarBannerLimite();
+        actualizarBotonCompactarTodo();
     }
 
     private void mostrarDialogoEditarEjercicio(Ejercicio ejercicio, int position) {

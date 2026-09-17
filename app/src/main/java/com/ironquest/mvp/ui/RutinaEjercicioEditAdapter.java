@@ -41,6 +41,7 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
         void onIniciarArrastre(RecyclerView.ViewHolder viewHolder);
         /** Alguna mutación al catálogo (p. ej. override de incremento por ejercicio) fue aplicada. */
         void onCatalogoModificado();
+        default void onCompactadoCambiado() {}
     }
 
     private static final String[] OPCIONES_ESQUEMA =
@@ -61,6 +62,39 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
             Collections.newSetFromMap(new IdentityHashMap<>());
     private final Set<RutinaEjercicio> infoExpandidoItems =
             Collections.newSetFromMap(new IdentityHashMap<>());
+    private final Set<RutinaEjercicio> colapsadoItems =
+            Collections.newSetFromMap(new IdentityHashMap<>());
+
+    /** @return true si todos los ejercicios están colapsados. */
+    public boolean isTodoColapsado() {
+        return !items.isEmpty() && colapsadoItems.size() == items.size();
+    }
+
+    public boolean isAlgunoColapsado() {
+        return !colapsadoItems.isEmpty();
+    }
+
+    public void colapsarTodo() {
+        colapsadoItems.clear();
+        colapsadoItems.addAll(items);
+        notifyDataSetChanged();
+        listener.onCompactadoCambiado();
+    }
+
+    public void expandirTodo() {
+        colapsadoItems.clear();
+        notifyDataSetChanged();
+        listener.onCompactadoCambiado();
+    }
+
+    public void notificarNumeroSecuenciaCambiado(int desde, int hasta) {
+        int min = Math.min(desde, hasta);
+        int max = Math.max(desde, hasta);
+        int count = max - min + 1;
+        if (count > 0) {
+            notifyItemRangeChanged(min, count);
+        }
+    }
 
     public RutinaEjercicioEditAdapter(List<RutinaEjercicio> items, Map<String, Ejercicio> catalogoPorId,
                                       double incrementoGlobal, Listener listener) {
@@ -80,10 +114,15 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(items.get(position), catalogoPorId.get(items.get(position).getEjercicioId()));
+        holder.bind(items.get(position), catalogoPorId.get(items.get(position).getEjercicioId()), position);
         holder.botonQuitar.setOnClickListener(v -> {
             int adapterPos = holder.getBindingAdapterPosition();
             if (adapterPos != RecyclerView.NO_POSITION) {
+                // Quitar debe limpiar el estado colapsado para evitar fuga del Set.
+                RutinaEjercicio quitado = items.get(adapterPos);
+                colapsadoItems.remove(quitado);
+                gifOcultoItems.remove(quitado);
+                infoExpandidoItems.remove(quitado);
                 listener.onQuitar(adapterPos);
             }
         });
@@ -101,6 +140,17 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
         });
         holder.botonInfo.setOnClickListener(v -> alternarEnSet(infoExpandidoItems, holder));
         holder.botonToggleGif.setOnClickListener(v -> alternarEnSet(gifOcultoItems, holder));
+        holder.botonToggleCompact.setOnClickListener(v -> alternarEnSet(colapsadoItems, holder));
+        holder.itemView.setOnClickListener(v -> {
+            int adapterPos = holder.getBindingAdapterPosition();
+            if (adapterPos == RecyclerView.NO_POSITION) return;
+            RutinaEjercicio item = items.get(adapterPos);
+            if (colapsadoItems.contains(item)) {
+                colapsadoItems.remove(item);
+                notifyItemChanged(adapterPos);
+                listener.onCompactadoCambiado();
+            }
+        });
     }
 
     private void alternarEnSet(Set<RutinaEjercicio> set, ViewHolder holder) {
@@ -113,6 +163,9 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
                 set.add(item);
             }
             notifyItemChanged(adapterPos);
+            if (set == colapsadoItems) {
+                listener.onCompactadoCambiado();
+            }
         }
     }
 
@@ -123,8 +176,11 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView manija;
+        private final TextView textNumero;
         private final TextView nombre;
+        private final ImageButton botonToggleCompact;
         private final ImageButton botonEditarNombre;
+        private final LinearLayout containerDetalle;
         private final TextView textAvisoMigracion;
         private final EditText series;
         private final EditText repeticiones;
@@ -150,8 +206,11 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
         private ViewHolder(@NonNull View itemView) {
             super(itemView);
             manija = itemView.findViewById(R.id.icon_arrastrar_ejercicio);
+            textNumero = itemView.findViewById(R.id.text_numero_ejercicio);
             nombre = itemView.findViewById(R.id.text_nombre_ejercicio);
+            botonToggleCompact = itemView.findViewById(R.id.button_toggle_compactar);
             botonEditarNombre = itemView.findViewById(R.id.button_editar_nombre_ejercicio);
+            containerDetalle = itemView.findViewById(R.id.container_detalle_ejercicio_rutina);
             textAvisoMigracion = itemView.findViewById(R.id.text_aviso_migracion);
             series = itemView.findViewById(R.id.edit_series);
             repeticiones = itemView.findViewById(R.id.edit_repeticiones);
@@ -243,10 +302,17 @@ public class RutinaEjercicioEditAdapter extends RecyclerView.Adapter<RutinaEjerc
             });
         }
 
-        private void bind(RutinaEjercicio item, Ejercicio ejercicio) {
+        private void bind(RutinaEjercicio item, Ejercicio ejercicio, int position) {
             current = null;
             ejercicioActual = null;
+            textNumero.setText(String.valueOf(position + 1));
             nombre.setText(ejercicio != null ? ejercicio.getNombre() : "Ejercicio");
+            boolean colapsado = colapsadoItems.contains(item);
+            containerDetalle.setVisibility(colapsado ? View.GONE : View.VISIBLE);
+            botonToggleCompact.setImageResource(colapsado
+                    ? android.R.drawable.arrow_down_float
+                    : android.R.drawable.arrow_up_float);
+            botonToggleCompact.setContentDescription(colapsado ? "Expandir" : "Compactar");
             botonEditarNombre.setVisibility(ejercicio != null && ejercicio.isPersonalizado()
                     ? View.VISIBLE : View.GONE);
             // Ejercicio pendiente de migración: viene de una versión anterior y no tiene ficha

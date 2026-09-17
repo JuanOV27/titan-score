@@ -28,12 +28,35 @@
                 android:contentDescription="Arrastrar para reordenar" />
 
             <TextView
+                android:id="@+id/text_numero_ejercicio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_badge_numero_ejercicio"
+                android:paddingStart="7dp"
+                android:paddingEnd="7dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:text="1"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/text_nombre_ejercicio"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textStyle="bold"
                 android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/button_toggle_compactar"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Compactar o expandir"
+                android:src="@android:drawable/arrow_up_float" />
 
             <ImageButton
                 android:id="@+id/button_editar_nombre_ejercicio"
@@ -52,6 +75,12 @@
                 android:contentDescription="Quitar ejercicio"
                 android:src="@android:drawable/ic_menu_delete" />
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/container_detalle_ejercicio_rutina"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
         <TextView
             android:id="@+id/text_aviso_migracion"
@@ -294,6 +323,8 @@
                 android:text="5 kg" />
 
         </com.google.android.material.chip.ChipGroup>
+
+        </LinearLayout>
 
     </LinearLayout>
 
