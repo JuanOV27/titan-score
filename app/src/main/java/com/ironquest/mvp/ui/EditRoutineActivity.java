@@ -55,6 +55,7 @@ public class EditRoutineActivity extends BaseActivity {
     private View cardBannerLimite;
     private TextView textBannerLimite;
     private boolean bannerLimiteOculto = false;
+    private boolean bannerMetaOculto = false;
 
     private View buttonToggleCompactarTodo;
 
@@ -193,6 +194,7 @@ public class EditRoutineActivity extends BaseActivity {
             }
         });
         actualizarBotonCompactarTodo();
+        actualizarBannerMeta();
     }
 
     @Override
@@ -200,6 +202,37 @@ public class EditRoutineActivity extends BaseActivity {
         super.onResume();
         actualizarBannerSugerencias();
         actualizarBannerLimite();
+        actualizarBannerMeta();
+    }
+
+    private void actualizarBannerMeta() {
+        View card = findViewById(R.id.card_banner_meta);
+        if (bannerMetaOculto) { card.setVisibility(View.GONE); return; }
+
+        java.util.List<com.ironquest.mvp.model.Meta> activas = dataManager.getMetasActivas();
+        com.ironquest.mvp.model.Meta metaConBrecha = null;
+        com.ironquest.mvp.util.metas.PlanRecomendado planMeta = null;
+        double peorProgreso = 1.0;
+        for (com.ironquest.mvp.model.Meta m : activas) {
+            com.ironquest.mvp.util.metas.PlanRecomendado p =
+                    com.ironquest.mvp.util.metas.RecomendadorEjercicios.recomendar(m, dataStore);
+            if (!p.tieneAlgunoFaltante()) continue;
+            double prog = com.ironquest.mvp.util.metas.EvaluadorMeta.para(m).calcularProgreso(m, dataStore);
+            if (prog < peorProgreso) { peorProgreso = prog; metaConBrecha = m; planMeta = p; }
+        }
+        if (metaConBrecha == null) { card.setVisibility(View.GONE); return; }
+        card.setVisibility(View.VISIBLE);
+        ((TextView) findViewById(R.id.text_banner_meta_titulo))
+                .setText("Meta activa: \"" + metaConBrecha.getTitulo() + "\"");
+        ((TextView) findViewById(R.id.text_banner_meta_volumen)).setText(planMeta.getTextoVolumen());
+
+        final com.ironquest.mvp.model.Meta metaFinal = metaConBrecha;
+        findViewById(R.id.button_banner_meta_ver_plan).setOnClickListener(v ->
+                PlanSugeridoDialog.mostrar(this, dataManager, metaFinal, this::actualizarBannerMeta));
+        findViewById(R.id.button_banner_meta_ocultar).setOnClickListener(v -> {
+            bannerMetaOculto = true;
+            card.setVisibility(View.GONE);
+        });
     }
 
     private void actualizarBannerLimite() {
